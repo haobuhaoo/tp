@@ -1,6 +1,7 @@
 package seedu.address.testutil;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
