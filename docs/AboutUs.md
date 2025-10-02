@@ -13,10 +13,10 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 ### Wen Fanyu
 
-<img src="images/WFYishere.png" width="200px">
+<img src="images/wfyishere.png" width="200px">
 
 [[github](https://github.com/WFYishere)]
-[[portfolio](team/johndoe.md)]
+[[portfolio](team/wfyishere.md)]
 
 * Role: Project Advisor
 
@@ -34,7 +34,8 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 <img src="images/lzkkuan.png" width="200px">
 
-[[github](http://github.com/lzkkuan)] [[portfolio](team/lzkkuan.md)]
+[[github](http://github.com/lzkkuan)]
+[[portfolio](team/lzkkuan.md)]
 
 * Role: Developer
 * Responsibilities: Eat & Sleep
