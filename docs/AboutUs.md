@@ -20,34 +20,35 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 * Role: Project Advisor
 
-### Jane Doe
+### Marcus Ng
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/peanutbutter1212.png" width="200px">
 
-[[github](http://github.com/johndoe)]
-[[portfolio](team/johndoe.md)]
-
-* Role: Team Lead
-* Responsibilities: UI
-
-### Johnny Doe
-
-<img src="images/johndoe.png" width="200px">
-
-[[github](http://github.com/johndoe)] [[portfolio](team/johndoe.md)]
+[[github](https://github.com/PeanutButter1212)]
+[[portfolio](team/peanutbutter1212.md)]
 
 * Role: Developer
-* Responsibilities: Data
+* Responsibilities: TBC
 
-### Jean Doe
+### Li Zekuan
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/lzkkuan.png" width="200px">
 
-[[github](http://github.com/johndoe)]
-[[portfolio](team/johndoe.md)]
+[[github](http://github.com/lzkkuan)] [[portfolio](team/lzkkuan.md)]
 
 * Role: Developer
-* Responsibilities: Dev Ops + Threading
+* Responsibilities: Eat & Sleep
+
+
+### Teoh Hao Yi
+
+<img src="images/haobuhaoo.png" width="200px">
+
+[[github](http://github.com/haobuhaoo)]
+[[portfolio](team/haobuhaoo.md)]
+
+* Role: Testing 
+* Responsibilities: Testing + Code Quality
 
 ### Seah Min-Ren
 
