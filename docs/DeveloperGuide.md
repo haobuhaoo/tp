@@ -345,13 +345,29 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 ---
 
 ### Non-Functional Requirements
+1. **Setup**
+- Should work on any mainstream OS as long as it has Java 17 or above installed.
 
-1. Should work on any mainstream OS (Windows, Linux, MacOS) with Java 17+.  
-2. Should be able to handle at least 100 students and 500 homework/payment records without noticeable lag (<1s response).  
-3. Should not require internet for core features.  
-4. Should save data automatically to disk after each change.  
-5. Commands should be short, consistent, and easy to type.  
-6. Should preserve data integrity even after unexpected shutdowns.  
+2. **Performance**
+- The application should launch and load stored data within 2 seconds of starting up
+- The search method should return results within 300ms per 10000 student records
+- All valid commands should complete execution and display feedback in less than 300ms
+
+3. **Scalability**
+- Able to scale up to 10000 students without any significant decrease in performance
+- Data structures should be implemented in a way such that adding more students minimally affects search and 
+delete methods
+
+4. **Usability**
+- Every command entered will print out either a success message or a specific error message
+- Help command will print out clear list of commands with their respective usage examples
+- A user with above average typing speed for regular English text should be able to accomplish most of the tasks faster 
+using commands than using the mouse.
+
+5. **Maintainability**
+- The codebase should follow OOP principles
+- Test coverage should cover most if not all of the methods and classes
+- Error messages and command validation logic should be centralized to avoid inconsistency across commands.
 
 ---
 
@@ -361,4 +377,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 - **Student Profile**: A record including name, contact, parent contact, level, subject, lesson time, homework, payments, and notes.  
 - **Archive**: To remove a student from the active list while retaining their records for later recovery.  
 - **Overdue fees**: Payments recorded but not marked as paid after the due date.  
-- **Mainstream OS**: Windows, Linux, MacOS with Java 17+.  
+- **Mainstream OS**: Windows, Linux, MacOS with Java 17+.
+- **Feedback**:  Either an error message or command successfully executed message
+- **Centralised** : Defined in one single place within the codebase
