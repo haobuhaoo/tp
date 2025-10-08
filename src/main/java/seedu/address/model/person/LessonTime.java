@@ -52,7 +52,7 @@ public class LessonTime {
 
     @Override
     public String toString() {
-        return time.format(VALID_OUTPUT_TIME_FORMAT);
+        return time.format(VALID_OUTPUT_TIME_FORMAT).toLowerCase();
     }
 
     @Override

@@ -73,7 +73,7 @@ public class LessonTimeTest {
 
     @Test
     public void toInputStringMethod() {
-        LessonTime lessonTime = new LessonTime("0900");
-        assertEquals("0900", lessonTime.toInputString());
+        LessonTime lessonTime = new LessonTime("1300");
+        assertEquals("1300", lessonTime.toInputString());
     }
 }
