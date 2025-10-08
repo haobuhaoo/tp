@@ -3,6 +3,7 @@ package seedu.address.logic.commands;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_STUDENT_DISPLAYED_INDEX;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.logic.commands.CommandTestUtil.showPersonAtIndex;
@@ -46,7 +47,11 @@ public class DeleteCommandTest {
         Index outOfBoundIndex = Index.fromOneBased(model.getFilteredPersonList().size() + 1);
         DeleteCommand deleteCommand = new DeleteCommand(outOfBoundIndex);
 
-        assertCommandFailure(deleteCommand, model, Messages.MESSAGE_INVALID_STUDENT_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_OUT_OF_BOUNDS_DELETE_INDEX,
+                outOfBoundIndex.getOneBased(),
+                model.getFilteredPersonList().size());
+
+        assertCommandFailure(deleteCommand, model, expectedMessage);
     }
 
     @Test
@@ -76,7 +81,11 @@ public class DeleteCommandTest {
 
         DeleteCommand deleteCommand = new DeleteCommand(outOfBoundIndex);
 
-        assertCommandFailure(deleteCommand, model, Messages.MESSAGE_INVALID_STUDENT_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_OUT_OF_BOUNDS_DELETE_INDEX,
+                outOfBoundIndex.getOneBased(),
+                model.getFilteredPersonList().size());
+
+        assertCommandFailure(deleteCommand, model, expectedMessage);
     }
 
     @Test
