@@ -11,6 +11,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
+import seedu.address.model.attendance.AttendanceIndex;
 import seedu.address.model.person.Person;
 
 /**
@@ -22,6 +23,8 @@ public class ModelManager implements Model {
     private final AddressBook addressBook;
     private final UserPrefs userPrefs;
     private final FilteredList<Person> filteredPersons;
+    private final AttendanceIndex attendanceIndex = new AttendanceIndex();
+
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
@@ -144,5 +147,26 @@ public class ModelManager implements Model {
                 && userPrefs.equals(otherModelManager.userPrefs)
                 && filteredPersons.equals(otherModelManager.filteredPersons);
     }
+
+    @Override
+    public AttendanceIndex getAttendanceIndex() {
+        return attendanceIndex;
+    }
+
+    @Override
+    public boolean hasPersonName(String name) {
+        String norm = name.trim().replaceAll("\\s+", " ").toLowerCase();
+        return filteredPersons.stream()
+                .anyMatch(p -> p.getName().fullName.trim().replaceAll("\\s+", " ").toLowerCase().equals(norm));
+    }
+
+    // @Override
+    // public java.util.Optional<Person> findPersonByName(String name) {
+    //     String norm = name.trim().replaceAll("\\s+", " ").toLowerCase();
+    //     return filteredPersons.stream()
+    //             .filter(p -> p.getName().fullName.trim().replaceAll("\\s+", " ").toLowerCase().equals(norm))
+    //             .findFirst();
+    // }
+
 
 }

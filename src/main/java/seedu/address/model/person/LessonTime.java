@@ -6,6 +6,7 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Locale;
 
 /**
  * Represents a Person's lesson time in the address book.
@@ -14,9 +15,12 @@ import java.time.format.DateTimeParseException;
 public class LessonTime {
     public static final String MESSAGE_CONSTRAINTS = "Lesson time should be in 24-hour format (0000 to 2359)";
 
-    public static final DateTimeFormatter VALID_INPUT_TIME_FORMAT = DateTimeFormatter.ofPattern("HHmm");
+    public static final DateTimeFormatter VALID_INPUT_TIME_FORMAT =
+            DateTimeFormatter.ofPattern("HHmm");
 
-    public static final DateTimeFormatter VALID_OUTPUT_TIME_FORMAT = DateTimeFormatter.ofPattern("hh:mm a");
+    // Force English locale so "AM/PM" is stable across environments
+    public static final DateTimeFormatter VALID_OUTPUT_TIME_FORMAT =
+            DateTimeFormatter.ofPattern("hh:mm a", Locale.ENGLISH);
 
     public final LocalTime time;
 
@@ -47,13 +51,15 @@ public class LessonTime {
      * Returns the lesson time in input format (HHmm).
      */
     public String toInputString() {
-        return time.toString().replace(":", "");
+        return time.format(VALID_INPUT_TIME_FORMAT);
     }
 
     @Override
     public String toString() {
-        return time.format(VALID_OUTPUT_TIME_FORMAT).toLowerCase();
+        // Example: "01:30 pm" (lowercase day-period to match tests)
+        return time.format(VALID_OUTPUT_TIME_FORMAT).toLowerCase(Locale.ENGLISH);
     }
+
 
     @Override
     public boolean equals(Object other) {
