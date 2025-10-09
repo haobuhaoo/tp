@@ -30,6 +30,14 @@ public class PersonListPanel extends UiPart<Region> {
     }
 
     /**
+     * Forces the list view to refresh its visible cells.
+     * This ensures attendance checkboxes update immediately after any attendance command.
+     */
+    public void refresh() {
+        personListView.refresh();
+    }
+
+    /**
      * Custom {@code ListCell} that displays the graphics of a {@code Person} using a {@code PersonCard}.
      */
     class PersonListViewCell extends ListCell<Person> {
@@ -45,5 +53,4 @@ public class PersonListPanel extends UiPart<Region> {
             }
         }
     }
-
 }
