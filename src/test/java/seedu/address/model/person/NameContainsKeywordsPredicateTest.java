@@ -12,20 +12,24 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.testutil.PersonBuilder;
 
+
 public class NameContainsKeywordsPredicateTest {
     @Test
     public void equals() {
         List<String> firstPredicateKeywordList = Collections.singletonList("first");
         List<String> secondPredicateKeywordList = Arrays.asList("first", "second");
 
-        StudentFieldsContainsKeywordsPredicate firstPredicate = new StudentFieldsContainsKeywordsPredicate(firstPredicateKeywordList);
-        StudentFieldsContainsKeywordsPredicate secondPredicate = new StudentFieldsContainsKeywordsPredicate(secondPredicateKeywordList);
+        StudentFieldsContainsKeywordsPredicate firstPredicate =
+                new StudentFieldsContainsKeywordsPredicate(firstPredicateKeywordList);
+        StudentFieldsContainsKeywordsPredicate secondPredicate =
+                new StudentFieldsContainsKeywordsPredicate(secondPredicateKeywordList);
 
         // same object -> returns true
         assertTrue(firstPredicate.equals(firstPredicate));
 
         // same values -> returns true
-        StudentFieldsContainsKeywordsPredicate firstPredicateCopy = new StudentFieldsContainsKeywordsPredicate(firstPredicateKeywordList);
+        StudentFieldsContainsKeywordsPredicate firstPredicateCopy =
+                new StudentFieldsContainsKeywordsPredicate(firstPredicateKeywordList);
         assertTrue(firstPredicate.equals(firstPredicateCopy));
 
         // different types -> returns false
@@ -41,7 +45,8 @@ public class NameContainsKeywordsPredicateTest {
     @Test
     public void test_nameContainsKeywords_returnsTrue() {
         // One keyword
-        StudentFieldsContainsKeywordsPredicate predicate = new StudentFieldsContainsKeywordsPredicate(Collections.singletonList("Alice"));
+        StudentFieldsContainsKeywordsPredicate predicate =
+                new StudentFieldsContainsKeywordsPredicate(Collections.singletonList("Alice"));
         assertTrue(predicate.test(new PersonBuilder().withName("Alice Bob").build()));
 
         // Multiple keywords
@@ -60,7 +65,8 @@ public class NameContainsKeywordsPredicateTest {
     @Test
     public void test_nameDoesNotContainKeywords_returnsFalse() {
         // Zero keywords
-        StudentFieldsContainsKeywordsPredicate predicate = new StudentFieldsContainsKeywordsPredicate(Collections.emptyList());
+        StudentFieldsContainsKeywordsPredicate predicate =
+                new StudentFieldsContainsKeywordsPredicate(Collections.emptyList());
         assertFalse(predicate.test(new PersonBuilder().withName("Alice").build()));
 
         // Non-matching keyword
@@ -69,7 +75,7 @@ public class NameContainsKeywordsPredicateTest {
 
         // Keywords match phone and lesson time, but does not match name
         predicate = new StudentFieldsContainsKeywordsPredicate(Arrays.asList("98765432", "1000"));
-        assertFalse(predicate.test(new PersonBuilder().withName("Alice").withPhone("98765432")
+        assertTrue(predicate.test(new PersonBuilder().withName("Alice").withPhone("98765432")
                 .withLessonTime("1000").build()));
     }
 
@@ -78,7 +84,8 @@ public class NameContainsKeywordsPredicateTest {
         List<String> keywords = List.of("keyword1", "keyword2");
         StudentFieldsContainsKeywordsPredicate predicate = new StudentFieldsContainsKeywordsPredicate(keywords);
 
-        String expected = StudentFieldsContainsKeywordsPredicate.class.getCanonicalName() + "{keywords=" + keywords + "}";
+        String expected = StudentFieldsContainsKeywordsPredicate.class.getCanonicalName()
+                + "{keywords=" + keywords + "}";
         assertEquals(expected, predicate.toString());
     }
 }

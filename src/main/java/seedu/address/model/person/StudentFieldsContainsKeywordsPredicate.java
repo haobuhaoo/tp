@@ -1,12 +1,13 @@
 package seedu.address.model.person;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Predicate;
 
 import seedu.address.commons.util.ToStringBuilder;
 
-import static java.util.Objects.requireNonNull;
 
 /**
  * Tests whether any of the given keywords is contained in a
@@ -14,7 +15,12 @@ import static java.util.Objects.requireNonNull;
  */
 public class StudentFieldsContainsKeywordsPredicate implements Predicate<Person> {
     private final List<String> keywords;
-
+    /**
+     * Creates a predicate that matches if any keyword is contained in a person's
+     * name, phone, or lesson time
+     *
+     * @param keywords list of keywords;
+     */
     public StudentFieldsContainsKeywordsPredicate(List<String> keywords) {
         requireNonNull(keywords);
         this.keywords = keywords;
@@ -53,7 +59,8 @@ public class StudentFieldsContainsKeywordsPredicate implements Predicate<Person>
             return false;
         }
 
-        StudentFieldsContainsKeywordsPredicate otherNameContainsKeywordsPredicate = (StudentFieldsContainsKeywordsPredicate) other;
+        StudentFieldsContainsKeywordsPredicate otherNameContainsKeywordsPredicate =
+                 (StudentFieldsContainsKeywordsPredicate) other;
         return keywords.equals(otherNameContainsKeywordsPredicate.keywords);
     }
 

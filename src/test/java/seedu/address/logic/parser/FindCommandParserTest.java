@@ -1,6 +1,5 @@
 package seedu.address.logic.parser;
 
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 
@@ -17,7 +16,11 @@ public class FindCommandParserTest {
 
     @Test
     public void parse_emptyArg_throwsParseException() {
-        assertParseFailure(parser, "     ", String.format(MESSAGE_INVALID_COMMAND_FORMAT, SearchCommand.MESSAGE_USAGE));
+        // No k/ prefix
+        assertParseFailure(parser, "     ", "Invalid search keyword.");
+
+        // k/ but empty after normalization
+        assertParseFailure(parser, "k/    ", "Invalid search keyword.");
     }
 
     @Test
@@ -25,10 +28,10 @@ public class FindCommandParserTest {
         // no leading and trailing whitespaces
         SearchCommand expectedFindCommand =
                 new SearchCommand(new StudentFieldsContainsKeywordsPredicate(Arrays.asList("Alice", "Bob")));
-        assertParseSuccess(parser, "Alice Bob", expectedFindCommand);
+        assertParseSuccess(parser, "k/Alice Bob", expectedFindCommand);
 
         // multiple whitespaces between keywords
-        assertParseSuccess(parser, " \n Alice \n \t Bob  \t", expectedFindCommand);
+        assertParseSuccess(parser, " \n k/ Alice \n \t Bob  \t", expectedFindCommand);
     }
 
 }
