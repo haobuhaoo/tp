@@ -110,6 +110,11 @@ public class MainWindow extends UiPart<Stage> {
      * Fills up all the placeholders of this window.
      */
     void fillInnerParts() {
+
+        seedu.address.ui.UiAttendanceAccess.install((name, date) ->
+                logic.peekModel().getAttendanceIndex().get(name, date).orElse(null), () ->
+                logic.peekModel().getAttendanceIndex().getCurrentUiDate());
+
         System.out.println(logic.getFilteredPersonList());
         personListPanel = new PersonListPanel(logic.getFilteredPersonList());
         personListPanelPlaceholder.getChildren().add(personListPanel.getRoot());
@@ -169,6 +174,19 @@ public class MainWindow extends UiPart<Stage> {
     }
 
     /**
+     * Forces the {@code PersonListPanel} to refresh its visible cells.
+     * <p>
+     * This ensures UI elements such as attendance checkboxes update immediately
+     * after commands like {@code attendance} are executed.
+     * </p>
+     */
+    public void refreshPersonListPanel() {
+        if (personListPanel != null) {
+            personListPanel.refresh();
+        }
+    }
+
+    /**
      * Executes the command and returns the result.
      *
      * @see seedu.address.logic.Logic#execute(String)
@@ -178,6 +196,7 @@ public class MainWindow extends UiPart<Stage> {
             CommandResult commandResult = logic.execute(commandText);
             logger.info("Result: " + commandResult.getFeedbackToUser());
             resultDisplay.setFeedbackToUser(commandResult.getFeedbackToUser());
+            refreshPersonListPanel();
 
             if (commandResult.isShowHelp()) {
                 handleHelp();

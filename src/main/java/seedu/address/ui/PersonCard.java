@@ -1,6 +1,7 @@
 package seedu.address.ui;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -32,6 +33,9 @@ public class PersonCard extends UiPart<Region> {
     private Label phone;
     @FXML
     private Label lessonTime;
+    @FXML
+    private CheckBox attendanceCheck;
+
 
     /**
      * Creates a {@code PersonCode} with the given {@code Person} and index to display.
@@ -43,5 +47,7 @@ public class PersonCard extends UiPart<Region> {
         name.setText(person.getName().fullName);
         phone.setText(person.getPhone().value);
         lessonTime.setText(person.getLessonTime().toString());
+        Boolean status = UiAttendanceAccess.getStatus(person.getName().fullName);
+        attendanceCheck.setSelected(Boolean.TRUE.equals(status));
     }
 }

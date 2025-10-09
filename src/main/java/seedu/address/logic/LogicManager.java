@@ -85,4 +85,10 @@ public class LogicManager implements Logic {
     public void setGuiSettings(GuiSettings guiSettings) {
         model.setGuiSettings(guiSettings);
     }
+
+    @Override
+    public seedu.address.model.Model peekModel() {
+        return model;
+    }
+
 }

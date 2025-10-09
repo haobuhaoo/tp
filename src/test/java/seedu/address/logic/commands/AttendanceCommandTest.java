@@ -20,8 +20,9 @@ import seedu.address.model.UserPrefs;
 import seedu.address.model.attendance.AttendanceIndex;
 import seedu.address.model.person.Person;
 
-
-/** Tests for {@link AttendanceCommand}. */
+/**
+ * Tests for {@link AttendanceCommand}.
+ */
 public class AttendanceCommandTest {
 
     @Test
@@ -46,8 +47,10 @@ public class AttendanceCommandTest {
     public void execute_duplicateSameStatus_throws() throws Exception {
         Model model = new ModelStubWithPerson("Alex Yeoh");
 
+        // first record: success
         new AttendanceCommand("Alex Yeoh", "2025-09-19", "1").execute(model);
 
+        // duplicate with same status
         AttendanceCommand dup = new AttendanceCommand("Alex Yeoh", "2025-09-19", "1");
         CommandException ex = assertThrows(CommandException.class, () -> dup.execute(model));
         assertEquals("Student Alex Yeoh is already marked as Present on 2025-09-19.", ex.getMessage());
@@ -56,8 +59,9 @@ public class AttendanceCommandTest {
     @Test
     public void execute_invalidName_throws() {
         Model model = new ModelStubWithPerson("Alex Yeoh");
-        AttendanceCommand cmd = new AttendanceCommand("", "2025-09-19", "1");
-        assertThrows(CommandException.class, () -> cmd.execute(model));
+        AttendanceCommand cmd = new AttendanceCommand("Nonexistent", "2025-09-19", "1");
+        CommandException ex = assertThrows(CommandException.class, () -> cmd.execute(model));
+        assertEquals("Invalid student name: no matching student found.", ex.getMessage());
     }
 
     @Test
@@ -76,7 +80,9 @@ public class AttendanceCommandTest {
         assertEquals("Invalid status. Use 1 for present, 0 for absent.", ex.getMessage());
     }
 
-    /** Minimal model stub that supports hasPersonName() and attendance index. */
+    /**
+     * Minimal model stub supporting hasPersonName() and AttendanceIndex.
+     */
     private static class ModelStubWithPerson implements Model {
         private final String storedName;
         private final AttendanceIndex index = new AttendanceIndex();
@@ -89,7 +95,7 @@ public class AttendanceCommandTest {
             return s.trim().replaceAll("\\s+", " ").toLowerCase();
         }
 
-        // ------ Methods used by AttendanceCommand ------
+        // --- Methods used by AttendanceCommand ---
 
         @Override
         public boolean hasPersonName(String name) {
@@ -101,7 +107,12 @@ public class AttendanceCommandTest {
             return index;
         }
 
-        // ------ Unused Model methods: keep compilable, but fail if called ------
+        @Override
+        public void updateFilteredPersonList(Predicate<Person> predicate) {
+            // no-op
+        }
+
+        // --- Unused methods (throw AssertionError if called) ---
 
         @Override
         public void setUserPrefs(ReadOnlyUserPrefs userPrefs) {
@@ -166,11 +177,6 @@ public class AttendanceCommandTest {
         @Override
         public ObservableList<Person> getFilteredPersonList() {
             return FXCollections.observableArrayList();
-        }
-
-        @Override
-        public void updateFilteredPersonList(Predicate<Person> predicate) {
-            throw new AssertionError();
         }
     }
 }

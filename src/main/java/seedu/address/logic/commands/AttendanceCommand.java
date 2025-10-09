@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.ui.UiAttendanceAccess;
 
 /**
  * Records attendance for a student on a date.
@@ -91,6 +92,14 @@ public class AttendanceCommand extends Command {
         idx.setCurrentUiDate(date);
 
         String statusWord = present ? "Present" : "Absent";
+
+        model.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
+
+        // Force UI to refresh PersonListPanel
+        UiAttendanceAccess.install((n, d) ->
+                model.getAttendanceIndex().get(n, d).orElse(null), () ->
+                model.getAttendanceIndex().getCurrentUiDate());
+
         return new CommandResult("Success: Attendance recorded: " + name + ", " + date + ", " + statusWord + ".");
     }
 }
