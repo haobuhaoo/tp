@@ -373,10 +373,10 @@ using commands than using the mouse.
 
 ### Glossary
 
-- **CLI (Command-Line Interface)**: Text-based input system for commands.  
-- **Student Profile**: A record including name, contact, parent contact, level, subject, lesson time, homework, payments, and notes.  
-- **Archive**: To remove a student from the active list while retaining their records for later recovery.  
-- **Overdue fees**: Payments recorded but not marked as paid after the due date.  
+- **CLI (Command-Line Interface)**: Text-based input system for commands.
+- **Student Profile**: A record including name, contact, parent contact, level, subject, lesson time, homework, payments, and notes.
+- **Archive**: To remove a student from the active list while retaining their records for later recovery.
+- **Overdue fees**: Payments recorded but not marked as paid after the due date.
 - **Mainstream OS**: Windows, Linux, MacOS with Java 17+.
 - **Feedback**:  Either an error message or command successfully executed message
 - **Centralised** : Defined in one single place within the codebase

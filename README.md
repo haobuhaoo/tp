@@ -10,13 +10,13 @@ It streamlines the tracking of student profiles — including **contacts, tuitio
 
 Unlike tuition-center management systems, ClassConnect is built for **speed, simplicity, and solo use**. Tutors can manage lessons and admin tasks efficiently without bloated dashboards.
 
-👉 To get started, check out the [User Guide](docs/UserGuide.md)  
+👉 To get started, check out the [User Guide](docs/UserGuide.md)
 👉 For code/design details, see the [Developer Guide](docs/DeveloperGuide.md)
 
 ---
 
 ## Target User
-- **Private tutors** with small to medium groups of students.  
+- **Private tutors** with small to medium groups of students.
 - Need to handle **student + parent contact details, lesson times, homework, payments, and progress notes**.  
 - Prefer **fast CLI commands** over heavy GUIs.  
 
