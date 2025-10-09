@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import seedu.address.testutil.PersonBuilder;
 
 public class NameContainsKeywordsPredicateTest {
-
     @Test
     public void equals() {
         List<String> firstPredicateKeywordList = Collections.singletonList("first");
@@ -68,10 +67,10 @@ public class NameContainsKeywordsPredicateTest {
         predicate = new NameContainsKeywordsPredicate(Arrays.asList("Carol"));
         assertFalse(predicate.test(new PersonBuilder().withName("Alice Bob").build()));
 
-        // Keywords match phone, email and address, but does not match name
-        predicate = new NameContainsKeywordsPredicate(Arrays.asList("12345", "alice@email.com", "Main", "Street"));
-        assertFalse(predicate.test(new PersonBuilder().withName("Alice").withPhone("12345")
-                .withEmail("alice@email.com").withAddress("Main Street").build()));
+        // Keywords match phone and lesson time, but does not match name
+        predicate = new NameContainsKeywordsPredicate(Arrays.asList("98765432", "1000"));
+        assertFalse(predicate.test(new PersonBuilder().withName("Alice").withPhone("98765432")
+                .withLessonTime("1000").build()));
     }
 
     @Test

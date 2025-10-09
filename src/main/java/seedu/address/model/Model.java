@@ -71,7 +71,7 @@ public interface Model {
 
     /**
      * Replaces the given person {@code target} with {@code editedPerson}.
-     * {@code target} must exist in the address book.
+     * {@code target} must exist in the address book.find
      * The person identity of {@code editedPerson} must not be the same as another existing person in the address book.
      */
     void setPerson(Person target, Person editedPerson);
@@ -84,4 +84,10 @@ public interface Model {
      * @throws NullPointerException if {@code predicate} is null.
      */
     void updateFilteredPersonList(Predicate<Person> predicate);
+
+    // ============ Attendance ============================================
+    seedu.address.model.attendance.AttendanceIndex getAttendanceIndex();
+    boolean hasPersonName(String name);
+    //java.util.Optional<seedu.address.model.person.Person> findPersonByName(String name);
+
 }
