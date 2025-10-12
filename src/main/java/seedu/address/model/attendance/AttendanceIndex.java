@@ -37,4 +37,23 @@ public final class AttendanceIndex {
     public void setCurrentUiDate(LocalDate date) {
         currentUiDate = date;
     }
+
+    /**
+     * Removes all attendance records and resets the UI date to today.
+     */
+    public void clear() {
+        data.clear();
+        currentUiDate = LocalDate.now();
+    }
+
+    /**
+     * Removes all attendance records associated with the given student name.
+     * The same normalization is applied as in {@link #put(String, java.time.LocalDate, boolean)}.
+     *
+     * @param name the student's name (raw; will be normalized)
+     */
+    public void removeAllForName(String name) {
+        data.remove(normalize(name));
+    }
+
 }
