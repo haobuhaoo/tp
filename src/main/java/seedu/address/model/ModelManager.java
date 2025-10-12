@@ -83,6 +83,7 @@ public class ModelManager implements Model {
     @Override
     public void setAddressBook(ReadOnlyAddressBook addressBook) {
         this.addressBook.resetData(addressBook);
+        attendanceIndex.clear();
     }
 
     @Override
@@ -99,6 +100,7 @@ public class ModelManager implements Model {
     @Override
     public void deletePerson(Person target) {
         addressBook.removePerson(target);
+        attendanceIndex.removeAllForName(target.getName().fullName);
     }
 
     @Override
@@ -159,14 +161,6 @@ public class ModelManager implements Model {
         return filteredPersons.stream()
                 .anyMatch(p -> p.getName().fullName.trim().replaceAll("\\s+", " ").toLowerCase().equals(norm));
     }
-
-    // @Override
-    // public java.util.Optional<Person> findPersonByName(String name) {
-    //     String norm = name.trim().replaceAll("\\s+", " ").toLowerCase();
-    //     return filteredPersons.stream()
-    //             .filter(p -> p.getName().fullName.trim().replaceAll("\\s+", " ").toLowerCase().equals(norm))
-    //             .findFirst();
-    // }
 
 
 }
