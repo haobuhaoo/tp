@@ -16,6 +16,11 @@ import seedu.address.model.person.Phone;
 
 /**
  * Parses input arguments and creates a new AddCommand object
+ * <p>
+ * This parser expects 3 prefixes to be provided in the argument in the form:
+ * {@code add-student n/NAME p/PHONE_NUMBER t/LESSON_TIME}, where {@code NAME} refers to the name,
+ * {@code PHONE_NUMBER} refers to the phone number, and {@code LESSON_TIME} refers to the lesson
+ * time of the student to be added to the list.
  */
 public class AddCommandParser implements Parser<AddCommand> {
     /**
@@ -44,8 +49,12 @@ public class AddCommandParser implements Parser<AddCommand> {
     }
 
     /**
-     * Returns true if none of the prefixes contains empty {@code Optional} values in the given
-     * {@code ArgumentMultimap}.
+     * Returns {@code true} if all specified prefixes are present in the given {@link ArgumentMultimap},
+     * meaning each prefix has a non-empty {@code Optional} value.
+     *
+     * @param argumentMultimap the mapping of prefixes to their arguments, obtained from tokenizing user input.
+     * @param prefixes         the prefixes to check for presence.
+     * @return {@code true} if all specified prefixes are present and non-empty; {@code false} otherwise.
      */
     private static boolean arePrefixesPresent(ArgumentMultimap argumentMultimap, Prefix... prefixes) {
         return Stream.of(prefixes).allMatch(prefix -> argumentMultimap.getValue(prefix).isPresent());

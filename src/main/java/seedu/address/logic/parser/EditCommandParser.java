@@ -16,6 +16,11 @@ import seedu.address.logic.parser.exceptions.ParseException;
 
 /**
  * Parses input arguments and creates a new EditCommand object
+ * <p>
+ * This parser expects an index and at least 1 other prefix to be provided in the argument in the form:
+ * {@code edit-student i/INDEX [n/NAME] [p/PHONE_NUMBER] [t/LESSON_TIME]}, where {@code INDEX} refers to the
+ * position of the student in the displayed list that is to be edited, and {@code NAME}, {@code PHONE_NUMBER},
+ * and {@code LESSON_TIME} refer to the new values of the respective fields to be updated.
  */
 public class EditCommandParser implements Parser<EditCommand> {
     /**
@@ -59,8 +64,12 @@ public class EditCommandParser implements Parser<EditCommand> {
     }
 
     /**
-     * Returns true if none of the prefixes contains empty {@code Optional} values in the given
-     * {@code ArgumentMultimap}.
+     * Returns {@code true} if all specified prefixes are present in the given {@link ArgumentMultimap},
+     * meaning each prefix has a non-empty {@code Optional} value.
+     *
+     * @param argumentMultimap the mapping of prefixes to their arguments, obtained from tokenizing user input.
+     * @param prefixes         the prefixes to check for presence.
+     * @return {@code true} if all specified prefixes are present and non-empty; {@code false} otherwise.
      */
     private static boolean arePrefixesPresent(ArgumentMultimap argumentMultimap, Prefix... prefixes) {
         return Stream.of(prefixes).allMatch(prefix -> argumentMultimap.getValue(prefix).isPresent());
