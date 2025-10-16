@@ -42,7 +42,7 @@ ClassConnect is a **desktop app for managing students' profile, optimized for us
 
 ## Features
 
-<box type="info" seamless>;
+<box type="info" seamless>
 
 **Notes about the command format:**<br>
 
@@ -55,6 +55,7 @@ ClassConnect is a **desktop app for managing students' profile, optimized for us
 * Extraneous parameters for commands that do not take in parameters (such as `help`, `list`, `exit` and `clear`) will be ignored.<br>e.g. if the command specifies `help 123`, it will be interpreted as `help`.
 
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
+
 </box>
 
 ### Viewing help : `help`
@@ -172,11 +173,12 @@ ClassConnect data are saved in the hard disk automatically after any command tha
 
 ClassConnect data are saved automatically as a JSON file `[JAR file location]/data/classconnect.json`. Advanced users are welcome to update data directly by editing that data file.
 
-<box type="warning" seamless>;
+<box type="warning" seamless>
 
 **Caution:**
 If your changes to the data file makes its format invalid, ClassConnect will discard all data and start with an empty data file at the next run.  Hence, it is recommended to take a backup of the file before editing it.<br>
 Furthermore, certain edits can cause the ClassConnect to behave in unexpected ways (e.g., if a value entered is outside the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
+
 </box>
 
 ### Archiving data files `[coming in v2.0]`
