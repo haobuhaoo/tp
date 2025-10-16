@@ -76,8 +76,8 @@ Format: `add-student n/NAME p/PHONE_NUMBER t/LESSON_TIME`
 * `LESSON_TIME` should be in **24-hour format** without a colon. e.g. `0900` for 9am, `1530` for 3:30pm. It should be between `0000` and `2359`.
 
 Examples:
-* `add-student n/John Doe p/98765432 t/1000`
-* `add-student t/1330 p/81234567 n/Betsy Crowe`
+* `add-student n/John Doe p/98765432 t/1000` Adds a student named `John Doe`, with phone number `98765432` and lesson time `10:00`.
+* `add-student t/1330 p/81234567 n/Betsy Crowe` Adds a student named `Betsy Crowe`, with phone number `81234567` and lesson time `13:30`.
 
 ### Listing all students : `list`
 
@@ -103,24 +103,19 @@ Examples:
 
 Finds persons whose names contain any of the given keywords.
 
-Format: `search-student k/KEYWORD [MORE_KEYWORDS]
-`
+Format: `search-student k/KEYWORD [MORE_KEYWORDS]`
 
-* The search is case-insensitive. e.g `marcus` will match `Marcus`
+* The search is case-insensitive. e.g. `marcus` will match `Marcus`
 * The order of the keywords does not matter. e.g. `Marcus Ng` will match `Ng Marcus`
-* names, phone numbers and lesson times are searched.
-* Partial matches within a word is supported e.g. `Mar` will match `Marcus`
+* Names, phone numbers and lesson times are searched.
+* Partial matches within a word is supported. e.g. `Mar` will match `Marcus`
 * Students matching at least one keyword will be returned (i.e. `OR` search).
   e.g. `Marcus 9876` will return `Marcus Ng (9876 1111)`, `John Tan (9876 5432)`
 
 Examples:
-* `search-student k/marcus` returns `Marcus Ng` and `Marcus Tan`
-* `search-student k/9876` returns all students whose phone number contains 9876
-* `search-student k/10:00` returns all students with lesson time 10:00
-
-
-### Marking attendance : `attendance`
-
+* `search-student k/marcus` Returns `Marcus Ng` and `Marcus Tan`.
+* `search-student k/9876` Returns all students whose phone number contains 9876.
+* `search-student k/10:00` Returns all students with lesson time 10:00.
 
 ### Deleting a student : `delete-student`
 
@@ -138,20 +133,24 @@ Examples:
 * `search-student k/Marcus` followed by `delete i/1` deletes the 1st person in the results of the `search-student` command.
 
 ### Recording attendance : `attendance`
+
 Records a student’s attendance for a specific date.
 
 Format: `attendance n/NAME d/YYYY-MM-DD s/1|0`
+* `NAME` is the name of the student whose attendance is to be recorded. It is case-insensitive. e.g. `marcus` is the same as `Marcus`.
+* `DATE` should be in the format `YYYY-MM-DD`. e.g. `2025-09-19` for 19th September 2025.
+* `STATUS` should be either `1` (for Present) or `0` (for Absent).
 * If attendance for the same student and date is already recorded with the same status, the command is rejected as redundant. e.g. “Student marcus is already marked as Present on 2025-09-19.”
-* If attendance exists but the status is different, the new status is recorded (updates the entry)
+* If attendance exists but the status is different, the new status is recorded (updates the entry).
 
 Examples:
-* attendance n/marcus d/2025-09-19 s/1
+* `attendance n/marcus d/2025-09-19 s/1` Marks student `marcus` as Present on 19th September 2025.
 → Success: Attendance recorded: marcus, 2025-09-19, Present.
 
-Notes:
-Attendance is tracked in-memory alongside the address book.
-Using clear resets the address book and clears all attendance records
+Note:
 
+* Attendance is tracked in-memory alongside the address book.
+* Using clear resets the address book and clears all attendance records
 
 ### Clearing all entries : `clear`
 
