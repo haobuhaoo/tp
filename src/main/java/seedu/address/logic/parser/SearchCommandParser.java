@@ -20,7 +20,7 @@ import seedu.address.model.person.StudentFieldsContainsKeywordsPredicate;
  */
 public class SearchCommandParser implements Parser<SearchCommand> {
     //allow letters, digits, and spaces only
-    private static final Pattern VALID_CHARS = Pattern.compile("[A-Za-z0-9 ]+");
+    private static final Pattern VALID_CHARS = Pattern.compile("[A-Za-z0-9 ':]+");
 
     @Override
     public SearchCommand parse(String args) throws ParseException {

@@ -1,7 +1,7 @@
 ---
-  layout: default.md
-  title: "User Guide"
-  pageNav: 3
+layout: default
+title: "User Guide"
+pageNav: 3
 ---
 
 # ClassConnect User Guide
@@ -42,7 +42,7 @@ ClassConnect is a **desktop app for managing students' profile, optimized for us
 
 ## Features
 
-<box type="info">
+<box type="info" seamless>;
 
 **Notes about the command format:**<br>
 
@@ -103,19 +103,21 @@ Examples:
 
 Finds persons whose names contain any of the given keywords.
 
-Format: `find KEYWORD [MORE_KEYWORDS]`
+Format: `search-student k/KEYWORD [MORE_KEYWORDS]
+`
 
-* The search is case-insensitive. e.g `hans` will match `Hans`
-* The order of the keywords does not matter. e.g. `Hans Bo` will match `Bo Hans`
-* Only the name is searched.
-* Only full words will be matched e.g. `Han` will not match `Hans`
-* Persons matching at least one keyword will be returned (i.e. `OR` search).
-  e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`
+* The search is case-insensitive. e.g `marcus` will match `Marcus`
+* The order of the keywords does not matter. e.g. `Marcus Ng` will match `Ng Marcus`
+* names, phone numbers and lesson times are searched.
+* Partial matches within a word is supported e.g. `Mar` will match `Marcus`
+* Students matching at least one keyword will be returned (i.e. `OR` search).
+  e.g. `Marcus 9876` will return `Marcus Ng (9876 1111)`, `John Tan (9876 5432)`
 
 Examples:
-* `find John` returns `john` and `John Doe`
-* `find alex david` returns `Alex Yeoh`, `David Li`<br>
-  ![result for 'find alex david'](images/findAlexDavidResult.png)
+* `search-student k/marcus` returns `Marcus Ng` and `Marcus Tan`
+* `search-student k/9876` returns all students whose phone number contains 9876
+* `search-student k/10:00` returns all students with lesson time 10:00
+
 
 ### Marking attendance : `attendance`
 
@@ -171,7 +173,7 @@ ClassConnect data are saved in the hard disk automatically after any command tha
 
 ClassConnect data are saved automatically as a JSON file `[JAR file location]/data/classconnect.json`. Advanced users are welcome to update data directly by editing that data file.
 
-<box type="warning">
+<box type="warning" seamless>;
 
 **Caution:**
 If your changes to the data file makes its format invalid, ClassConnect will discard all data and start with an empty data file at the next run.  Hence, it is recommended to take a backup of the file before editing it.<br>
@@ -207,6 +209,6 @@ Action     | Format, Examples
 **Clear**  | `clear`
 **Delete** | `delete-student i/INDEX`<br> e.g., `delete-student i/3`
 **Edit**   | `edit-student i/INDEX [n/NAME] [p/PHONE_NUMBER] [t/LESSON_TIME]`<br> e.g.,`edit-student i/2 n/James Lee t/1830`
-**Search**   | `search-student k/KEYWORD`<br> e.g., `search-student k/James Jake`
+**Search**   | `search-student k/KEYWORD [MORE_KEYWORDS]` <br> e.g., `search-student k/marcus lee`
 **List**   | `list`
 **Help**   | `help`

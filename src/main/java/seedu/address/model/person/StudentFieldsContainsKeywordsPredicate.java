@@ -29,14 +29,12 @@ public class StudentFieldsContainsKeywordsPredicate implements Predicate<Person>
     @Override
     public boolean test(Person person) {
         requireNonNull(person);
-
         String name = norm(person.getName().fullName);
         String phone = norm(person.getPhone().value);
 
-        // Only HHmm format (e.g., "1000"), per your preference
         String lesson = "";
         if (person.getLessonTime() != null) {
-            lesson = norm(person.getLessonTime().toInputString());
+            lesson = norm(person.getLessonTime().toString());
         }
 
         for (String kw : keywords) {
