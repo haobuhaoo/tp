@@ -33,6 +33,13 @@ public class DeleteCommand extends Command {
         this.targetIndex = targetIndex;
     }
 
+    /**
+     * Executes the delete command.
+     *
+     * @param model the {@code Model} containing the student list to modify.
+     * @return a {@code CommandResult} indicating successful deletion.
+     * @throws CommandException if the given index is invalid.
+     */
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
@@ -43,7 +50,8 @@ public class DeleteCommand extends Command {
         }
 
         if (targetIndex.getZeroBased() >= lastShownList.size()) {
-            throw new CommandException(String.format(Messages.MESSAGE_OUT_OF_BOUNDS_DELETE_INDEX,
+            throw new CommandException(String.format(
+                    Messages.MESSAGE_OUT_OF_BOUNDS_DELETE_INDEX,
                     targetIndex.getOneBased(), lastShownList.size())
             );
         }
