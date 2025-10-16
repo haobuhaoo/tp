@@ -135,6 +135,22 @@ Examples:
 * `list` followed by `delete i/2` deletes the 2nd person in the address book.
 * `search-student k/Marcus` followed by `delete i/1` deletes the 1st person in the results of the `search-student` command.
 
+### Recording attendance : `attendance`
+Records a student’s attendance for a specific date.
+
+Format: `attendance n/NAME d/YYYY-MM-DD s/1|0`
+* If attendance for the same student and date is already recorded with the same status, the command is rejected as redundant. e.g. “Student marcus is already marked as Present on 2025-09-19.”
+* If attendance exists but the status is different, the new status is recorded (updates the entry)
+
+Examples:
+* attendance n/marcus d/2025-09-19 s/1
+→ Success: Attendance recorded: marcus, 2025-09-19, Present.
+
+Notes:
+Attendance is tracked in-memory alongside the address book.
+Using clear resets the address book and clears all attendance records
+
+
 ### Clearing all entries : `clear`
 
 Clears all entries from the student list.
