@@ -13,7 +13,7 @@ import seedu.address.logic.parser.exceptions.ParseException;
  * Parses input arguments and creates a new DeleteCommand object
  *
  * This parser expects an index to be provided as an argument in the form:
- * {@code delete i/INDEX}, where {@code INDEX} refers to the position of the item
+ * {@code delete i/INDEX}, where {@code INDEX} refers to the position of the student
  * in the displayed list that should be deleted.
  */
 public class DeleteCommandParser implements Parser<DeleteCommand> {
