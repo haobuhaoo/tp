@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_INDEX;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_KEYWORD;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
@@ -30,9 +31,7 @@ import seedu.address.testutil.EditPersonDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.PersonUtil;
 
-
 public class AddressBookParserTest {
-
     private final AddressBookParser parser = new AddressBookParser();
 
     @Test
@@ -59,7 +58,7 @@ public class AddressBookParserTest {
     public void parseCommand_edit() throws Exception {
         Person person = new PersonBuilder().build();
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder(person).build();
-        EditCommand command = (EditCommand) parser.parseCommand(EditCommand.COMMAND_WORD + " "
+        EditCommand command = (EditCommand) parser.parseCommand(EditCommand.COMMAND_WORD + " " + PREFIX_INDEX
                 + INDEX_FIRST_PERSON.getOneBased() + " " + PersonUtil.getEditPersonDescriptorDetails(descriptor));
         assertEquals(new EditCommand(INDEX_FIRST_PERSON, descriptor), command);
     }
@@ -74,7 +73,7 @@ public class AddressBookParserTest {
     public void parseCommand_search() throws Exception {
         List<String> keywords = Arrays.asList("foo", "bar", "baz");
         SearchCommand command = (SearchCommand) parser.parseCommand(
-                SearchCommand.COMMAND_WORD + " " + "k/" + keywords.stream().collect(Collectors.joining(" ")));
+                SearchCommand.COMMAND_WORD + " " + PREFIX_KEYWORD + keywords.stream().collect(Collectors.joining(" ")));
         assertEquals(new SearchCommand(new StudentFieldsContainsKeywordsPredicate(keywords)), command);
     }
 
@@ -93,7 +92,7 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_unrecognisedInput_throwsParseException() {
         assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT, HelpCommand.MESSAGE_USAGE), ()
-            -> parser.parseCommand(""));
+                -> parser.parseCommand(""));
     }
 
     @Test
