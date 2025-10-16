@@ -122,17 +122,18 @@ Examples:
 
 ### Deleting a student : `delete-student`
 
-Deletes the specified person from the address book.
+Deletes the specified student from the address book.
 
-Format: `delete INDEX`
+Format: `delete-student i/INDEX`
 
-* Deletes the person at the specified `INDEX`.
-* The index refers to the index number shown in the displayed person list.
+* Deletes the student at the specified `INDEX`.
+* The index refers to the index number shown in the displayed student list.
 * The index **must be a positive integer** 1, 2, 3, …​
+* The list cannot be empty.
 
 Examples:
-* `list` followed by `delete 2` deletes the 2nd person in the address book.
-* `find Betsy` followed by `delete 1` deletes the 1st person in the results of the `find` command.
+* `list` followed by `delete i/2` deletes the 2nd person in the address book.
+* `search-student k/Marcus` followed by `delete i/1` deletes the 1st person in the results of the `search-student` command.
 
 ### Clearing all entries : `clear`
 

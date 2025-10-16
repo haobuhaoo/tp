@@ -11,12 +11,17 @@ import seedu.address.logic.parser.exceptions.ParseException;
 
 /**
  * Parses input arguments and creates a new DeleteCommand object
+ *
+ * This parser expects an index to be provided as an argument in the form:
+ * {@code delete i/INDEX}, where {@code INDEX} refers to the position of the student
+ * in the displayed list that should be deleted.
  */
 public class DeleteCommandParser implements Parser<DeleteCommand> {
 
     /**
      * Parses the given {@code String} of arguments in the context of the DeleteCommand
      * and returns a DeleteCommand object for execution.
+     *
      * @throws ParseException if the user input does not conform the expected format
      */
     public DeleteCommand parse(String args) throws ParseException {
@@ -27,6 +32,7 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
         }
         try {
+            // Ensure the user only specifies one index prefix (e.g., no "i/1 i/2")
             argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_INDEX);
             Index index = ParserUtil.parseIndex(argMultimap.getValue(PREFIX_INDEX).get());
             return new DeleteCommand(index);
@@ -36,9 +42,14 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
         }
     }
 
+
     /**
-     * Returns true if none of the prefixes contains empty {@code Optional} values in the given
-     * {@code ArgumentMultimap}.
+     * Returns {@code true} if all specified prefixes are present in the given {@link ArgumentMultimap},
+     * meaning each prefix has a non-empty {@code Optional} value.
+     *
+     * @param argumentMultimap the mapping of prefixes to their arguments, obtained from tokenizing user input.
+     * @param prefixes the prefixes to check for presence.
+     * @return {@code true} if all specified prefixes are present and non-empty; {@code false} otherwise.
      */
     private static boolean arePrefixesPresent(ArgumentMultimap argumentMultimap, Prefix... prefixes) {
         return Stream.of(prefixes).allMatch(prefix -> argumentMultimap.getValue(prefix).isPresent());
