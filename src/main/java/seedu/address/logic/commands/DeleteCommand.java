@@ -41,11 +41,21 @@ public class DeleteCommand extends Command {
     private final Optional<Index> targetIndex;
     private final Optional<StudentFieldsContainsKeywordsPredicate> predicate;
 
+    /**
+     * Constructs a {@code DeleteCommand} to delete a student by their index.
+     *
+     * @param targetIndex the index of the student in the displayed list to delete
+     */
     public DeleteCommand(Index targetIndex) {
         this.targetIndex = Optional.of(targetIndex);
         this.predicate = Optional.empty();
     }
 
+    /**
+     * Constructs a {@code DeleteCommand} to delete students matching a given predicate.
+     *
+     * @param predicate the predicate used to filter which students to delete
+     */
     public DeleteCommand(StudentFieldsContainsKeywordsPredicate predicate) {
         this.targetIndex = Optional.empty();
         this.predicate = Optional.of(predicate);
@@ -132,7 +142,8 @@ public class DeleteCommand extends Command {
                 if (exactLessonMatches.size() == 1) {
                     Person personToDelete = exactLessonMatches.get(0);
                     model.deletePerson(personToDelete);
-                    return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(personToDelete)));
+                    return new CommandResult(String.format(
+                            MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(personToDelete)));
                 } else if (exactLessonMatches.size() > 1) {
                     refinementCandidates = exactLessonMatches;
                 }

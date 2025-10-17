@@ -2,7 +2,6 @@ package seedu.address.model.person;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Predicate;
