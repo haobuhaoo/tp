@@ -2,6 +2,7 @@ package seedu.address.model.person;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Predicate;
@@ -64,6 +65,15 @@ public class StudentFieldsContainsKeywordsPredicate implements Predicate<Person>
 
     private static String norm(String s) {
         return s == null ? "" : s.trim().replaceAll("\\s+", " ").toLowerCase(Locale.ROOT);
+    }
+
+    /**
+     * Gets the keywords used in the predicate
+     *
+     * @return keywords used in the predicate as a list
+     */
+    public List<String> getKeywords() {
+        return keywords;
     }
 
     @Override
