@@ -1,9 +1,15 @@
 package seedu.address.logic.parser;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.parser.ParserUtil.MESSAGE_INVALID_INDEX;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +25,8 @@ public class ParserUtilTest {
 
     private static final String VALID_NAME = "Rachel Walker";
     private static final String VALID_PHONE = "98765432";
-    private static final String VALID_LESSON_TIME = "1430";
+    private static final String VALID_LESSON_TIME_1 = "1430 Mon";
+    private static final String VALID_LESSON_TIME_2 = "1000 Tue";
 
     private static final String WHITESPACE = " \t\r\n";
 
@@ -101,14 +108,40 @@ public class ParserUtilTest {
 
     @Test
     public void parseLessonTime_validValueWithoutWhitespace_returnsLessonTime() throws Exception {
-        LessonTime expectedLessonTime = new LessonTime(VALID_LESSON_TIME);
-        assertEquals(expectedLessonTime, ParserUtil.parseLessonTime(VALID_LESSON_TIME));
+        LessonTime expectedLessonTime = new LessonTime(VALID_LESSON_TIME_1);
+        assertEquals(expectedLessonTime, ParserUtil.parseLessonTime(VALID_LESSON_TIME_1));
     }
 
     @Test
     public void parseLessonTime_validValueWithWhitespace_returnsTrimmedLessonTime() throws Exception {
-        String addressWithWhitespace = WHITESPACE + VALID_LESSON_TIME + WHITESPACE;
-        LessonTime expectedLessonTime = new LessonTime(VALID_LESSON_TIME);
+        String addressWithWhitespace = WHITESPACE + VALID_LESSON_TIME_1 + WHITESPACE;
+        LessonTime expectedLessonTime = new LessonTime(VALID_LESSON_TIME_1);
         assertEquals(expectedLessonTime, ParserUtil.parseLessonTime(addressWithWhitespace));
+    }
+
+    @Test
+    public void parseLessonTimeSet_null_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> ParserUtil.parseLessonTimeSet(null));
+    }
+
+    @Test
+    public void parseLessonTimeSet_collectionWithInvalidLessonTime_throwsParseException() {
+        assertThrows(ParseException.class, ()
+                -> ParserUtil.parseLessonTimeSet(Arrays.asList(VALID_LESSON_TIME_1, INVALID_LESSON_TIME)));
+    }
+
+    @Test
+    public void parseLessonTimeSet_emptyCollection_returnsEmptySet() throws Exception {
+        assertTrue(ParserUtil.parseLessonTimeSet(Collections.emptyList()).isEmpty());
+    }
+
+    @Test
+    public void parseLessonTimeSet_collectionWithValidLessonTime_returnsLessonTimeSet() throws Exception {
+        Set<LessonTime> actualLessonTimeSet = ParserUtil.parseLessonTimeSet(
+                Arrays.asList(VALID_LESSON_TIME_1, VALID_LESSON_TIME_2));
+        Set<LessonTime> expectedLessonTimeSet = new HashSet<>(
+                Arrays.asList(new LessonTime(VALID_LESSON_TIME_1), new LessonTime(VALID_LESSON_TIME_2)));
+
+        assertEquals(expectedLessonTimeSet, actualLessonTimeSet);
     }
 }

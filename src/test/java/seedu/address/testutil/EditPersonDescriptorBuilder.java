@@ -1,5 +1,9 @@
 package seedu.address.testutil;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
 import seedu.address.model.person.LessonTime;
 import seedu.address.model.person.Name;
@@ -47,10 +51,12 @@ public class EditPersonDescriptorBuilder {
     }
 
     /**
-     * Sets the {@code LessonTime} of the {@code EditPersonDescriptor} that we are building.
+     * Parses the {@code lessonTime} into a {@code Set<LessonTime>} and set it to the {@code EditPersonDescriptor}
+     * that we are building.
      */
-    public EditPersonDescriptorBuilder withLessonTime(String lessonTime) {
-        descriptor.setLessonTime(new LessonTime(lessonTime));
+    public EditPersonDescriptorBuilder withLessonTime(String... lessonTime) {
+        Set<LessonTime> lessonTimeSet = Stream.of(lessonTime).map(LessonTime::new).collect(Collectors.toSet());
+        descriptor.setLessonTime(lessonTimeSet);
         return this;
     }
 

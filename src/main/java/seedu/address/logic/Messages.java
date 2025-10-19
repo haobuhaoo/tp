@@ -15,7 +15,6 @@ public class Messages {
     public static final String MESSAGE_INVALID_COMMAND_FORMAT = "Invalid command format! \n%1$s";
     public static final String MESSAGE_OUT_OF_BOUNDS_DELETE_INDEX = "Invalid student index: %d (valid range: 1 to %d)";
     public static final String MESSAGE_INVALID_STUDENT_DISPLAYED_INDEX = "The student index provided is invalid";
-    public static final String MESSAGE_PERSONS_LISTED_OVERVIEW = "%1$d persons listed!";
     public static final String MESSAGE_DUPLICATE_FIELDS =
             "Multiple values specified for the following single-valued field(s): ";
 
@@ -35,6 +34,11 @@ public class Messages {
      * Formats the {@code person} for display to the user.
      */
     public static String format(Person person) {
-        return person.getName() + "; Phone: " + person.getPhone() + "; Lesson Time: " + person.getLessonTime();
+        final StringBuilder builder = new StringBuilder()
+                .append(person.getName()).append("; Phone Number: ")
+                .append(person.getPhone()).append("; Lesson Time: ");
+        person.getLessonTime().forEach(lt -> builder.append(lt).append(", "));
+        builder.deleteCharAt(builder.length() - 1).setCharAt(builder.length() - 1, ';');
+        return builder.toString();
     }
 }

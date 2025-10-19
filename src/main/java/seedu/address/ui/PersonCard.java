@@ -1,10 +1,14 @@
 package seedu.address.ui;
 
+import java.util.Comparator;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import seedu.address.model.person.LessonTime;
 import seedu.address.model.person.Person;
 
 /**
@@ -32,10 +36,9 @@ public class PersonCard extends UiPart<Region> {
     @FXML
     private Label phone;
     @FXML
-    private Label lessonTime;
+    private FlowPane lessonTime;
     @FXML
     private CheckBox attendanceCheck;
-
 
     /**
      * Creates a {@code PersonCode} with the given {@code Person} and index to display.
@@ -46,7 +49,9 @@ public class PersonCard extends UiPart<Region> {
         id.setText(displayedIndex + ". ");
         name.setText(person.getName().fullName);
         phone.setText(person.getPhone().value);
-        lessonTime.setText(person.getLessonTime().toString());
+        person.getLessonTime().stream()
+                .sorted(Comparator.comparing(LessonTime::toString))
+                .forEach(lt -> lessonTime.getChildren().add(new Label(lt.toString())));
         Boolean status = UiAttendanceAccess.getStatus(person.getName().fullName);
         attendanceCheck.setSelected(Boolean.TRUE.equals(status));
     }

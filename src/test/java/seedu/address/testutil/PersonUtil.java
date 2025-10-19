@@ -4,8 +4,11 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_LESSON_TIME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 
+import java.util.Set;
+
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
+import seedu.address.model.person.LessonTime;
 import seedu.address.model.person.Person;
 
 /**
@@ -26,7 +29,8 @@ public class PersonUtil {
         StringBuilder sb = new StringBuilder();
         sb.append(PREFIX_NAME + person.getName().fullName + " ");
         sb.append(PREFIX_PHONE + person.getPhone().value + " ");
-        sb.append(PREFIX_LESSON_TIME + person.getLessonTime().toInputString() + " ");
+        person.getLessonTime().stream()
+                .forEach(lt -> sb.append(PREFIX_LESSON_TIME + lt.toInputString() + " "));
         return sb.toString();
     }
 
@@ -37,8 +41,12 @@ public class PersonUtil {
         StringBuilder sb = new StringBuilder();
         descriptor.getName().ifPresent(name -> sb.append(PREFIX_NAME).append(name.fullName).append(" "));
         descriptor.getPhone().ifPresent(phone -> sb.append(PREFIX_PHONE).append(phone.value).append(" "));
-        descriptor.getLessonTime().ifPresent(
-                lessonTime -> sb.append(PREFIX_LESSON_TIME).append(lessonTime.toInputString()).append(" "));
+        if (descriptor.getLessonTime().isPresent()) {
+            Set<LessonTime> lessonTime = descriptor.getLessonTime().get();
+            if (!lessonTime.isEmpty()) {
+                lessonTime.forEach(lt -> sb.append(PREFIX_LESSON_TIME).append(lt.toInputString()).append(" "));
+            }
+        }
         return sb.toString();
     }
 }

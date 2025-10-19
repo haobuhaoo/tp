@@ -4,6 +4,7 @@ import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_LESSON_TIME_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_NAME_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_PHONE_DESC;
+import static seedu.address.logic.commands.CommandTestUtil.LESSON_TIME_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.LESSON_TIME_DESC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_BOB;
@@ -11,7 +12,7 @@ import static seedu.address.logic.commands.CommandTestUtil.PHONE_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.PHONE_DESC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.PREAMBLE_NON_EMPTY;
 import static seedu.address.logic.commands.CommandTestUtil.PREAMBLE_WHITESPACE;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_LESSON_TIME_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_LESSON_TIME_2;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_LESSON_TIME;
@@ -19,6 +20,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
+import static seedu.address.testutil.TypicalPersons.AMY;
 import static seedu.address.testutil.TypicalPersons.BOB;
 
 import org.junit.jupiter.api.Test;
@@ -41,10 +43,15 @@ public class AddCommandParserTest {
         // whitespace only preamble
         assertParseSuccess(parser, PREAMBLE_WHITESPACE + NAME_DESC_BOB + PHONE_DESC_BOB
                 + LESSON_TIME_DESC_BOB, new AddCommand(expectedPerson));
+
+        // multiple lesson times - all accepted
+        expectedPerson = new PersonBuilder(AMY).build();
+        assertParseSuccess(parser, PREAMBLE_WHITESPACE + NAME_DESC_AMY + PHONE_DESC_AMY
+                + LESSON_TIME_DESC_AMY, new AddCommand(expectedPerson));
     }
 
     @Test
-    public void parse_repeatedNonTagValue_failure() {
+    public void parse_repeatedNonLessonTimeValue_failure() {
         String validExpectedPersonString = NAME_DESC_BOB + PHONE_DESC_BOB + LESSON_TIME_DESC_BOB;
 
         // multiple names
@@ -55,25 +62,17 @@ public class AddCommandParserTest {
         assertParseFailure(parser, PHONE_DESC_AMY + validExpectedPersonString,
                 Messages.getErrorMessageForDuplicatePrefixes(PREFIX_PHONE));
 
-        // multiple lesson times
-        assertParseFailure(parser, LESSON_TIME_DESC_BOB + validExpectedPersonString,
-                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_LESSON_TIME));
-
         // multiple fields repeated
         assertParseFailure(parser,
                 validExpectedPersonString + PHONE_DESC_AMY + NAME_DESC_AMY + LESSON_TIME_DESC_BOB
                         + validExpectedPersonString,
-                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_NAME, PREFIX_PHONE, PREFIX_LESSON_TIME));
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_NAME, PREFIX_PHONE));
 
         // invalid value followed by valid value
 
         // invalid name
         assertParseFailure(parser, INVALID_NAME_DESC + validExpectedPersonString,
                 Messages.getErrorMessageForDuplicatePrefixes(PREFIX_NAME));
-
-        // invalid lesson time
-        assertParseFailure(parser, INVALID_LESSON_TIME_DESC + validExpectedPersonString,
-                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_LESSON_TIME));
 
         // invalid phone
         assertParseFailure(parser, INVALID_PHONE_DESC + validExpectedPersonString,
@@ -84,10 +83,6 @@ public class AddCommandParserTest {
         // invalid name
         assertParseFailure(parser, validExpectedPersonString + INVALID_NAME_DESC,
                 Messages.getErrorMessageForDuplicatePrefixes(PREFIX_NAME));
-
-        // invalid lesson time
-        assertParseFailure(parser, validExpectedPersonString + INVALID_LESSON_TIME_DESC,
-                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_LESSON_TIME));
 
         // invalid phone
         assertParseFailure(parser, validExpectedPersonString + INVALID_PHONE_DESC,
@@ -107,11 +102,11 @@ public class AddCommandParserTest {
                 expectedMessage);
 
         // missing lesson time prefix
-        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + VALID_LESSON_TIME_BOB,
+        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + VALID_LESSON_TIME_2,
                 expectedMessage);
 
         // all prefixes missing
-        assertParseFailure(parser, VALID_NAME_BOB + VALID_PHONE_BOB + VALID_LESSON_TIME_BOB,
+        assertParseFailure(parser, VALID_NAME_BOB + VALID_PHONE_BOB + VALID_LESSON_TIME_2,
                 expectedMessage);
     }
 
@@ -132,6 +127,11 @@ public class AddCommandParserTest {
         // two invalid values, only first invalid value reported
         assertParseFailure(parser, INVALID_NAME_DESC + PHONE_DESC_BOB + INVALID_LESSON_TIME_DESC,
                 Name.MESSAGE_CONSTRAINTS);
+
+        // one of the lesson times is invalid
+        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + LESSON_TIME_DESC_BOB + " "
+                        + PREFIX_LESSON_TIME + INVALID_LESSON_TIME_DESC,
+                LessonTime.MESSAGE_CONSTRAINTS);
 
         // non-empty preamble
         assertParseFailure(parser, PREAMBLE_NON_EMPTY + NAME_DESC_BOB + PHONE_DESC_BOB + LESSON_TIME_DESC_BOB,

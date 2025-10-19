@@ -78,6 +78,7 @@ public class MainWindow extends UiPart<Stage> {
 
     /**
      * Sets the accelerator of a MenuItem.
+     *
      * @param keyCombination the KeyCombination value of the accelerator
      */
     private void setAccelerator(MenuItem menuItem, KeyCombination keyCombination) {
@@ -110,12 +111,10 @@ public class MainWindow extends UiPart<Stage> {
      * Fills up all the placeholders of this window.
      */
     void fillInnerParts() {
-
         seedu.address.ui.UiAttendanceAccess.install((name, date) ->
                 logic.peekModel().getAttendanceIndex().get(name, date).orElse(null), () ->
                 logic.peekModel().getAttendanceIndex().getCurrentUiDate());
 
-        System.out.println(logic.getFilteredPersonList());
         personListPanel = new PersonListPanel(logic.getFilteredPersonList());
         personListPanelPlaceholder.getChildren().add(personListPanel.getRoot());
 

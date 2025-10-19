@@ -9,12 +9,12 @@ import static seedu.address.logic.commands.CommandTestUtil.LESSON_TIME_DESC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.PHONE_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.PHONE_DESC_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_LESSON_TIME_AMY;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_LESSON_TIME_1;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_LESSON_TIME_2;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_INDEX;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_LESSON_TIME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
@@ -63,7 +63,7 @@ public class EditCommandParserTest {
         assertParseFailure(parser, " " + PREFIX_INDEX + "1 some random string", ParserUtil.MESSAGE_INVALID_INDEX);
 
         // invalid prefix being parsed as index
-        assertParseFailure(parser, "1 e/ string", MESSAGE_INVALID_FORMAT);
+        assertParseFailure(parser, " index/1", MESSAGE_INVALID_FORMAT);
     }
 
     @Test
@@ -90,11 +90,11 @@ public class EditCommandParserTest {
     @Test
     public void parse_allFieldsSpecified_success() {
         Index targetIndex = INDEX_SECOND_PERSON;
-        String userInput = " " + PREFIX_INDEX + targetIndex.getOneBased() + PHONE_DESC_BOB + LESSON_TIME_DESC_AMY
-                + NAME_DESC_AMY;
+        String userInput = " " + PREFIX_INDEX + targetIndex.getOneBased() + NAME_DESC_AMY + PHONE_DESC_BOB
+                + LESSON_TIME_DESC_AMY;
 
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder().withName(VALID_NAME_AMY)
-                .withPhone(VALID_PHONE_BOB).withLessonTime(VALID_LESSON_TIME_AMY).build();
+                .withPhone(VALID_PHONE_BOB).withLessonTime(VALID_LESSON_TIME_1, VALID_LESSON_TIME_2).build();
         EditCommand expectedCommand = new EditCommand(targetIndex, descriptor);
 
         assertParseSuccess(parser, userInput, expectedCommand);
@@ -106,7 +106,7 @@ public class EditCommandParserTest {
         String userInput = " " + PREFIX_INDEX + targetIndex.getOneBased() + PHONE_DESC_BOB + LESSON_TIME_DESC_AMY;
 
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder().withPhone(VALID_PHONE_BOB)
-                .withLessonTime(VALID_LESSON_TIME_AMY).build();
+                .withLessonTime(VALID_LESSON_TIME_1, VALID_LESSON_TIME_2).build();
         EditCommand expectedCommand = new EditCommand(targetIndex, descriptor);
 
         assertParseSuccess(parser, userInput, expectedCommand);
@@ -129,7 +129,7 @@ public class EditCommandParserTest {
 
         // lesson time
         userInput = " " + PREFIX_INDEX + targetIndex.getOneBased() + LESSON_TIME_DESC_AMY;
-        descriptor = new EditPersonDescriptorBuilder().withLessonTime(VALID_LESSON_TIME_AMY).build();
+        descriptor = new EditPersonDescriptorBuilder().withLessonTime(VALID_LESSON_TIME_1, VALID_LESSON_TIME_2).build();
         expectedCommand = new EditCommand(targetIndex, descriptor);
         assertParseSuccess(parser, userInput, expectedCommand);
     }
@@ -137,31 +137,31 @@ public class EditCommandParserTest {
     @Test
     public void parse_multipleRepeatedFields_failure() {
         // More extensive testing of duplicate parameter detections is done in
-        // AddCommandParserTest#parse_repeatedNonTagValue_failure()
+        // AddCommandParserTest#parse_repeatedNonLessonTimeValue_failure()
 
-        // valid followed by invalid
+        // invalid followed by valid
         Index targetIndex = INDEX_FIRST_PERSON;
         String userInput = " " + PREFIX_INDEX + targetIndex.getOneBased() + INVALID_PHONE_DESC + PHONE_DESC_BOB;
 
         assertParseFailure(parser, userInput, Messages.getErrorMessageForDuplicatePrefixes(PREFIX_PHONE));
 
-        // invalid followed by valid
+        // valid followed by invalid
         userInput = " " + PREFIX_INDEX + targetIndex.getOneBased() + PHONE_DESC_BOB + INVALID_PHONE_DESC;
 
         assertParseFailure(parser, userInput, Messages.getErrorMessageForDuplicatePrefixes(PREFIX_PHONE));
 
-        // mulltiple valid fields repeated
+        // multiple valid fields repeated
         userInput = " " + PREFIX_INDEX + targetIndex.getOneBased() + PHONE_DESC_AMY + LESSON_TIME_DESC_AMY
                 + PHONE_DESC_AMY + LESSON_TIME_DESC_BOB + PHONE_DESC_BOB + LESSON_TIME_DESC_BOB;
 
         assertParseFailure(parser, userInput,
-                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_PHONE, PREFIX_LESSON_TIME));
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_PHONE));
 
         // multiple invalid values
         userInput = " " + PREFIX_INDEX + targetIndex.getOneBased() + INVALID_PHONE_DESC + INVALID_LESSON_TIME_DESC
                 + INVALID_PHONE_DESC + INVALID_LESSON_TIME_DESC;
 
         assertParseFailure(parser, userInput,
-                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_PHONE, PREFIX_LESSON_TIME));
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_PHONE));
     }
 }
