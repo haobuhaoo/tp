@@ -120,6 +120,64 @@ public class DeleteCommandTest {
         assertEquals(expected, deleteCommand.toString());
     }
 
+    @Test
+    public void constructor_nullIndex_throwsNullPointerException() {
+        try {
+            new DeleteCommand((Index) null);
+        } catch (NullPointerException e) {
+            assertTrue(true);
+            return;
+        }
+        assertFalse(true, "Expected NullPointerException was not thrown.");
+    }
+
+    @Test
+    public void execute_deleteLastPerson_success() {
+        int lastIndex = model.getFilteredPersonList().size();
+        Index targetIndex = Index.fromOneBased(lastIndex);
+        Person personToDelete = model.getFilteredPersonList().get(lastIndex - 1);
+
+        DeleteCommand deleteCommand = new DeleteCommand(targetIndex);
+
+        String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS,
+                Messages.format(personToDelete));
+
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        expectedModel.deletePerson(personToDelete);
+
+        assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_deleteFromEmptyList_throwsCommandException() {
+        // Clear all persons
+        model.updateFilteredPersonList(p -> false);
+        assertTrue(model.getFilteredPersonList().isEmpty());
+
+        DeleteCommand deleteCommand = new DeleteCommand(Index.fromOneBased(1));
+
+        String expectedMessage = String.format(Messages.MESSAGE_INVALID_STUDENT_DISPLAYED_INDEX);
+        assertCommandFailure(deleteCommand, model, expectedMessage);
+    }
+
+    @Test
+    public void equals_differentObjectSameIndex_returnsFalse() {
+        DeleteCommand deleteFirstCommand = new DeleteCommand(INDEX_FIRST_PERSON);
+        Object dummy = new Object();
+        assertFalse(deleteFirstCommand.equals(dummy));
+    }
+
+    @Test
+    public void toStringMethod_differentIndex_returnsDifferentStrings() {
+        Index firstIndex = Index.fromOneBased(1);
+        Index secondIndex = Index.fromOneBased(2);
+
+        DeleteCommand firstCommand = new DeleteCommand(firstIndex);
+        DeleteCommand secondCommand = new DeleteCommand(secondIndex);
+
+        assertFalse(firstCommand.toString().equals(secondCommand.toString()));
+    }
+
     /**
      * Updates {@code model}'s filtered list to show no one.
      */
