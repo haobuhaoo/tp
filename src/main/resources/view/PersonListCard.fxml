@@ -37,11 +37,7 @@
         <VBox spacing = "4" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2">
             <padding><Insets left="15" right="15" bottom="10"/></padding>
             <Label text="Homework" styleClass="cell_small_label"></Label>
-            <ListView fx:id="homeworkListView" prefHeight="84" maxHeight="120">
-                <placeholder>
-                    <Label text="No homework yet"/>
-                </placeholder>
-            </ListView>
+            <AnchorPane fx:id="homeworkPlaceholder" prefHeight="90"/>
         </VBox>
 
         <CheckBox fx:id="attendanceCheck" disable="true"

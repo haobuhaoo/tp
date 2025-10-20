@@ -3,6 +3,7 @@ package seedu.address.ui;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import seedu.address.model.person.Person;
@@ -36,7 +37,7 @@ public class PersonCard extends UiPart<Region> {
     @FXML
     private CheckBox attendanceCheck;
     @FXML
-    private HomeworkListPanel homeworkListPanel;
+    private AnchorPane homeworkPlaceholder;
 
 
     /**
@@ -51,6 +52,7 @@ public class PersonCard extends UiPart<Region> {
         lessonTime.setText(person.getLessonTime().toString());
         Boolean status = UiAttendanceAccess.getStatus(person.getName().fullName);
         attendanceCheck.setSelected(Boolean.TRUE.equals(status));
-        homeworkListPanel = new HomeworkListPanel(person.getHomeworkList());
+        HomeworkListPanel panel = new HomeworkListPanel(person.getHomeworkList());
+        homeworkPlaceholder.getChildren().setAll(panel.getRoot());
     }
 }
