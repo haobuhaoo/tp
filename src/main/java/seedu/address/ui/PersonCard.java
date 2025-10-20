@@ -35,6 +35,8 @@ public class PersonCard extends UiPart<Region> {
     private Label lessonTime;
     @FXML
     private CheckBox attendanceCheck;
+    @FXML
+    private HomeworkListPanel homeworkListPanel;
 
 
     /**
@@ -49,5 +51,6 @@ public class PersonCard extends UiPart<Region> {
         lessonTime.setText(person.getLessonTime().toString());
         Boolean status = UiAttendanceAccess.getStatus(person.getName().fullName);
         attendanceCheck.setSelected(Boolean.TRUE.equals(status));
+        homeworkListPanel = new HomeworkListPanel(person.getHomeworkList());
     }
 }
