@@ -7,13 +7,13 @@ import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailur
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
+import java.util.Arrays;
+
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.model.person.StudentFieldsContainsKeywordsPredicate;
-
-import java.util.Arrays;
 
 /**
  * As we are only doing white-box testing, our test cases do not cover path variations
@@ -68,14 +68,14 @@ public class DeleteCommandParserTest {
     }
 
     @Test
-    public void parse_validKeyword_singleWord_returnsDeleteCommand() {
+    public void parse_validKeyWord_returnsDeleteCommand() {
         StudentFieldsContainsKeywordsPredicate predicate =
                 new StudentFieldsContainsKeywordsPredicate(Arrays.asList("Marcus"));
         assertParseSuccess(parser, " " + PREFIX_KEYWORD + "Marcus", new DeleteCommand(predicate));
     }
 
     @Test
-    public void parse_validKeyword_multipleWordsWithExtraSpaces_returnsDeleteCommand() {
+    public void parse_multipleWhiteSpace_returnsDeleteCommand() {
         StudentFieldsContainsKeywordsPredicate predicate =
                 new StudentFieldsContainsKeywordsPredicate(Arrays.asList("marcus", "ng"));
         assertParseSuccess(parser, "   " + PREFIX_KEYWORD + "   marcus   ng   ",
