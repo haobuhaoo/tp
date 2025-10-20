@@ -2,9 +2,13 @@ package seedu.address.model.person;
 
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
+import java.util.List;
 import java.util.Objects;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.homework.Homework;
 
 /**
  * Represents a Person in the address book.
@@ -17,6 +21,8 @@ public class Person {
 
     // Data fields
     private final LessonTime lessonTime;
+    private final ObservableList<Homework> homeworkList = FXCollections.observableArrayList();
+
 
     /**
      * Every field must be present and not null.
@@ -39,6 +45,20 @@ public class Person {
     public LessonTime getLessonTime() {
         return lessonTime;
     }
+
+    public ObservableList<Homework> getHomeworkList() {
+        return FXCollections.unmodifiableObservableList(homeworkList);
+    }
+
+    public void addHomework(Homework hw) {
+        homeworkList.add(hw);
+    }
+
+    public void removeHomework(int index) {
+        homeworkList.remove(index);
+    }
+
+
 
     /**
      * Returns true if both persons have the same name.
