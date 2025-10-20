@@ -8,6 +8,8 @@ import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.LessonTime;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
+import seedu.address.model.reminder.Description;
+import seedu.address.model.reminder.DueDate;
 
 /**
  * Contains utility methods used for parsing strings in the various *Parser classes.
@@ -72,5 +74,35 @@ public class ParserUtil {
             throw new ParseException(LessonTime.MESSAGE_CONSTRAINTS);
         }
         return new LessonTime(trimmedLessonTime);
+    }
+
+    /**
+     * Parses a {@code String dueDate} into an {@code DueDate}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code dueDate} is invalid.
+     */
+    public static DueDate parseDueDate(String dueDate) throws ParseException {
+        requireNonNull(dueDate);
+        String trimmedDueDate = dueDate.trim();
+        if (!DueDate.isValidDueDate(trimmedDueDate)) {
+            throw new ParseException(DueDate.MESSAGE_CONSTRAINTS);
+        }
+        return new DueDate(trimmedDueDate);
+    }
+
+    /**
+     * Parses a {@code String reminderDescription} into an {@code Description}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code reminderDescription} is invalid.
+     */
+    public static Description parseReminderDescription(String reminderDescription) throws ParseException {
+        requireNonNull(reminderDescription);
+        String trimmedReminderDescription = reminderDescription.trim();
+        if (!Description.isValidDescription(trimmedReminderDescription)) {
+            throw new ParseException(Description.MESSAGE_CONSTRAINTS);
+        }
+        return new Description(trimmedReminderDescription);
     }
 }

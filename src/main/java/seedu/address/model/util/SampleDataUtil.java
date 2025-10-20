@@ -6,6 +6,9 @@ import seedu.address.model.person.LessonTime;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.reminder.Description;
+import seedu.address.model.reminder.DueDate;
+import seedu.address.model.reminder.Reminder;
 
 /**
  * Contains utility methods for populating {@code AddressBook} with sample data.
@@ -22,10 +25,24 @@ public class SampleDataUtil {
         };
     }
 
+    public static Reminder[] getSampleReminders() {
+        return new Reminder[] {
+            new Reminder(new DueDate("2025-10-21 1530"), new Description("Alice: Submit homework for Math")),
+            new Reminder(new DueDate("2025-10-22 1000"), new Description("Benson: Prepare for English lesson")),
+            new Reminder(new DueDate("2025-10-25"), new Description("Carl: Assignment review")),
+            new Reminder(new DueDate("2025-11-01"), new Description("Alice: Feedback session")),
+            new Reminder(new DueDate("2025-11-03 1400"), new Description("Benson: Mock test practice")),
+            new Reminder(new DueDate("2025-11-05 1600"), new Description("Carl: Science project discussion"))
+        };
+    }
+
     public static ReadOnlyAddressBook getSampleAddressBook() {
         AddressBook sampleAb = new AddressBook();
         for (Person samplePerson : getSamplePersons()) {
             sampleAb.addPerson(samplePerson);
+        }
+        for (Reminder sampleReminder : getSampleReminders()) {
+            sampleAb.addReminder(sampleReminder);
         }
         return sampleAb;
     }

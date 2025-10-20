@@ -4,29 +4,31 @@ import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.Objects;
 
+import seedu.address.commons.util.ToStringBuilder;
+
 /**
  * Represents a Reminder in the reminder list.
  * Guarantees: details are present and not null, field values are validated, immutable.
  */
 public class Reminder {
     private final DueDate dueDate;
-    private final Detail message;
+    private final Description description;
 
     /**
      * Every field must be present and not null.
      */
-    public Reminder(DueDate dueDate, Detail message) {
-        requireAllNonNull(dueDate, message);
+    public Reminder(DueDate dueDate, Description description) {
+        requireAllNonNull(dueDate, description);
         this.dueDate = dueDate;
-        this.message = message;
+        this.description = description;
     }
 
     public DueDate getDuedate() {
         return dueDate;
     }
 
-    public Detail getDetail() {
-        return message;
+    public Description getDescription() {
+        return description;
     }
 
     /**
@@ -45,16 +47,19 @@ public class Reminder {
 
         Reminder otherReminder = (Reminder) other;
         return otherReminder.getDuedate().equals(getDuedate())
-                && otherReminder.getDetail().equals(getDetail());
+                && otherReminder.getDescription().equals(getDescription());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(dueDate, message);
+        return Objects.hash(dueDate, description);
     }
 
     @Override
     public String toString() {
-        return "[" + dueDate + "] " + message;
+        return new ToStringBuilder(this)
+                .add("dueDate", dueDate)
+                .add("description", description)
+                .toString();
     }
 }

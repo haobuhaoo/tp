@@ -45,6 +45,7 @@ public class DueDate {
     public DueDate(String dueDate) {
         requireNonNull(dueDate);
         checkArgument(isValidDueDate(dueDate), MESSAGE_CONSTRAINTS);
+
         if (dueDate.matches(VALIDATION_DATE_REGEX)) {
             this.date = LocalDate.parse(dueDate, VALID_INPUT_DATE_FORMAT);
             this.dateTime = null;
@@ -104,9 +105,9 @@ public class DueDate {
 
     @Override
     public String toString() {
-        return "Due: " + (isDateOnly
+        return isDateOnly
                 ? date.format(VALID_OUTPUT_DATE_FORMAT)
                 : dateTime.format(VALID_OUTPUT_DATETIME_FORMAT)
-                .replace("AM", "am").replace("PM", "pm"));
+                .replace("AM", "am").replace("PM", "pm");
     }
 }
