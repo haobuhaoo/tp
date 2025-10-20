@@ -58,6 +58,8 @@ public class Person {
         homeworkList.remove(index);
     }
 
+    public void setHomeworkList(List<Homework> list) { homeworkList.setAll(list); }
+
 
 
     /**
@@ -99,6 +101,7 @@ public class Person {
         // use this method for custom fields hashing instead of implementing your own
         return Objects.hash(name, phone, lessonTime);
     }
+
 
     @Override
     public String toString() {

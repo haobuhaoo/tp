@@ -4,10 +4,14 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import seedu.address.commons.exceptions.IllegalValueException;
+import seedu.address.model.homework.Homework;
 import seedu.address.model.person.LessonTime;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Jackson-friendly version of {@link Person}.
@@ -18,16 +22,21 @@ class JsonAdaptedPerson {
     private final String name;
     private final String phone;
     private final String lessonTime;
+    private final List<JsonAdaptedHomework> homework = new ArrayList<>();
 
     /**
      * Constructs a {@code JsonAdaptedPerson} with the given person details.
      */
     @JsonCreator
     public JsonAdaptedPerson(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
-                             @JsonProperty("lessonTime") String lessonTime) {
+                             @JsonProperty("lessonTime") String lessonTime,
+                             @JsonProperty("homeworks") List<JsonAdaptedHomework> homeworks) {
         this.name = name;
         this.phone = phone;
         this.lessonTime = lessonTime;
+        if (homeworks != null) {
+            this.homework.addAll(homeworks);
+        }
     }
 
     /**
@@ -37,6 +46,8 @@ class JsonAdaptedPerson {
         name = source.getName().fullName;
         phone = source.getPhone().value;
         lessonTime = source.getLessonTime().toInputString();
+        //copy the hw
+        source.getHomeworkList().forEach(hw -> homework.add(new JsonAdaptedHomework(hw)));
     }
 
     /**
@@ -70,7 +81,16 @@ class JsonAdaptedPerson {
         }
         final LessonTime modelLessonTime = new LessonTime(lessonTime);
 
-        return new Person(modelName, modelPhone, modelLessonTime);
+        final Person person = new Person(modelName, modelPhone, modelLessonTime);
+
+        List<Homework> hwList = new ArrayList<>();
+        for (JsonAdaptedHomework jhw : homework) {
+            hwList.add(jhw.toModelType());
+        }
+        person.setHomeworkList(hwList);
+
+        return person;
     }
+
 
 }
