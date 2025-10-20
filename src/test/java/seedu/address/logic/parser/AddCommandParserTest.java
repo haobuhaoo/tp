@@ -12,6 +12,7 @@ import static seedu.address.logic.commands.CommandTestUtil.PHONE_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.PHONE_DESC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.PREAMBLE_NON_EMPTY;
 import static seedu.address.logic.commands.CommandTestUtil.PREAMBLE_WHITESPACE;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_LESSON_TIME_1;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_LESSON_TIME_2;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
@@ -48,6 +49,11 @@ public class AddCommandParserTest {
         expectedPerson = new PersonBuilder(AMY).build();
         assertParseSuccess(parser, PREAMBLE_WHITESPACE + NAME_DESC_AMY + PHONE_DESC_AMY
                 + LESSON_TIME_DESC_AMY, new AddCommand(expectedPerson));
+
+        // duplicate lesson times merged into one
+        expectedPerson = new PersonBuilder(BOB).withLessonTime(VALID_LESSON_TIME_1, VALID_LESSON_TIME_2).build();
+        assertParseSuccess(parser, PREAMBLE_WHITESPACE + NAME_DESC_BOB + PHONE_DESC_BOB
+                + LESSON_TIME_DESC_BOB + LESSON_TIME_DESC_AMY, new AddCommand(expectedPerson));
     }
 
     @Test
