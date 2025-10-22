@@ -228,7 +228,7 @@ Action     | Format, Examples
 **Add**    | `add-student n/NAME p/PHONE_NUMBER t/LESSON_TIME` <br> e.g., `add-student n/James Ho p/98765432 t/1000`
 **Attendance**    | `attendance n/NAME d/DATE s/STATUS` <br> e.g., `attendance n/James Ho d/2025-09-19 s/1`
 **Clear**  | `clear`
-**Delete** | `delete-student i/INDEX`<br> e.g., `delete-student i/3`
+**Delete** | `delete-student i/INDEX` **or** `delete-student k/KEYWORD [MORE_KEYWORDS]`<br> e.g., `delete-student i/3` or `delete-student k/marcus lee`
 **Edit**   | `edit-student i/INDEX [n/NAME] [p/PHONE_NUMBER] [t/LESSON_TIME]`<br> e.g.,`edit-student i/2 n/James Lee t/1830`
 **Search**   | `search-student k/KEYWORD [MORE_KEYWORDS]` <br> e.g., `search-student k/marcus lee`
 **List**   | `list`
