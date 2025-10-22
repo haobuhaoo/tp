@@ -11,16 +11,20 @@ import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.Messages;
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.StudentFieldsContainsKeywordsPredicate;
+import seedu.address.testutil.PersonBuilder;
 
 /**
  * Contains integration tests (interaction with the Model) and unit tests for
@@ -177,6 +181,102 @@ public class DeleteCommandTest {
 
         assertFalse(firstCommand.toString().equals(secondCommand.toString()));
     }
+
+    @Test
+    public void execute_keywordMatchesName_deletesPerson() throws CommandException {
+        Model model = new ModelManager();
+        Person person = new PersonBuilder()
+                .withName("Marcus Ng")
+                .withPhone("91234567")
+                .withLessonTime("1200")
+                .build();
+        model.addPerson(person);
+
+        DeleteCommand command = new DeleteCommand(
+                new StudentFieldsContainsKeywordsPredicate(List.of("Marcus Ng")));
+        CommandResult result = command.execute(model);
+
+        assertEquals(String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(person)),
+                result.getFeedbackToUser());
+        assertFalse(model.getFilteredPersonList().contains(person));
+    }
+
+    @Test
+    public void execute_keywordMatchesPhone_deletesPerson() throws CommandException {
+        Model model = new ModelManager();
+        Person person = new PersonBuilder()
+                .withName("marcus")
+                .withPhone("99998888")
+                .withLessonTime("1400")
+                .build();
+        model.addPerson(person);
+
+        DeleteCommand command = new DeleteCommand(
+                new StudentFieldsContainsKeywordsPredicate(List.of("99998888")));
+        CommandResult result = command.execute(model);
+
+        assertEquals(String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(person)),
+                result.getFeedbackToUser());
+        assertFalse(model.getFilteredPersonList().contains(person));
+    }
+
+    @Test
+    public void execute_keywordMatchesLessonTime_deletesPerson() throws CommandException {
+        Model model = new ModelManager();
+        Person person = new PersonBuilder()
+                .withName("marcus")
+                .withPhone("99998888")
+                .withLessonTime("1400")
+                .build();
+        model.addPerson(person);
+
+        DeleteCommand command = new DeleteCommand(
+                new StudentFieldsContainsKeywordsPredicate(List.of("02:00 pm")));
+        CommandResult result = command.execute(model);
+
+        assertEquals(String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(person)),
+                result.getFeedbackToUser());
+        assertFalse(model.getFilteredPersonList().contains(person));
+    }
+
+    @Test
+    public void execute_keywordNoMatch_returnsNoMatchMessage() throws CommandException {
+        Model model = new ModelManager();
+        Person person = new PersonBuilder()
+                .withName("marcus")
+                .withPhone("99998888")
+                .withLessonTime("1400")
+                .build();
+        model.addPerson(person);
+
+        DeleteCommand command = new DeleteCommand(
+                new StudentFieldsContainsKeywordsPredicate(List.of("hello")));
+        CommandResult result = command.execute(model);
+
+        assertEquals(DeleteCommand.MESSAGE_NO_MATCH, result.getFeedbackToUser());
+        assertTrue(model.getAddressBook().getPersonList().contains(person));
+    }
+
+    @Test
+    public void execute_keywordMultipleMatches_returnsMultipleMatchesMessage() throws CommandException {
+        Model model = new ModelManager();
+        Person person1 = new PersonBuilder().withName("marcus ng").withPhone("99998888").withLessonTime("1400").build();
+        Person person2 = new PersonBuilder().withName("marcus tan").withPhone("88887777").withLessonTime("1500").build();
+        model.addPerson(person1);
+        model.addPerson(person2);
+
+        DeleteCommand command = new DeleteCommand(
+                new StudentFieldsContainsKeywordsPredicate(List.of("marcus")));
+        CommandResult result = command.execute(model);
+
+        String expectedMessageStart = DeleteCommand.MESSAGE_MULTIPLE_MATCHES;
+        assertTrue(result.getFeedbackToUser().startsWith(expectedMessageStart));
+        assertTrue(result.getFeedbackToUser().contains(Messages.format(person1)));
+        assertTrue(result.getFeedbackToUser().contains(Messages.format(person2)));
+        assertTrue(model.getFilteredPersonList().contains(person1));
+        assertTrue(model.getFilteredPersonList().contains(person2));
+    }
+
 
     /**
      * Updates {@code model}'s filtered list to show no one.
