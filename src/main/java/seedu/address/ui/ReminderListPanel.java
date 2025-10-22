@@ -3,7 +3,6 @@ package seedu.address.ui;
 import java.util.logging.Logger;
 
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -26,15 +25,12 @@ public class ReminderListPanel extends UiPart<Region> {
      */
     public ReminderListPanel(ObservableList<Reminder> reminderList) {
         super(FXML);
-        SortedList<Reminder> sortedReminders = new SortedList<>(reminderList);
-        sortedReminders.setComparator(Reminder::compareTo);
-        reminderListView.setItems(sortedReminders);
+        reminderListView.setItems(reminderList);
         reminderListView.setCellFactory(listView -> new ReminderListPanel.ReminderListViewCell());
     }
 
     /**
      * Forces the list view to refresh its visible cells.
-     * This ensures attendance checkboxes update immediately after any attendance command.
      */
     public void refresh() {
         reminderListView.refresh();

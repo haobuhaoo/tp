@@ -119,6 +119,13 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
+     * Sorts the reminder list based on upcoming due date.
+     */
+    public void sortReminder() {
+        reminders.sort();
+    }
+
+    /**
      * Adds a reminder to the address book.
      * The reminder must not already exist in the address book.
      */
@@ -163,22 +170,6 @@ public class AddressBook implements ReadOnlyAddressBook {
     @Override
     public ObservableList<Reminder> getReminderList() {
         return reminders.asUnmodifiableObservableList();
-    }
-
-    /**
-     * Merges both persons and reminders list into a this {@code AddressBook}
-     * @param addressBook AddressBook to be copied over
-     */
-    public void mergeAddressBook(ReadOnlyAddressBook addressBook) {
-        AddressBook ab = new AddressBook(this);
-        for (Person person : addressBook.getPersonList()) {
-            ab.addPerson(person);
-        }
-        this.setPersons(ab.getPersonList());
-        for (Reminder reminder : addressBook.getReminderList()) {
-            ab.addReminder(reminder);
-        }
-        this.setReminders(ab.getReminderList());
     }
 
     @Override

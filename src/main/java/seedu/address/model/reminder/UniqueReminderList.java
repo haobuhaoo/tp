@@ -3,11 +3,13 @@ package seedu.address.model.reminder;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import seedu.address.model.reminder.exceptions.DuplicateReminderException;
 import seedu.address.model.reminder.exceptions.ReminderNotFoundException;
 
@@ -25,8 +27,9 @@ import seedu.address.model.reminder.exceptions.ReminderNotFoundException;
  */
 public class UniqueReminderList implements Iterable<Reminder> {
     private final ObservableList<Reminder> internalList = FXCollections.observableArrayList();
+    private final SortedList<Reminder> sortedList = new SortedList<>(internalList, Comparator.naturalOrder());
     private final ObservableList<Reminder> internalUnmodifiableList =
-            FXCollections.unmodifiableObservableList(internalList);
+            FXCollections.unmodifiableObservableList(sortedList);
 
     /**
      * Returns true if the list contains an equivalent reminder as the given argument.
@@ -34,6 +37,13 @@ public class UniqueReminderList implements Iterable<Reminder> {
     public boolean contains(Reminder toCheck) {
         requireNonNull(toCheck);
         return internalList.stream().anyMatch(toCheck::equals);
+    }
+
+    /**
+     * Sorts the reminder list based on upcoming due date
+     */
+    public void sort() {
+        internalList.sort(Reminder::compareTo);
     }
 
     /**

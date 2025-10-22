@@ -27,7 +27,7 @@ public class AddReminderCommand extends Command {
             + PREFIX_REMINDER_DESCRIPTION + "Tuition later at 3pm";
 
     public static final String MESSAGE_SUCCESS = "Reminder added. %1$s";
-    public static final String MESSAGE_DUPLICATE_REMINDER = "This reminder already exists in the address book";
+    public static final String MESSAGE_DUPLICATE_REMINDER = "This reminder already exists in the reminder list";
 
     private final Reminder toAdd;
 

@@ -66,6 +66,7 @@ class JsonSerializableAddressBook {
             }
             addressBook.addReminder(reminder);
         }
+        addressBook.sortReminder();
 
         return addressBook;
     }

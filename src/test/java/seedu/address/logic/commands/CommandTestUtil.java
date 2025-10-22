@@ -20,7 +20,9 @@ import seedu.address.model.Model;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentFieldsContainsKeywordsPredicate;
 import seedu.address.model.reminder.Reminder;
+import seedu.address.model.reminder.ReminderFieldsContainsKeywordsPredicate;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
+import seedu.address.testutil.EditReminderDescriptorBuilder;
 
 /**
  * Contains helper methods for testing commands.
@@ -62,12 +64,18 @@ public class CommandTestUtil {
 
     public static final EditCommand.EditPersonDescriptor DESC_AMY;
     public static final EditCommand.EditPersonDescriptor DESC_BOB;
+    public static final EditReminderCommand.EditReminderDescriptor DESC_REMINDER_1;
+    public static final EditReminderCommand.EditReminderDescriptor DESC_REMINDER_2;
 
     static {
         DESC_AMY = new EditPersonDescriptorBuilder().withName(VALID_NAME_AMY)
                 .withPhone(VALID_PHONE_AMY).withLessonTime(VALID_LESSON_TIME_AMY).build();
         DESC_BOB = new EditPersonDescriptorBuilder().withName(VALID_NAME_BOB)
                 .withPhone(VALID_PHONE_BOB).withLessonTime(VALID_LESSON_TIME_BOB).build();
+        DESC_REMINDER_1 = new EditReminderDescriptorBuilder().withDueDate(VALID_DUEDATE_1)
+                .withDescription(VALID_DESCRIPTION_1).build();
+        DESC_REMINDER_2 = new EditReminderDescriptorBuilder().withDueDate(VALID_DUEDATE_2)
+                .withDescription(VALID_DESCRIPTION_2).build();
     }
 
     /**
@@ -128,5 +136,19 @@ public class CommandTestUtil {
         model.updateFilteredPersonList(new StudentFieldsContainsKeywordsPredicate(Arrays.asList(splitName[0])));
 
         assertEquals(1, model.getFilteredPersonList().size());
+    }
+
+    /**
+     * Updates {@code model}'s filtered list to show only the reminder at the given {@code targetIndex} in the
+     * {@code model}'s reminder list.
+     */
+    public static void showReminderAtIndex(Model model, Index targetIndex) {
+        assertTrue(targetIndex.getZeroBased() < model.getFilteredReminderList().size());
+
+        Reminder reminder = model.getFilteredReminderList().get(targetIndex.getZeroBased());
+        final String[] splitName = reminder.getDescription().toString().split("\\s+");
+        model.updateFilteredReminderList(new ReminderFieldsContainsKeywordsPredicate(Arrays.asList(splitName[0])));
+
+        assertEquals(1, model.getFilteredReminderList().size());
     }
 }

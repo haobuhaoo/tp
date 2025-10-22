@@ -8,11 +8,7 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_LESSON_TIME_AMY
 import static seedu.address.logic.commands.CommandTestUtil.VALID_LESSON_TIME_BOB;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
-import static seedu.address.testutil.TypicalPersons.CARL;
-import static seedu.address.testutil.TypicalPersons.DANIEL;
 import static seedu.address.testutil.TypicalReminders.REMINDER_1;
-import static seedu.address.testutil.TypicalReminders.REMINDER_3;
-import static seedu.address.testutil.TypicalReminders.REMINDER_4;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -29,6 +25,7 @@ import seedu.address.model.reminder.Reminder;
 import seedu.address.model.reminder.exceptions.DuplicateReminderException;
 import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.ReminderBuilder;
+import seedu.address.testutil.TypicalAddressBook;
 import seedu.address.testutil.TypicalPersons;
 import seedu.address.testutil.TypicalReminders;
 
@@ -48,11 +45,7 @@ public class AddressBookTest {
 
     @Test
     public void resetData_withValidReadOnlyAddressBook_replacesData() {
-        List<Person> newPersonData = TypicalPersons.getTypicalPersons();
-        List<Reminder> newReminderData = TypicalReminders.getTypicalReminders();
-        AddressBook newData = new AddressBook();
-        newData.setPersons(newPersonData);
-        newData.setReminders(newReminderData);
+        AddressBook newData = TypicalAddressBook.getTypicalAddressBook();
         addressBook.resetData(newData);
         assertEquals(newData, addressBook);
     }
@@ -129,26 +122,6 @@ public class AddressBookTest {
     @Test
     public void getReminderList_modifyList_throwsUnsupportedOperationException() {
         assertThrows(UnsupportedOperationException.class, () -> addressBook.getReminderList().remove(0));
-    }
-
-    @Test
-    public void mergeAddressBook_success() {
-        addressBook.addPerson(ALICE);
-        addressBook.addReminder(REMINDER_1);
-
-        List<Person> persons = Arrays.asList(CARL, DANIEL);
-        List<Reminder> reminders = Arrays.asList(REMINDER_3, REMINDER_4);
-        AddressBookStub otherAddressBook = new AddressBookStub(persons, reminders);
-
-        addressBook.mergeAddressBook(otherAddressBook);
-
-        List<Person> newPerson = Arrays.asList(ALICE, CARL, DANIEL);
-        List<Reminder> newReminder = Arrays.asList(REMINDER_1, REMINDER_3, REMINDER_4);
-        AddressBook newData = new AddressBook();
-        newData.setPersons(newPerson);
-        newData.setReminders(newReminder);
-
-        assertEquals(newData, addressBook);
     }
 
     @Test

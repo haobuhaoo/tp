@@ -30,7 +30,7 @@ public class SampleDataUtil {
             new Reminder(new DueDate("2025-10-21 1530"), new Description("Alice: Submit homework for Math")),
             new Reminder(new DueDate("2025-10-22 1000"), new Description("Benson: Prepare for English lesson")),
             new Reminder(new DueDate("2025-10-25"), new Description("Carl: Assignment review")),
-            new Reminder(new DueDate("2025-11-01"), new Description("Alice: Feedback session")),
+            new Reminder(new DueDate("2025-11-01"), new Description("Daniel: Feedback session")),
             new Reminder(new DueDate("2025-11-03 1400"), new Description("Benson: Mock test practice")),
             new Reminder(new DueDate("2025-11-05 1600"), new Description("Carl: Science project discussion"))
         };
