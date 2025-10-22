@@ -19,6 +19,7 @@ import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.attendance.AttendanceIndex;
 import seedu.address.model.person.Person;
+import seedu.address.model.reminder.Reminder;
 
 /**
  * Tests for {@link AttendanceCommand}.
@@ -112,6 +113,11 @@ public class AttendanceCommandTest {
             // no-op
         }
 
+        @Override
+        public void updateFilteredReminderList(Predicate<Reminder> predicate) {
+            // no-op
+        }
+
         // --- Unused methods (throw AssertionError if called) ---
 
         @Override
@@ -175,7 +181,32 @@ public class AttendanceCommandTest {
         }
 
         @Override
+        public boolean hasReminder(Reminder reminder) {
+            throw new AssertionError();
+        }
+
+        @Override
+        public void deleteReminder(Reminder target) {
+            throw new AssertionError();
+        }
+
+        @Override
+        public void addReminder(Reminder reminder) {
+            throw new AssertionError();
+        }
+
+        @Override
+        public void setReminder(Reminder target, Reminder editedReminder) {
+            throw new AssertionError();
+        }
+
+        @Override
         public ObservableList<Person> getFilteredPersonList() {
+            return FXCollections.observableArrayList();
+        }
+
+        @Override
+        public ObservableList<Reminder> getFilteredReminderList() {
             return FXCollections.observableArrayList();
         }
     }

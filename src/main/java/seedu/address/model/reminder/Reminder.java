@@ -2,6 +2,7 @@ package seedu.address.model.reminder;
 
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import seedu.address.commons.util.ToStringBuilder;
@@ -10,7 +11,7 @@ import seedu.address.commons.util.ToStringBuilder;
  * Represents a Reminder in the reminder list.
  * Guarantees: details are present and not null, field values are validated, immutable.
  */
-public class Reminder {
+public class Reminder implements Comparable<Reminder> {
     private final DueDate dueDate;
     private final Description description;
 
@@ -23,12 +24,32 @@ public class Reminder {
         this.description = description;
     }
 
-    public DueDate getDuedate() {
+    public DueDate getDueDate() {
         return dueDate;
     }
 
     public Description getDescription() {
         return description;
+    }
+
+    /**
+     * Returns 1 if this reminder is past but other is upcoming; Returns -1 if this reminder is
+     * upcoming and other is past; If both reminders are in the same category (both past or both
+     * upcoming), sort by due date ascending.
+     */
+    @Override
+    public int compareTo(Reminder other) {
+        LocalDateTime now = LocalDateTime.now();
+        boolean r1Past = dueDate.isBeforeDate(now);
+        boolean r2Past = other.dueDate.isBeforeDate(now);
+
+        if (r1Past && !r2Past) {
+            return 1;
+        } else if (!r1Past && r2Past) {
+            return -1;
+        } else {
+            return this.dueDate.compareTo(other.dueDate);
+        }
     }
 
     /**
@@ -46,7 +67,7 @@ public class Reminder {
         }
 
         Reminder otherReminder = (Reminder) other;
-        return otherReminder.getDuedate().equals(getDuedate())
+        return otherReminder.getDueDate().equals(getDueDate())
                 && otherReminder.getDescription().equals(getDescription());
     }
 

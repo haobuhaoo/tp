@@ -28,7 +28,7 @@ class JsonAdaptedReminder {
      * Converts a given {@code Reminder} into this class for Jackson use.
      */
     public JsonAdaptedReminder(Reminder source) {
-        dueDate = source.getDuedate().toString();
+        dueDate = source.getDueDate().toInputString();
         description = source.getDescription().toString();
     }
 
@@ -39,7 +39,8 @@ class JsonAdaptedReminder {
      */
     public Reminder toModelType() throws IllegalValueException {
         if (dueDate == null) {
-            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, "Due Date"));
+            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
+                    DueDate.class.getSimpleName()));
         }
         if (!DueDate.isValidDueDate(dueDate)) {
             throw new IllegalValueException(DueDate.MESSAGE_CONSTRAINTS);
@@ -47,7 +48,8 @@ class JsonAdaptedReminder {
         final DueDate modelDueDate = new DueDate(dueDate);
 
         if (description == null) {
-            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, "Description"));
+            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
+                    Description.class.getSimpleName()));
         }
         if (!Description.isValidDescription(description)) {
             throw new IllegalValueException(Description.MESSAGE_CONSTRAINTS);

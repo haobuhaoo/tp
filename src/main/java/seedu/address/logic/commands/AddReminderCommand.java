@@ -13,14 +13,15 @@ import seedu.address.model.reminder.Reminder;
 /**
  * Adds a reminder to the reminder list.
  */
-public class ReminderCommand extends Command {
+public class AddReminderCommand extends Command {
     public static final String COMMAND_WORD = "add-reminder";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a reminder to the address book. "
             + "Parameters: "
             + PREFIX_DATE + "DATETIME "
-            + PREFIX_REMINDER_DESCRIPTION + "DESCRIPTION "
-            + "(note: DATETIME can be in YYYY-MM-DD or YYYY-MM-DD HHMM format) \n"
+            + PREFIX_REMINDER_DESCRIPTION + "DESCRIPTION\n"
+            + "(note: DATETIME can be in YYYY-MM-DD or YYYY-MM-DD HHMM format."
+            + "eg. 2025-10-10 or 2025-10-10 1010)\n"
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_DATE + "2025-10-12 1500 "
             + PREFIX_REMINDER_DESCRIPTION + "Tuition later at 3pm";
@@ -33,7 +34,7 @@ public class ReminderCommand extends Command {
     /**
      * Creates an ReminderCommand to add the specified {@code Reminder}
      */
-    public ReminderCommand(Reminder reminder) {
+    public AddReminderCommand(Reminder reminder) {
         requireNonNull(reminder);
         toAdd = reminder;
     }
@@ -57,12 +58,12 @@ public class ReminderCommand extends Command {
         }
 
         // instanceof handles nulls
-        if (!(other instanceof ReminderCommand)) {
+        if (!(other instanceof AddReminderCommand)) {
             return false;
         }
 
-        ReminderCommand otherReminderCommand = (ReminderCommand) other;
-        return toAdd.equals(otherReminderCommand.toAdd);
+        AddReminderCommand otherAddReminderCommand = (AddReminderCommand) other;
+        return toAdd.equals(otherAddReminderCommand.toAdd);
     }
 
     @Override

@@ -6,7 +6,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_REMINDER_DESCRIPTION;
 
 import java.util.stream.Stream;
 
-import seedu.address.logic.commands.ReminderCommand;
+import seedu.address.logic.commands.AddReminderCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.reminder.Description;
 import seedu.address.model.reminder.DueDate;
@@ -19,20 +19,20 @@ import seedu.address.model.reminder.Reminder;
  * {@code add-reminder d/DATETIME r/DESCRIPTION}, where {@code DATETIME} refers to the date and time, and
  * {@code DESCRIPTION} refers to the description of the reminder to be added to the list.
  */
-public class ReminderCommandParser implements Parser<ReminderCommand> {
+public class AddReminderCommandParser implements Parser<AddReminderCommand> {
     /**
      * Parses the given {@code String} of arguments in the context of the ReminderCommand
      * and returns an ReminderCommand object for execution.
      *
      * @throws ParseException if the user input does not conform the expected format
      */
-    public ReminderCommand parse(String args) throws ParseException {
+    public AddReminderCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap =
                 ArgumentTokenizer.tokenize(args, PREFIX_DATE, PREFIX_REMINDER_DESCRIPTION);
 
         if (!arePrefixesPresent(argMultimap, PREFIX_DATE, PREFIX_REMINDER_DESCRIPTION)
                 || !argMultimap.getPreamble().isEmpty()) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ReminderCommand.MESSAGE_USAGE));
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddReminderCommand.MESSAGE_USAGE));
         }
 
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_DATE, PREFIX_REMINDER_DESCRIPTION);
@@ -42,7 +42,7 @@ public class ReminderCommandParser implements Parser<ReminderCommand> {
 
         Reminder reminder = new Reminder(dueDate, description);
 
-        return new ReminderCommand(reminder);
+        return new AddReminderCommand(reminder);
     }
 
     /**

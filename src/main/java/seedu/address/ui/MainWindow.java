@@ -22,7 +22,6 @@ import seedu.address.logic.parser.exceptions.ParseException;
  * a menu bar and space where other JavaFX elements can be placed.
  */
 public class MainWindow extends UiPart<Stage> {
-
     private static final String FXML = "MainWindow.fxml";
 
     private final Logger logger = LogsCenter.getLogger(getClass());
@@ -32,6 +31,7 @@ public class MainWindow extends UiPart<Stage> {
 
     // Independent Ui parts residing in this Ui container
     private PersonListPanel personListPanel;
+    private ReminderListPanel reminderListPanel;
     private ResultDisplay resultDisplay;
     private HelpWindow helpWindow;
 
@@ -43,6 +43,9 @@ public class MainWindow extends UiPart<Stage> {
 
     @FXML
     private StackPane personListPanelPlaceholder;
+
+    @FXML
+    private StackPane reminderListPanelPlaceholder;
 
     @FXML
     private StackPane resultDisplayPlaceholder;
@@ -78,6 +81,7 @@ public class MainWindow extends UiPart<Stage> {
 
     /**
      * Sets the accelerator of a MenuItem.
+     *
      * @param keyCombination the KeyCombination value of the accelerator
      */
     private void setAccelerator(MenuItem menuItem, KeyCombination keyCombination) {
@@ -118,6 +122,9 @@ public class MainWindow extends UiPart<Stage> {
         System.out.println(logic.getFilteredPersonList());
         personListPanel = new PersonListPanel(logic.getFilteredPersonList());
         personListPanelPlaceholder.getChildren().add(personListPanel.getRoot());
+
+        reminderListPanel = new ReminderListPanel(logic.getFilteredReminderList());
+        reminderListPanelPlaceholder.getChildren().add(reminderListPanel.getRoot());
 
         resultDisplay = new ResultDisplay();
         resultDisplayPlaceholder.getChildren().add(resultDisplay.getRoot());
@@ -174,15 +181,19 @@ public class MainWindow extends UiPart<Stage> {
     }
 
     /**
-     * Forces the {@code PersonListPanel} to refresh its visible cells.
+     * Forces the {@code PersonListPanel} and {@code ReminderListPanel} to refresh its visible cells.
      * <p>
      * This ensures UI elements such as attendance checkboxes update immediately
      * after commands like {@code attendance} are executed.
      * </p>
      */
-    public void refreshPersonListPanel() {
+    public void refreshPanel() {
         if (personListPanel != null) {
             personListPanel.refresh();
+        }
+
+        if (reminderListPanel != null) {
+            reminderListPanel.refresh();
         }
     }
 
@@ -196,7 +207,7 @@ public class MainWindow extends UiPart<Stage> {
             CommandResult commandResult = logic.execute(commandText);
             logger.info("Result: " + commandResult.getFeedbackToUser());
             resultDisplay.setFeedbackToUser(commandResult.getFeedbackToUser());
-            refreshPersonListPanel();
+            refreshPanel();
 
             if (commandResult.isShowHelp()) {
                 handleHelp();

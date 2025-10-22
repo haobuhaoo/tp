@@ -165,6 +165,22 @@ public class AddressBook implements ReadOnlyAddressBook {
         return reminders.asUnmodifiableObservableList();
     }
 
+    /**
+     * Merges both persons and reminders list into a this {@code AddressBook}
+     * @param addressBook AddressBook to be copied over
+     */
+    public void mergeAddressBook(ReadOnlyAddressBook addressBook) {
+        AddressBook ab = new AddressBook(this);
+        for (Person person : addressBook.getPersonList()) {
+            ab.addPerson(person);
+        }
+        this.setPersons(ab.getPersonList());
+        for (Reminder reminder : addressBook.getReminderList()) {
+            ab.addReminder(reminder);
+        }
+        this.setReminders(ab.getReminderList());
+    }
+
     @Override
     public boolean equals(Object other) {
         if (other == this) {

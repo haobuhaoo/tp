@@ -2,9 +2,11 @@ package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_LESSON_TIME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_REMINDER_DESCRIPTION;
 import static seedu.address.testutil.Assert.assertThrows;
 
 import java.util.ArrayList;
@@ -17,8 +19,8 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentFieldsContainsKeywordsPredicate;
+import seedu.address.model.reminder.Reminder;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
-
 
 /**
  * Contains helper methods for testing commands.
@@ -41,6 +43,19 @@ public class CommandTestUtil {
     public static final String INVALID_NAME_DESC = " " + PREFIX_NAME + "James&"; // '&' not allowed in names
     public static final String INVALID_PHONE_DESC = " " + PREFIX_PHONE + "911a"; // 'a' not allowed in phones
     public static final String INVALID_LESSON_TIME_DESC = " " + PREFIX_LESSON_TIME + "02:00am"; // not in 24-hour format
+
+    public static final String VALID_DUEDATE_1 = "2025-11-03 1400";
+    public static final String VALID_DUEDATE_2 = "2025-11-05";
+    public static final String VALID_DESCRIPTION_1 = "Benson: Mock test practice";
+    public static final String VALID_DESCRIPTION_2 = "Payment overdue";
+
+    public static final String DUEDATE_DESC_1 = " " + PREFIX_DATE + VALID_DUEDATE_1;
+    public static final String DUEDATE_DESC_2 = " " + PREFIX_DATE + VALID_DUEDATE_2;
+    public static final String DESCRIPTION_DESC_1 = " " + PREFIX_REMINDER_DESCRIPTION + VALID_DESCRIPTION_1;
+    public static final String DESCRIPTION_DESC_2 = " " + PREFIX_REMINDER_DESCRIPTION + VALID_DESCRIPTION_2;
+
+    public static final String INVALID_DUEDATE_DESC = " " + PREFIX_DATE + "20 Nov 25 10:10 am"; // incorrect format
+    public static final String INVALID_DESCRIPTION_DESC = " " + PREFIX_REMINDER_DESCRIPTION; // empty description
 
     public static final String PREAMBLE_WHITESPACE = "\t  \r  \n";
     public static final String PREAMBLE_NON_EMPTY = "NonEmptyPreamble";
@@ -85,17 +100,20 @@ public class CommandTestUtil {
      * Executes the given {@code command}, confirms that <br>
      * - a {@code CommandException} is thrown <br>
      * - the CommandException message matches {@code expectedMessage} <br>
-     * - the address book, filtered person list and selected person in {@code actualModel} remain unchanged
+     * - the address book, filtered person and reminder list and selected person or reminder
+     * in {@code actualModel} remain unchanged
      */
     public static void assertCommandFailure(Command command, Model actualModel, String expectedMessage) {
         // we are unable to defensively copy the model for comparison later, so we can
         // only do so by copying its components.
         AddressBook expectedAddressBook = new AddressBook(actualModel.getAddressBook());
-        List<Person> expectedFilteredList = new ArrayList<>(actualModel.getFilteredPersonList());
+        List<Person> expectedPersonFilteredList = new ArrayList<>(actualModel.getFilteredPersonList());
+        List<Reminder> expectedReminderFilteredList = new ArrayList<>(actualModel.getFilteredReminderList());
 
         assertThrows(CommandException.class, expectedMessage, () -> command.execute(actualModel));
         assertEquals(expectedAddressBook, actualModel.getAddressBook());
-        assertEquals(expectedFilteredList, actualModel.getFilteredPersonList());
+        assertEquals(expectedPersonFilteredList, actualModel.getFilteredPersonList());
+        assertEquals(expectedReminderFilteredList, actualModel.getFilteredReminderList());
     }
 
     /**

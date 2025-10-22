@@ -13,7 +13,7 @@ import java.util.Locale;
  * Represents a Reminder's due date in the reminder list.
  * Guarantees: immutable; is valid as declared in {@link #isValidDueDate(String)}
  */
-public class DueDate {
+public class DueDate implements Comparable<DueDate> {
     public static final String MESSAGE_CONSTRAINTS = """
             Due date should be in either these formats:
             1. YYYY-MM-DD (for date only)
@@ -81,6 +81,36 @@ public class DueDate {
      */
     public LocalDateTime toDateTime() {
         return isDateOnly ? date.atStartOfDay() : dateTime;
+    }
+
+    /**
+     * Converts dueDate into the Input string format for storing in JSON.
+     */
+    public String toInputString() {
+        return isDateOnly
+                ? date.format(VALID_INPUT_DATE_FORMAT)
+                : dateTime.format(VALID_INPUT_DATETIME_FORMAT);
+    }
+
+    /**
+     * Returns true if the date time is before {@code now}.
+     */
+    public boolean isBeforeDate(LocalDateTime now) {
+        return toDateTime().isBefore(now);
+    }
+
+    /**
+     * @return -1 if this is earlier than other; 1 if this is later than other; 0 if both are equal.
+     */
+    @Override
+    public int compareTo(DueDate other) {
+        if (this.toDateTime().isBefore(other.toDateTime())) {
+            return -1;
+        } else if (this.toDateTime().isAfter(other.toDateTime())) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
     @Override

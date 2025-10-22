@@ -43,6 +43,6 @@ public class Messages {
      * Formats the {@code reminder} for display to the user.
      */
     public static String format(Reminder reminder) {
-        return "Due: " + reminder.getDuedate() + "; Description: " + reminder.getDescription() + ";";
+        return "Due: " + reminder.getDueDate() + "; Description: " + reminder.getDescription() + ";";
     }
 }
