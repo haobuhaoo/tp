@@ -260,8 +260,16 @@ public class DeleteCommandTest {
     @Test
     public void execute_keywordMultipleMatches_returnsMultipleMatchesMessage() throws CommandException {
         Model model = new ModelManager();
-        Person person1 = new PersonBuilder().withName("marcus ng").withPhone("99998888").withLessonTime("1400").build();
-        Person person2 = new PersonBuilder().withName("marcus tan").withPhone("88887777").withLessonTime("1500").build();
+        Person person1 = new PersonBuilder()
+                .withName("marcus ng")
+                .withPhone("99998888")
+                .withLessonTime("1400")
+                .build();
+        Person person2 = new PersonBuilder()
+                .withName("marcus tan")
+                .withPhone("88887777")
+                .withLessonTime("1500")
+                .build();
         model.addPerson(person1);
         model.addPerson(person2);
 
