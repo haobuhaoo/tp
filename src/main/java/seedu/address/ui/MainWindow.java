@@ -124,6 +124,7 @@ public class MainWindow extends UiPart<Stage> {
                 logic.peekModel().getAttendanceIndex().getCurrentUiDate());
 
         System.out.println(logic.getFilteredPersonList());
+        seedu.address.ui.UiGroupAccess.install(logic::getGroupsOf);
         personListPanel = new PersonListPanel(logic.getFilteredPersonList());
         personListPanelPlaceholder.getChildren().add(personListPanel.getRoot());
 

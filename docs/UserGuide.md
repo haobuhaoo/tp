@@ -173,6 +173,83 @@ Note:
 * Attendance is tracked in-memory alongside the address book.
 * Using clear resets the address book and clears all attendance records
 
+### Creating a group : `group-create`
+
+Creates a new group.
+
+Format: `group-create g/GROUP`
+* Creates a group with the specified `GROUP` name.
+* Group names are case-insensitive, trimmed, and must follow:
+- 1–30 characters
+- Letters, digits, spaces, and the symbols - or / only
+- Multiple spaces are collapsed
+* Fails if a group with the same name already exists.
+
+Examples:
+* `group-create g/Group A` creates a group called "Group A"
+
+Notes:
+
+* Do not include any other prefixes besides g/ in this command.
+* Duplicate g/ prefixes are not allowed.
+
+### Adding students to a group : `group-add`
+
+Adds one or more students to a group using their displayed indices.
+
+Format: `group-add g/GROUP i/INDEX [i/INDEX …]`
+* Adds the students at the specified indices to `GROUP`.
+* The index refers to the index number shown in the displayed student list.
+* Each `INDEX` must be a positive integer 1, 2, 3, …
+* You must specify at least one `i/INDEX`.
+* The list cannot be empty when using indices.
+* Fails if the group does not exist.
+
+Examples:
+* `group-add g/Group A i/1 i/3` adds the 1st and 3rd students to Group A.
+* After `search-student k/Marcus`, `group-add g/Group A i/1` adds the 1st student from the search results to Group A.
+
+Notes:
+
+* Do not mix multiple `g/` prefixes; only one `g/` is allowed.
+* Duplicate `i/` prefixes are allowed only to specify multiple different indices (e.g., i/1 i/3 i/5). Repeating the same index is redundant and ignored by design.
+
+### Removing students from a group : group-remove
+
+Removes one or more students from a group using their displayed indices.
+
+Format: `group-remove g/GROUP i/INDEX [i/INDEX …]`
+* Removes the students at the specified indices from GROUP.
+* The index refers to the index number shown in the displayed student list.
+* Each `INDEX` must be a positive integer 1, 2, 3, …
+* You must specify at least one `i/INDEX`.
+* The list cannot be empty when using indices.
+* Fails if the group does not exist.
+
+Examples:
+* `group-remove g/Group A i/2` removes the 2nd student in the list from Group A.
+* After `search-student k/Friday`, `group-remove g/Group A i/1 i/2` removes the 1st and 2nd students from the search results from Group A.
+
+Notes:
+
+* Do not mix multiple `g/` prefixes; only one `g/` is allowed.
+* If a specified student is not in the group, the command succeeds for other valid indices and ignores that student.
+
+### Deleting a group : `group-delete`
+
+Deletes an existing group and its memberships.
+
+Format: `group-delete g/GROUP`
+* Deletes the specified `GROUP`.
+* All memberships associated with the group are removed.
+
+Examples:
+* `group-delete g/Group A` deletes the group named Group A
+
+Notes:
+* Do not include any other prefixes besides `g/` in this command.
+* Fails if the group does not exist.
+
 ### Clearing all entries : `clear`
 
 Clears all entries from the student list.

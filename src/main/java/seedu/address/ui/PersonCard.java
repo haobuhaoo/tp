@@ -1,10 +1,14 @@
 package seedu.address.ui;
 
+import java.util.Set;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import seedu.address.model.group.GroupName;
 import seedu.address.model.person.Person;
 
 /**
@@ -35,7 +39,8 @@ public class PersonCard extends UiPart<Region> {
     private Label lessonTime;
     @FXML
     private CheckBox attendanceCheck;
-
+    @FXML
+    private FlowPane groupBadges;
 
     /**
      * Creates a {@code PersonCode} with the given {@code Person} and index to display.
@@ -49,5 +54,15 @@ public class PersonCard extends UiPart<Region> {
         lessonTime.setText(person.getLessonTime().toString());
         Boolean status = UiAttendanceAccess.getStatus(person.getName().fullName);
         attendanceCheck.setSelected(Boolean.TRUE.equals(status));
+        // Render group badges next to the name
+        Set<GroupName> groups = UiGroupAccess.groupsOf(person);
+        groupBadges.getChildren().clear();
+        for (GroupName g : groups) {
+            Label chip = new Label(g.toString());
+            chip.getStyleClass().add("group-badge");
+            // prevent vertical compression of rounded chips
+            chip.setMinHeight(Region.USE_PREF_SIZE);
+            groupBadges.getChildren().add(chip);
+        }
     }
 }
