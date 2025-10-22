@@ -115,6 +115,11 @@ public class MainWindow extends UiPart<Stage> {
                 logic.peekModel().getAttendanceIndex().get(name, date).orElse(null), () ->
                 logic.peekModel().getAttendanceIndex().getCurrentUiDate());
 
+        //Runner to carry forward to PersonListPanel
+        java.util.function.Consumer<String> runCommand = cmd -> {
+            try { executeCommand(cmd); } catch (Exception ignored) {}
+        };
+
         System.out.println(logic.getFilteredPersonList());
         personListPanel = new PersonListPanel(logic.getFilteredPersonList());
         personListPanelPlaceholder.getChildren().add(personListPanel.getRoot());

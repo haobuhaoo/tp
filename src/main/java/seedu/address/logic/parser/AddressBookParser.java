@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.commands.AddCommand;
-import seedu.address.logic.commands.AddHomeworkCommand;
+import seedu.address.logic.commands.HomeworkCommands.AddHomeworkCommand;
 import seedu.address.logic.commands.AttendanceCommand;
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.Command;
@@ -17,8 +17,13 @@ import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.HelpCommand;
+import seedu.address.logic.commands.HomeworkCommands.MarkUndoneHw;
 import seedu.address.logic.commands.ListCommand;
+import seedu.address.logic.commands.HomeworkCommands.MarkDoneHw;
 import seedu.address.logic.commands.SearchCommand;
+import seedu.address.logic.parser.Homework.AddHomeworkCommandParser;
+import seedu.address.logic.parser.Homework.MarkDoneHwParser;
+import seedu.address.logic.parser.Homework.MarkUndoneHwParser;
 import seedu.address.logic.parser.exceptions.ParseException;
 
 /**
@@ -84,6 +89,12 @@ public class AddressBookParser {
 
         case AddHomeworkCommand.COMMAND_WORD:
             return new AddHomeworkCommandParser().parse(arguments);
+
+        case MarkDoneHw.COMMAND_WORD:
+            return new MarkDoneHwParser().parse(arguments);
+
+        case MarkUndoneHw.COMMAND_WORD:
+            return new MarkUndoneHwParser().parse(arguments);
 
         default:
             logger.finer("This user input caused a ParseException: " + userInput);

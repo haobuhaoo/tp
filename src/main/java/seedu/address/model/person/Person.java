@@ -54,10 +54,6 @@ public class Person {
         homeworkList.add(hw);
     }
 
-    public void removeHomework(int index) {
-        homeworkList.remove(index);
-    }
-
     public void setHomeworkList(List<Homework> list) { homeworkList.setAll(list); }
 
 

@@ -1,7 +1,12 @@
-package seedu.address.logic.parser;
+package seedu.address.logic.parser.Homework;
 
 import seedu.address.logic.commands.AddCommand;
-import seedu.address.logic.commands.AddHomeworkCommand;
+import seedu.address.logic.commands.HomeworkCommands.AddHomeworkCommand;
+import seedu.address.logic.parser.ArgumentMultimap;
+import seedu.address.logic.parser.ArgumentTokenizer;
+import seedu.address.logic.parser.Parser;
+import seedu.address.logic.parser.ParserUtil;
+import seedu.address.logic.parser.Prefix;
 import seedu.address.logic.parser.exceptions.ParseException;
 
 import java.time.LocalDate;
@@ -40,7 +45,7 @@ public class AddHomeworkCommandParser implements Parser<AddHomeworkCommand> {
 
         if (!arePrefixesPresent(argMultimap, PREFIX_NAME, PREFIX_DESC, PREFIX_DEADLINE)
                 || !argMultimap.getPreamble().isEmpty()) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE));
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddHomeworkCommand.MESSAGE_USAGE));
         }
 
         Name name = ParserUtil.parseName(argMultimap.getValue(PREFIX_NAME).get());

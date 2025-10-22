@@ -1,5 +1,8 @@
-package seedu.address.logic.commands;
+package seedu.address.logic.commands.HomeworkCommands;
 
+
+import seedu.address.logic.commands.Command;
+import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.homework.Homework;
@@ -11,47 +14,42 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DESC;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_DEADLINE;
 
 /**
- * Adds a homework item to a students homework list (for now it works only for name but will add for group when
- * that function is done)
+ * Marks homework task as done
  */
-public class AddHomeworkCommand extends Command {
-    public static final String COMMAND_WORD = "add-homework";
+public class MarkDoneHw extends Command {
+    public static final String COMMAND_WORD = "mark-done";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a homework item for a student. "
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Marks homework as done for student. "
             + "Parameters: "
             + PREFIX_NAME + "NAME "
             + PREFIX_DESC + "DESCRIPTION "
-            + PREFIX_DEADLINE + "DEADLINE(yyyy-mm-dd)    "
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_NAME + "Marcus "
-            + PREFIX_DESC+ "Math Worksheet 1 "
-            + PREFIX_DEADLINE + "2025-10-27";
+            + PREFIX_DESC+ "Math Worksheet 1";
 
-    public static final String MESSAGE_SUCCESS = "Added homework for %1$s: %2$s (due %3$s)";
+    public static final String MESSAGE_SUCCESS = "Marked homework for %1$s: %2$s";
     public static final String MESSAGE_NO_PERSON_FOUND = "No student with given name";
-    public static final String MESSAGE_DUPLICATE_HOMEWORK = "This student has already been assigned this homework";
+    public static final String MESSAGE_NO_HW_FOUND = "No such homework in list";
 
     private final Name studentName;
-    private final Homework homework;
+    private final String description;
 
     /**
-     * Creates a AddHomeworkCommand to add Homework to a students list
+     * Creates a MarkDoneHW to mark a homework as done in homework list
      */
-    public AddHomeworkCommand(Name studentName, Homework homework) {
+    public MarkDoneHw(Name studentName, String description) {
         requireNonNull(studentName);
-        requireNonNull(homework);
+        requireNonNull(description);
         this.studentName = studentName;
-        this.homework = homework;
+        this.description= description;
     }
 
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
 
-        //Able to add homework after search command
         List<Person> lastShownList = model.getFilteredPersonList();
         Person target = null;
         for (Person p : lastShownList) {
@@ -65,18 +63,26 @@ public class AddHomeworkCommand extends Command {
             throw new CommandException(MESSAGE_NO_PERSON_FOUND);
         }
 
-        if (target.getHomeworkList().contains(homework)) {
-            throw new CommandException(MESSAGE_DUPLICATE_HOMEWORK);
+        Homework matched = null;
+        for (Homework hw: target.getHomeworkList()) {
+            if (hw.getDescription().equalsIgnoreCase(description)) {
+                matched = hw;
+                break;
+            }
         }
 
-        target.addHomework(homework);
+        if (matched == null) {
+            throw new CommandException(MESSAGE_NO_HW_FOUND);
+        }
+
+        if (!matched.isDone()) {
+            matched.markDone();
+        }
 
         return new CommandResult(String.format(
                 MESSAGE_SUCCESS,
                 target.getName().fullName,
-                homework.getDescription(),
-                homework.getDeadline()
-        ));
+                matched.getDescription()));
     }
 
     @Override
@@ -86,18 +92,12 @@ public class AddHomeworkCommand extends Command {
         }
 
         // instanceof handles nulls
-        if (!(other instanceof AddHomeworkCommand)) {
+        if (!(other instanceof MarkDoneHw)) {
             return false;
         }
 
-        AddHomeworkCommand otherCommand = (AddHomeworkCommand) other;
+        MarkDoneHw otherCommand = (MarkDoneHw) other;
         return studentName.equals(otherCommand.studentName)
-                && homework.equals(otherCommand.homework);
+                && description.equals(otherCommand.description);
     }
-
-
-
-
-
-
 }

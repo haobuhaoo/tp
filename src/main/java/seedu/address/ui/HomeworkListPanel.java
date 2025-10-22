@@ -49,6 +49,8 @@ public class HomeworkListPanel extends UiPart<Region>{
         @Override
         protected void updateItem(Homework hw, boolean empty) {
             super.updateItem(hw, empty);
+            doneCheckBox.setDisable(true);
+
 
             if (empty || hw == null) {
                 setGraphic(null);
