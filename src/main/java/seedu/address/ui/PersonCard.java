@@ -7,7 +7,6 @@ import java.util.Set;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
@@ -29,7 +28,9 @@ public class PersonCard extends UiPart<Region> {
     private static final String FXML = "PersonListCard.fxml";
     private static final DateTimeFormatter MM_DD = DateTimeFormatter.ofPattern("MM-dd");
 
-    /** The person shown by this card. */
+    /**
+     * The person shown by this card.
+     */
     public final Person person;
 
     @FXML

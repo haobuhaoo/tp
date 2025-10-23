@@ -34,7 +34,7 @@ import seedu.address.model.person.LessonTime;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
-
+import seedu.address.model.reminder.Reminder;
 
 
 /**
@@ -69,9 +69,11 @@ public class AddHomeworkCommandTest {
         johnLessonTime.add(new LessonTime("1100 Sat"));
         this.john = new Person(johnName, johnPhone, johnLessonTime);
     }
+
     /**
      * * Minimal {@link Model} stub for {@link AddHomeworkCommand} tests.
-     * */
+     *
+     */
     private static class ModelStubFilteredOnly implements Model {
         private final ObservableList<Person> filtered;
 
@@ -203,12 +205,41 @@ public class AddHomeworkCommandTest {
             throw new AssertionError("This method should not be called.");
         }
 
+        @Override
+        public void addReminder(Reminder reminder) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public boolean hasReminder(Reminder reminder) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void deleteReminder(Reminder target) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void setReminder(Reminder target, Reminder editedReminder) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public ObservableList<Reminder> getFilteredReminderList() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void updateFilteredReminderList(Predicate<Reminder> predicate) {
+            throw new AssertionError("This method should not be called.");
+        }
     }
 
     /**
-    * Verifies that executing {@link AddHomeworkCommand} with a matching student
-    * in the filtered list adds homework to list and displays success message
-    */
+     * Verifies that executing {@link AddHomeworkCommand} with a matching student
+     * in the filtered list adds homework to list and displays success message
+     */
     @Test
     public void execute_success_addhomework() throws Exception {
         Homework homework = new Homework("Math WS 3", LocalDate.parse("2025-10-23"));

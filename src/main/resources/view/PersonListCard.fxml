@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <!-- Added stylesheets attribute to load participation.css -->
+<?import javafx.scene.layout.AnchorPane?>
 <HBox id="cardPane" fx:id="cardPane"
       xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
       stylesheets="@participation.css">
@@ -49,8 +50,6 @@
             <AnchorPane fx:id="homeworkPlaceholder" prefHeight="90"/>
         </VBox>
 
-        <CheckBox fx:id="attendanceCheck" disable="true"
-                  GridPane.columnIndex="1" GridPane.halignment="RIGHT">
         <!-- RIGHT: participation panel with per-box dates -->
         <VBox alignment="TOP_RIGHT" spacing="6" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
             <padding>
