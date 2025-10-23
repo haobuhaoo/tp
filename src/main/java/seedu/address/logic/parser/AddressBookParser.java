@@ -24,6 +24,8 @@ import seedu.address.logic.commands.GroupDeleteCommand;
 import seedu.address.logic.commands.GroupRemoveCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
+import seedu.address.logic.commands.MarkPaidCommand;
+import seedu.address.logic.commands.MarkUnpaidCommand;
 import seedu.address.logic.commands.SearchCommand;
 import seedu.address.logic.commands.homeworkcommands.AddHomeworkCommand;
 import seedu.address.logic.commands.homeworkcommands.DeleteHomeworkCommand;
@@ -104,6 +106,11 @@ public class AddressBookParser {
 
         case DeleteReminderCommand.COMMAND_WORD:
             return new DeleteReminderCommandParser().parse(arguments);
+        case MarkPaidCommand.COMMAND_WORD:
+            return new MarkPaidCommandParser().parse(arguments);
+
+        case MarkUnpaidCommand.COMMAND_WORD:
+            return new MarkUnpaidCommandParser().parse(arguments);
 
         case AddHomeworkCommand.COMMAND_WORD:
             return new AddHomeworkCommandParser().parse(arguments);

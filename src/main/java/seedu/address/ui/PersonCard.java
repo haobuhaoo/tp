@@ -47,6 +47,8 @@ public class PersonCard extends UiPart<Region> {
     private FlowPane groupBadges;
     @FXML
     private AnchorPane homeworkPlaceholder;
+    @FXML 
+    private Label paymentStatus;
 
     // Participation UI
     @FXML
@@ -127,5 +129,7 @@ public class PersonCard extends UiPart<Region> {
             cell.getChildren().addAll(rect, t);
             boxes.getChildren().add(cell);
         }
+
+        paymentStatus.setText(person.getPaymentStatusDisplay());
     }
 }

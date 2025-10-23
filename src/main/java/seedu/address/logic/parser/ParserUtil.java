@@ -17,7 +17,6 @@ import seedu.address.model.person.Phone;
 import seedu.address.model.reminder.Description;
 import seedu.address.model.reminder.DueDate;
 
-
 /**
  * Contains utility methods used for parsing strings in the various *Parser classes.
  */
@@ -112,6 +111,25 @@ public class ParserUtil {
             throw new ParseException(LessonTime.MESSAGE_CONSTRAINTS);
         }
         return new LessonTime(trimmedLessonTime);
+    }
+
+    /**
+     * Parses a {@code String month} into an {@code integer}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code month} is invalid.
+     */
+    public static int parseMonth(String month) throws ParseException {
+        String trimmedMonth = month.trim();
+        try {
+            int monthValue = Integer.parseInt(trimmedMonth);
+            if (monthValue < 1 || monthValue > 12) {
+                throw new ParseException("Month must be between 1 and 12");
+            }
+            return monthValue;
+        } catch (NumberFormatException e) {
+            throw new ParseException("Month must be a valid number between 1 and 12");
+        }
     }
 
     /**

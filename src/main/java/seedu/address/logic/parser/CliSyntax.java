@@ -13,6 +13,7 @@ public class CliSyntax {
     public static final Prefix PREFIX_DATE = new Prefix("d/");
     public static final Prefix PREFIX_KEYWORD = new Prefix("k/");
     public static final Prefix PREFIX_REMINDER_DESCRIPTION = new Prefix("r/");
+    public static final Prefix PREFIX_MONTH = new Prefix("m/");
     public static final Prefix PREFIX_DESC = new Prefix("d/");
     public static final Prefix PREFIX_DEADLINE = new Prefix("by/");
     public static final Prefix PREFIX_GROUP = new Prefix("g/");
