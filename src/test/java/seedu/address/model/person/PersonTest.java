@@ -3,7 +3,7 @@ package seedu.address.model.person;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_LESSON_TIME_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_LESSON_TIME_2;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
 import static seedu.address.testutil.TypicalPersons.ALICE;
@@ -24,7 +24,7 @@ public class PersonTest {
 
         // same name, all other attributes different -> returns true
         Person editedAlice = new PersonBuilder(ALICE).withPhone(VALID_PHONE_BOB)
-                .withLessonTime(VALID_LESSON_TIME_BOB).build();
+                .withLessonTime(VALID_LESSON_TIME_2).build();
         assertTrue(ALICE.isSamePerson(editedAlice));
 
         // different name, all other attributes same -> returns false
@@ -68,7 +68,7 @@ public class PersonTest {
         assertFalse(ALICE.equals(editedAlice));
 
         // different lesson time -> returns false
-        editedAlice = new PersonBuilder(ALICE).withLessonTime(VALID_LESSON_TIME_BOB).build();
+        editedAlice = new PersonBuilder(ALICE).withLessonTime(VALID_LESSON_TIME_2).build();
         assertFalse(ALICE.equals(editedAlice));
     }
 

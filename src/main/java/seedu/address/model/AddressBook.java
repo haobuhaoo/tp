@@ -2,11 +2,17 @@ package seedu.address.model;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupName;
+import seedu.address.model.group.MembershipIndex;
+import seedu.address.model.group.UniqueGroupList;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.UniquePersonList;
 import seedu.address.model.reminder.Reminder;
@@ -20,6 +26,10 @@ public class AddressBook implements ReadOnlyAddressBook {
     private final UniquePersonList persons;
     private final UniqueReminderList reminders;
 
+    // NEW: first-class groups + membership relation
+    private final UniqueGroupList groups;
+    private final MembershipIndex memberships;
+
     /*
      * The 'unusual' code block below is a non-static initialization block, sometimes used to avoid duplication
      * between constructors. See https://docs.oracle.com/javase/tutorial/java/javaOO/initial.html
@@ -30,6 +40,9 @@ public class AddressBook implements ReadOnlyAddressBook {
     {
         persons = new UniquePersonList();
         reminders = new UniqueReminderList();
+        // NEW: init group structures
+        groups = new UniqueGroupList();
+        memberships = new MembershipIndex();
     }
 
     public AddressBook() {
@@ -66,10 +79,19 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     public void resetData(ReadOnlyAddressBook newData) {
         requireNonNull(newData);
-
         setPersons(newData.getPersonList());
         setReminders(newData.getReminderList());
+        clearGroupsAndMemberships();
     }
+
+    /**
+     * Clears all groups and their membership relations from this address book.
+     */
+    public void clearGroupsAndMemberships() {
+        groups.setGroups(java.util.Collections.emptyList());
+        memberships.clear();
+    }
+
 
     //// person-level operations
 
@@ -96,8 +118,10 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     public void setPerson(Person target, Person editedPerson) {
         requireNonNull(editedPerson);
-
         persons.setPerson(target, editedPerson);
+        // Memberships are keyed by Person identity (equals/hashCode).
+        // If your Person identity fields change, memberships still refer to the new instance in the list,
+        // because AB3's setPerson preserves identity semantics.
     }
 
     /**
@@ -106,6 +130,57 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     public void removePerson(Person key) {
         persons.remove(key);
+        // NEW: also remove from all groups to avoid orphans
+        memberships.removeAllForPerson(key);
+    }
+
+    //// group-level operations (NEW)
+
+    /** Returns true if a group with {@code name} exists. */
+    public boolean hasGroup(GroupName name) {
+        requireNonNull(name);
+        return groups.contains(name);
+    }
+
+    /** Creates a new empty group. Throws if duplicate. */
+    public void addGroup(Group group) {
+        requireNonNull(group);
+        groups.add(group);
+        memberships.ensureGroup(group.getName());
+    }
+
+    /** Deletes a group and clears its memberships. Throws if not found. */
+    public void removeGroup(GroupName name) {
+        requireNonNull(name);
+        groups.remove(name);
+        memberships.removeGroup(name);
+    }
+
+    /** Adds members to a group (idempotent per person). */
+    public void addMembers(GroupName name, List<Person> people) {
+        requireNonNull(name);
+        requireNonNull(people);
+        memberships.ensureGroup(name);
+        memberships.addMembers(name, people);
+    }
+
+    /** Removes members from a group (no-op for non-members). */
+    public void removeMembers(GroupName name, List<Person> people) {
+        requireNonNull(name);
+        requireNonNull(people);
+        memberships.removeMembers(name, people);
+    }
+
+    /** Unmodifiable view of groups for UI/logic. */
+    public ObservableList<Group> getGroupList() {
+        return groups.asUnmodifiableObservableList();
+    }
+
+    /** All groups that contain {@code person}. */
+    public Set<GroupName> getGroupsOf(Person person) {
+        requireNonNull(person);
+        // Delegate to MembershipIndex helper; see its groupsOf(person)
+        return new HashSet<>(memberships.groupsOf(person));
     }
 
     //// reminder-level operations
@@ -155,7 +230,7 @@ public class AddressBook implements ReadOnlyAddressBook {
     /// / util methods
 
     @Override
-    public String toString() {
+    public String toString() { // keep concise; groups/memberships omitted to avoid noisy logs
         return new ToStringBuilder(this)
                 .add("persons", persons)
                 .add("reminders", reminders)

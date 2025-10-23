@@ -1,7 +1,7 @@
 ---
-layout: default
-title: "User Guide"
-pageNav: 3
+  layout: default.md
+  title: "User Guide"
+  pageNav: 3
 ---
 
 # ClassConnect User Guide
@@ -70,15 +70,16 @@ Format: `help`
 
 Adds a student to the student list.
 
-Format: `add-student n/NAME p/PHONE_NUMBER t/LESSON_TIME`
+Format: `add-student n/NAME p/PHONE_NUMBER t/LESSON_TIME...`
 
-* `NAME` should not be blank and should only **contain letters, spaces, hyphens, apostrophes, with a maximum length of 50 characters**. It is also case-insensitive, e.g. `john doe` is the same as `John Doe`.
+* `NAME` should not be blank and should only **contain letters, spaces, hyphens, apostrophes, with a maximum length of 50 characters**. It is also case-insensitive. e.g. `john doe` is the same as `John Doe`.
 * `PHONE_NUMBER` should only contain numbers, and should be **8 digits long starting with 8 or 9**.
-* `LESSON_TIME` should be in **24-hour format** without a colon. e.g. `0900` for 9am, `1530` for 3:30pm. It should be between `0000` and `2359`.
+* `LESSON_TIME` should be in **24-hour format** without a colon, followed by a 3-letter day abbreviation.
+  e.g. `0900 Sun` for 9am Sunday, `1530 Thu` for 3:30pm Thursday. The time should be between `0000` and `2359`.
 
 Examples:
-* `add-student n/John Doe p/98765432 t/1000` Adds a student named `John Doe`, with phone number `98765432` and lesson time `10:00`.
-* `add-student t/1330 p/81234567 n/Betsy Crowe` Adds a student named `Betsy Crowe`, with phone number `81234567` and lesson time `13:30`.
+* `add-student n/John Doe p/98765432 t/1000 Wed` Adds a student named `John Doe`, with phone number `98765432` and lesson time `10:00 am Wed`.
+* `add-student t/1330 Fri p/81234567 n/Betsy Crowe t/1100 Sat` Adds a student named `Betsy Crowe`, with phone number `81234567` and lesson times `01:30 pm Fri`, `11:00 am Sat`.
 
 ### Listing all students : `list`
 
@@ -90,15 +91,16 @@ Format: `list`
 
 Edits an existing student in the student list.
 
-Format: `edit-student i/INDEX [n/NAME] [p/PHONE] [t/LESSON_TIME]`
+Format: `edit-student i/INDEX [n/NAME] [p/PHONE] [t/LESSON_TIME]...`
 
 * Edits the student at the specified `INDEX`. The index refers to the index number shown in the displayed student list. The index **must be a positive integer** 1, 2, 3, …​
 * At least one of the optional fields must be provided.
 * Existing values will be updated to the input values.
+* If one of the lesson times is to be updated, all other unchanged lesson times must also be provided.
 
 Examples:
 *  `edit-student i/1 p/91234567` Edits the phone number of the 1st student to be `91234567`.
-*  `edit-student i/2 n/Betsy Crower t/0930` Edits the name of the 2nd student to be `Betsy Crower` and lesson time to be `0930`.
+*  `edit-student i/2 n/Betsy Crower t/0930 Tue` Edits the name of the 2nd student to be `Betsy Crower` and lesson time to be `09:30 am Tue`.
 
 ### Locating students: `search-student`
 
@@ -114,17 +116,15 @@ Format: `search-student k/KEYWORD [MORE_KEYWORDS]`
   e.g. `Marcus 9876` will return `Marcus Ng (9876 1111)`, `John Tan (9876 5432)`
 
 Examples:
-* `search-student k/marcus` returns `Marcus Ng` and `Marcus Tan`
-* `search-student k/9876` returns all students whose phone number contains 9876
-* `search-student k/10:00` returns all students with lesson time 10:00
-
+* `search-student k/marcus` Returns `Marcus Ng` and `Marcus Tan`.
+* `search-student k/9876` Returns all students whose phone number contains 9876.
+* `search-student k/10:00` Returns all students with lesson time 10:00.
 
 ### Deleting a student : `delete-student`
 
 Deletes the specified student from the student list.
 
-Format: `delete-student i/INDEX` or
-`delete-student k/KEYWORD`
+Format: `delete-student i/INDEX` or `delete-student k/KEYWORD`
 
 You can delete a student in two ways:
 1. By index
@@ -173,6 +173,83 @@ Note:
 * Attendance is tracked in-memory alongside the address book.
 * Using clear resets the address book and clears all attendance records
 
+### Creating a group : `group-create`
+
+Creates a new group.
+
+Format: `group-create g/GROUP`
+* Creates a group with the specified `GROUP` name.
+* Group names are case-insensitive, trimmed, and must follow:
+- 1–30 characters
+- Letters, digits, spaces, and the symbols - or / only
+- Multiple spaces are collapsed
+* Fails if a group with the same name already exists.
+
+Examples:
+* `group-create g/Group A` creates a group called "Group A"
+
+Notes:
+
+* Do not include any other prefixes besides g/ in this command.
+* Duplicate g/ prefixes are not allowed.
+
+### Adding students to a group : `group-add`
+
+Adds one or more students to a group using their displayed indices.
+
+Format: `group-add g/GROUP i/INDEX [i/INDEX …]`
+* Adds the students at the specified indices to `GROUP`.
+* The index refers to the index number shown in the displayed student list.
+* Each `INDEX` must be a positive integer 1, 2, 3, …
+* You must specify at least one `i/INDEX`.
+* The list cannot be empty when using indices.
+* Fails if the group does not exist.
+
+Examples:
+* `group-add g/Group A i/1 i/3` adds the 1st and 3rd students to Group A.
+* After `search-student k/Marcus`, `group-add g/Group A i/1` adds the 1st student from the search results to Group A.
+
+Notes:
+
+* Do not mix multiple `g/` prefixes; only one `g/` is allowed.
+* Duplicate `i/` prefixes are allowed only to specify multiple different indices (e.g., i/1 i/3 i/5). Repeating the same index is redundant and ignored by design.
+
+### Removing students from a group : group-remove
+
+Removes one or more students from a group using their displayed indices.
+
+Format: `group-remove g/GROUP i/INDEX [i/INDEX …]`
+* Removes the students at the specified indices from GROUP.
+* The index refers to the index number shown in the displayed student list.
+* Each `INDEX` must be a positive integer 1, 2, 3, …
+* You must specify at least one `i/INDEX`.
+* The list cannot be empty when using indices.
+* Fails if the group does not exist.
+
+Examples:
+* `group-remove g/Group A i/2` removes the 2nd student in the list from Group A.
+* After `search-student k/Friday`, `group-remove g/Group A i/1 i/2` removes the 1st and 2nd students from the search results from Group A.
+
+Notes:
+
+* Do not mix multiple `g/` prefixes; only one `g/` is allowed.
+* If a specified student is not in the group, the command succeeds for other valid indices and ignores that student.
+
+### Deleting a group : `group-delete`
+
+Deletes an existing group and its memberships.
+
+Format: `group-delete g/GROUP`
+* Deletes the specified `GROUP`.
+* All memberships associated with the group are removed.
+
+Examples:
+* `group-delete g/Group A` deletes the group named Group A
+
+Notes:
+* Do not include any other prefixes besides `g/` in this command.
+* Fails if the group does not exist.
+
 ### Clearing all entries : `clear`
 
 Clears all entries from the student list.
@@ -201,6 +278,41 @@ Furthermore, certain edits can cause the ClassConnect to behave in unexpected wa
 
 </box>
 
+### Recording participation: `attendance`
+
+Records a student's participation score for a specific class date. The score is shown on the person card as **five boxes** (oldest → newest), with the **date shown above each box**. The newest score appears on the **rightmost** box.
+
+**Format:**
+`attendance n/NAME d/YYYY-MM-DD s/0..5`
+
+- `n/NAME` — the student’s full name (case-insensitive).
+- `d/YYYY-MM-DD` — the class date in ISO format (e.g., `2025-09-19`).
+- `s/0..5` — an integer participation score from 0 to 5.
+
+**Examples:**
+- `attendance n/Alex Yeoh d/2025-09-19 s/3`
+- `attendance n/Alex Yeoh d/2025-09-20 s/5`
+
+**What you’ll see in the UI:**
+- The right side of each person card shows **two rows**:
+  - **Top row:** Dates (formatted `MM-dd`) for up to the last five classes, oldest → newest.
+  - **Bottom row:** Five boxes showing the corresponding participation scores.
+- When you record a new score, the date and score shift right as the history grows; the newest class is the **rightmost** box.
+
+**Notes:**
+- Names are matched ignoring extra spaces and letter case (e.g., `alex  yeoh` matches `Alex Yeoh`).
+- Dates must be valid ISO dates (e.g., `2025-09-19`).
+- Scores must be integers in `0..5`.
+  - If the score is not a number, you’ll see:
+    `Invalid participation score. Use an integer 0..5.`
+  - If the score is outside the range, you’ll see:
+    `Invalid participation score. Must be between 0 and 5 inclusive.`
+- The history shows **up to five most recent** entries.
+
+**Troubleshooting:**
+- If you typed `participation ...` and got “unknown command”, use `attendance` (this is the command word).
+
+
 ### Archiving data files `[coming in v2.0]`
 
 _Details coming soon ..._
@@ -225,11 +337,12 @@ _Details coming soon ..._
 
 Action     | Format, Examples
 -----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**Add**    | `add-student n/NAME p/PHONE_NUMBER t/LESSON_TIME` <br> e.g., `add-student n/James Ho p/98765432 t/1000`
+**Add**    | `add-student n/NAME p/PHONE_NUMBER t/LESSON_TIME...` <br> e.g., `add-student n/James Ho p/98765432 t/1000 Mon t/1400 Wed`
 **Attendance**    | `attendance n/NAME d/DATE s/STATUS` <br> e.g., `attendance n/James Ho d/2025-09-19 s/1`
 **Clear**  | `clear`
 **Delete** | `delete-student i/INDEX` **or** `delete-student k/KEYWORD [MORE_KEYWORDS]`<br> e.g., `delete-student i/3` or `delete-student k/marcus lee`
-**Edit**   | `edit-student i/INDEX [n/NAME] [p/PHONE_NUMBER] [t/LESSON_TIME]`<br> e.g.,`edit-student i/2 n/James Lee t/1830`
+**Edit**   | `edit-student i/INDEX [n/NAME] [p/PHONE_NUMBER] [t/LESSON_TIME]...`<br> e.g.,`edit-student i/2 n/James Lee t/1830 Fri t/1000 Sun`
 **Search**   | `search-student k/KEYWORD [MORE_KEYWORDS]` <br> e.g., `search-student k/marcus lee`
 **List**   | `list`
 **Help**   | `help`
+**Attendance / Participation** | `attendance n/NAME d/YYYY-MM-DD s/0..5`<br> e.g., `attendance n/Alex Yeoh d/2025-09-19 s/3`

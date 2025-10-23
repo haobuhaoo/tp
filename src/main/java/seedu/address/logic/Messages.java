@@ -37,7 +37,12 @@ public class Messages {
      * Formats the {@code person} for display to the user.
      */
     public static String format(Person person) {
-        return person.getName() + "; Phone: " + person.getPhone() + "; Lesson Time: " + person.getLessonTime();
+        final StringBuilder builder = new StringBuilder()
+                .append(person.getName()).append("; Phone Number: ")
+                .append(person.getPhone()).append("; Lesson Time: ");
+        person.getLessonTime().forEach(lt -> builder.append(lt).append(", "));
+        builder.deleteCharAt(builder.length() - 1).setCharAt(builder.length() - 1, ';');
+        return builder.toString();
     }
 
     /**

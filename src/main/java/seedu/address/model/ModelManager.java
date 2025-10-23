@@ -4,6 +4,8 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
@@ -12,6 +14,8 @@ import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.model.attendance.AttendanceIndex;
+import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupName;
 import seedu.address.model.person.Person;
 import seedu.address.model.reminder.Reminder;
 
@@ -78,6 +82,55 @@ public class ModelManager implements Model {
     public void setAddressBookFilePath(Path addressBookFilePath) {
         requireNonNull(addressBookFilePath);
         userPrefs.setAddressBookFilePath(addressBookFilePath);
+    }
+
+    // ============ Groups (delegations to AddressBook) =============================
+
+    @Override
+    public boolean hasGroup(GroupName name) {
+        return addressBook.hasGroup(name);
+    }
+
+    @Override
+    public void createGroup(GroupName name) {
+        if (hasGroup(name)) {
+            throw new IllegalArgumentException("Duplicate group: " + name);
+        }
+        addressBook.addGroup(new seedu.address.model.group.Group(name));
+    }
+
+    @Override
+    public void deleteGroup(GroupName name) {
+        if (!hasGroup(name)) {
+            throw new IllegalArgumentException("Group not found: " + name);
+        }
+        addressBook.removeGroup(name);
+    }
+
+    @Override
+    public void addToGroup(GroupName name, List<Person> members) {
+        if (!hasGroup(name)) {
+            throw new IllegalArgumentException("Group not found: " + name);
+        }
+        addressBook.addMembers(name, members);
+    }
+
+    @Override
+    public void removeFromGroup(GroupName name, List<Person> members) {
+        if (!hasGroup(name)) {
+            throw new IllegalArgumentException("Group not found: " + name);
+        }
+        addressBook.removeMembers(name, members);
+    }
+
+    @Override
+    public ObservableList<Group> getGroupList() {
+        return addressBook.getGroupList();
+    }
+
+    @Override
+    public Set<GroupName> getGroupsOf(Person person) {
+        return addressBook.getGroupsOf(person);
     }
 
     //=========== AddressBook ================================================================================

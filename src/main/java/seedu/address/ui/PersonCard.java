@@ -1,10 +1,24 @@
 package seedu.address.ui;
 
+import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
+import seedu.address.model.group.GroupName;
+import seedu.address.model.person.LessonTime;
+import seedu.address.model.person.ParticipationHistory;
+import seedu.address.model.person.ParticipationRecord;
 import seedu.address.model.person.Person;
 
 /**
@@ -12,15 +26,11 @@ import seedu.address.model.person.Person;
  */
 public class PersonCard extends UiPart<Region> {
     private static final String FXML = "PersonListCard.fxml";
+    private static final DateTimeFormatter MM_DD = DateTimeFormatter.ofPattern("MM-dd");
 
     /**
-     * Note: Certain keywords such as "location" and "resources" are reserved keywords in JavaFX.
-     * As a consequence, UI elements' variable names cannot be set to such keywords
-     * or an exception will be thrown by JavaFX during runtime.
-     *
-     * @see <a href="https://github.com/se-edu/addressbook-level4/issues/336">The issue on AddressBook level 4</a>
+     * The person shown by this card.
      */
-
     public final Person person;
 
     @FXML
@@ -32,22 +42,83 @@ public class PersonCard extends UiPart<Region> {
     @FXML
     private Label phone;
     @FXML
-    private Label lessonTime;
+    private FlowPane lessonTime;
     @FXML
     private CheckBox attendanceCheck;
+    @FXML
+    private FlowPane groupBadges;
 
+    // Participation UI
+    @FXML
+    private HBox dateRow;
+    @FXML
+    private HBox boxes;
 
     /**
-     * Creates a {@code PersonCode} with the given {@code Person} and index to display.
+     * Creates a {@code PersonCard} with the given {@code Person} and index to display.
      */
     public PersonCard(Person person, int displayedIndex) {
         super(FXML);
         this.person = person;
+
         id.setText(displayedIndex + ". ");
         name.setText(person.getName().fullName);
         phone.setText(person.getPhone().value);
-        lessonTime.setText(person.getLessonTime().toString());
+        person.getLessonTime().stream()
+                .sorted(Comparator.comparing(LessonTime::toString))
+                .forEach(lt -> lessonTime.getChildren().add(new Label(lt.toString())));
         Boolean status = UiAttendanceAccess.getStatus(person.getName().fullName);
         attendanceCheck.setSelected(Boolean.TRUE.equals(status));
+        // Render group badges next to the name
+        Set<GroupName> groups = UiGroupAccess.groupsOf(person);
+        groupBadges.getChildren().clear();
+        for (GroupName g : groups) {
+            Label chip = new Label(g.toString());
+            chip.getStyleClass().add("group-badge");
+            // prevent vertical compression of rounded chips
+            chip.setMinHeight(Region.USE_PREF_SIZE);
+            groupBadges.getChildren().add(chip);
+        }
+
+        renderParticipation(person.getParticipation());
+    }
+
+    private void renderParticipation(ParticipationHistory history) {
+        if (boxes == null || dateRow == null || history == null) {
+            return; // FXML fields not present or no history yet
+        }
+
+        boxes.getChildren().clear();
+        dateRow.getChildren().clear();
+
+        // Oldest -> newest, padded to 5 (nulls for missing oldest entries)
+        List<ParticipationRecord> five = history.asListPaddedToFive();
+
+        for (ParticipationRecord r : five) {
+            // ----- date label (top row) -----
+            Label d = new Label(r == null ? "" : r.getDate().format(MM_DD));
+            d.getStyleClass().add("date-mini");
+            d.setMinWidth(44);
+            d.setPrefWidth(44);
+            d.setMaxWidth(Region.USE_PREF_SIZE);
+            d.setAlignment(Pos.CENTER);
+            dateRow.getChildren().add(d);
+
+            // ----- score box (bottom row) -----
+            StackPane cell = new StackPane();
+            // make each box cell as wide as the date cell so spacing matches
+            cell.setMinWidth(44);
+            cell.setPrefWidth(44);
+            cell.setMaxWidth(Region.USE_PREF_SIZE);
+            cell.setAlignment(Pos.CENTER); // center children
+
+            Rectangle rect = new Rectangle(24, 24); // a touch bigger looks nicer at this width
+            rect.getStyleClass().add("participation-box");
+
+            Text t = new Text(r == null ? "" : Integer.toString(r.getScore()));
+
+            cell.getChildren().addAll(rect, t);
+            boxes.getChildren().add(cell);
+        }
     }
 }

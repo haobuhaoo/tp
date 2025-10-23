@@ -2,6 +2,10 @@ package seedu.address.logic.parser;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -18,8 +22,8 @@ public class ParserUtil {
     public static final String MESSAGE_INVALID_INDEX = "Index is not a non-zero unsigned integer.";
 
     /**
-     * Parses {@code oneBasedIndex} into an {@code Index} and returns it. Leading and trailing whitespaces will be
-     * trimmed.
+     * Parses {@code oneBasedIndex} into an {@code Index} and returns it.
+     * Leading and trailing whitespaces will be trimmed.
      *
      * @throws ParseException if the specified index is invalid (not non-zero unsigned integer).
      */
@@ -60,22 +64,19 @@ public class ParserUtil {
         }
         return new Phone(trimmedPhone);
     }
-
+  
     /**
-     * Parses a {@code String lessonTime} into an {@code LessonTime}.
-     * Leading and trailing whitespaces will be trimmed.
-     *
-     * @throws ParseException if the given {@code lessonTime} is invalid.
+     * Parses a {@code Collection<String> lessonTime} into an {@code Set<LessonTime>}.
      */
-    public static LessonTime parseLessonTime(String lessonTime) throws ParseException {
+    public static Set<LessonTime> parseLessonTimeSet(Collection<String> lessonTime) throws ParseException {
         requireNonNull(lessonTime);
-        String trimmedLessonTime = lessonTime.trim();
-        if (!LessonTime.isValidLessonTime(trimmedLessonTime)) {
-            throw new ParseException(LessonTime.MESSAGE_CONSTRAINTS);
+        final Set<LessonTime> lessonTimeSet = new HashSet<>();
+        for (String lessonTimeString : lessonTime) {
+            lessonTimeSet.add(parseLessonTime(lessonTimeString));
         }
-        return new LessonTime(trimmedLessonTime);
+        return lessonTimeSet;
     }
-
+  
     /**
      * Parses a {@code String dueDate} into an {@code DueDate}.
      * Leading and trailing whitespaces will be trimmed.

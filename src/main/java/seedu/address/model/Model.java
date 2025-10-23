@@ -1,10 +1,14 @@
 package seedu.address.model;
 
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupName;
 import seedu.address.model.person.Person;
 import seedu.address.model.reminder.Reminder;
 
@@ -22,39 +26,31 @@ public interface Model {
      */
     Predicate<Reminder> PREDICATE_SHOW_ALL_REMINDERS = unused -> true;
 
+    // ============ UserPrefs ===================================================
+  
     /**
      * Replaces user prefs data with the data in {@code userPrefs}.
      */
     void setUserPrefs(ReadOnlyUserPrefs userPrefs);
 
-    /**
-     * Returns the user prefs.
-     */
+    /** Returns the user prefs. */
     ReadOnlyUserPrefs getUserPrefs();
 
-    /**
-     * Returns the user prefs' GUI settings.
-     */
+    /** Returns the user prefs' GUI settings. */
     GuiSettings getGuiSettings();
 
-    /**
-     * Sets the user prefs' GUI settings.
-     */
+    /** Sets the user prefs' GUI settings. */
     void setGuiSettings(GuiSettings guiSettings);
 
-    /**
-     * Returns the user prefs' address book file path.
-     */
+    /** Returns the user prefs' address book file path. */
     Path getAddressBookFilePath();
 
-    /**
-     * Sets the user prefs' address book file path.
-     */
+    /** Sets the user prefs' address book file path. */
     void setAddressBookFilePath(Path addressBookFilePath);
 
-    /**
-     * Replaces address book data with the data in {@code addressBook}.
-     */
+    // ============ AddressBook =================================================
+
+    /** Replaces address book data with the data in {@code addressBook}. */
     void setAddressBook(ReadOnlyAddressBook addressBook);
 
     /**
@@ -62,21 +58,13 @@ public interface Model {
      */
     ReadOnlyAddressBook getAddressBook();
 
-    /**
-     * Returns true if a person with the same identity as {@code person} exists in the address book.
-     */
+    /** Returns true if a person with the same identity as {@code person} exists in the address book. */
     boolean hasPerson(Person person);
 
-    /**
-     * Deletes the given person.
-     * The person must exist in the address book.
-     */
+    /** Deletes the given person. The person must exist in the address book. */
     void deletePerson(Person target);
 
-    /**
-     * Adds the given person.
-     * {@code person} must not already exist in the address book.
-     */
+    /** Adds the given person. {@code person} must not already exist in the address book. */
     void addPerson(Person person);
 
     /**
@@ -98,9 +86,15 @@ public interface Model {
      */
     void updateFilteredPersonList(Predicate<Person> predicate);
 
-    // ============ Attendance ============================================
+    // ============ Attendance / Participation ================================
+
+    /**
+     * Attendance index used by the UI date selection and legacy attendance functionality.
+     * (We still leverage it to propagate the "current UI date".)
+     */
     seedu.address.model.attendance.AttendanceIndex getAttendanceIndex();
 
+    /** Returns true if there exists a person whose normalized name equals {@code name}. */
     boolean hasPersonName(String name);
     //java.util.Optional<seedu.address.model.person.Person> findPersonByName(String name);
 
@@ -141,4 +135,18 @@ public interface Model {
      * @throws NullPointerException if {@code predicate} is null.
      */
     void updateFilteredReminderList(Predicate<Reminder> predicate);
+
+    // ============ Groups ==========================================================
+    boolean hasGroup(GroupName name);
+    void createGroup(GroupName name);
+    void deleteGroup(GroupName name);
+    void addToGroup(GroupName name, List<Person> members);
+    void removeFromGroup(GroupName name, List<Person> members);
+    ObservableList<Group> getGroupList();
+    Set<GroupName> getGroupsOf(Person person);
+
+    /** Convenience: filter list by group membership (optional but handy). */
+    default void filterByGroup(GroupName name) {
+        updateFilteredPersonList(p -> getGroupsOf(p).contains(name));
+    }
 }

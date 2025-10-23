@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_DESCRIPTION_1;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_LESSON_TIME_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_LESSON_TIME_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_LESSON_TIME_1;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_LESSON_TIME_2;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalReminders.REMINDER_1;
@@ -53,7 +55,7 @@ public class AddressBookTest {
     @Test
     public void resetData_withDuplicate_throwsDuplicateException() {
         // Two persons with the same identity fields
-        Person editedAlice = new PersonBuilder(ALICE).withLessonTime(VALID_LESSON_TIME_BOB).build();
+        Person editedAlice = new PersonBuilder(ALICE).withLessonTime(VALID_LESSON_TIME_2).build();
         List<Person> newPersons = Arrays.asList(ALICE, editedAlice);
         List<Reminder> newReminders = TypicalReminders.getTypicalReminders();
         AddressBookStub newData1 = new AddressBookStub(newPersons, newReminders);
@@ -87,7 +89,7 @@ public class AddressBookTest {
     @Test
     public void hasPerson_personWithSameIdentityFieldsInAddressBook_returnsTrue() {
         addressBook.addPerson(ALICE);
-        Person editedAlice = new PersonBuilder(ALICE).withLessonTime(VALID_LESSON_TIME_AMY).build();
+        Person editedAlice = new PersonBuilder(ALICE).withLessonTime(VALID_LESSON_TIME_1).build();
         assertTrue(addressBook.hasPerson(editedAlice));
     }
 

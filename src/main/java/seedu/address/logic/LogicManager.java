@@ -15,6 +15,8 @@ import seedu.address.logic.parser.AddressBookParser;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
+import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupName;
 import seedu.address.model.person.Person;
 import seedu.address.model.reminder.Reminder;
 import seedu.address.storage.Storage;
@@ -96,5 +98,25 @@ public class LogicManager implements Logic {
     public seedu.address.model.Model peekModel() {
         return model;
     }
+
+    @Override
+    public ObservableList<Group> getGroupList() {
+        return model.getGroupList();
+    }
+
+    @Override
+    public java.util.Set<GroupName> getGroupsOf(seedu.address.model.person.Person person) {
+        return model.getGroupsOf(person);
+    }
+    @Override
+    public void filterByGroup(GroupName group) {
+        model.updateFilteredPersonList(p -> model.getGroupsOf(p).contains(group));
+    }
+
+    @Override
+    public void clearPersonFilter() {
+        model.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
+    }
+
 
 }

@@ -1,6 +1,7 @@
 package seedu.address.logic;
 
 import java.nio.file.Path;
+import java.util.Set;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
@@ -8,6 +9,8 @@ import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.ReadOnlyAddressBook;
+import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupName;
 import seedu.address.model.person.Person;
 import seedu.address.model.reminder.Reminder;
 
@@ -56,6 +59,26 @@ public interface Logic {
      * Set the user prefs' GUI settings.
      */
     void setGuiSettings(GuiSettings guiSettings);
+
+    /**
+     * Returns all groups (for UI binding).
+     */
+    ObservableList<Group> getGroupList();
+
+    /**
+     * Returns the set of groups a person belongs to.
+    */
+    Set<GroupName> getGroupsOf(Person person);
+
+    /**
+     * Applies a filter to show only persons who belong to the given group.
+     */
+    void filterByGroup(GroupName group);
+
+    /**
+     * Clears any active person filter (shows all persons).
+     */
+    void clearPersonFilter();
 
     seedu.address.model.Model peekModel();
 }
