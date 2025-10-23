@@ -1,19 +1,20 @@
 package seedu.address.ui;
 
-import java.util.Set;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Set;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
-import seedu.address.model.group.GroupName;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import seedu.address.model.group.GroupName;
 import seedu.address.model.person.ParticipationHistory;
 import seedu.address.model.person.ParticipationRecord;
 import seedu.address.model.person.Person;
@@ -42,11 +43,6 @@ public class PersonCard extends UiPart<Region> {
     private CheckBox attendanceCheck;
     @FXML
     private FlowPane groupBadges;
-    @FXML private HBox cardPane;
-    @FXML private Label name;
-    @FXML private Label id;
-    @FXML private Label phone;
-    @FXML private Label lessonTime;
 
     // Participation UI
     @FXML private HBox dateRow;
@@ -74,6 +70,7 @@ public class PersonCard extends UiPart<Region> {
             // prevent vertical compression of rounded chips
             chip.setMinHeight(Region.USE_PREF_SIZE);
             groupBadges.getChildren().add(chip);
+        }
 
         renderParticipation(person.getParticipation());
     }

@@ -78,7 +78,6 @@ public interface Model {
      * (We still leverage it to propagate the "current UI date".)
      */
     seedu.address.model.attendance.AttendanceIndex getAttendanceIndex();
-    boolean hasPersonName(String name);
 
     // ============ Groups ==========================================================
     boolean hasGroup(GroupName name);
