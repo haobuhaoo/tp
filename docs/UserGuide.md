@@ -201,6 +201,41 @@ Furthermore, certain edits can cause the ClassConnect to behave in unexpected wa
 
 </box>
 
+### Recording participation: `attendance`
+
+Records a student's participation score for a specific class date. The score is shown on the person card as **five boxes** (oldest → newest), with the **date shown above each box**. The newest score appears on the **rightmost** box.
+
+**Format:**
+`attendance n/NAME d/YYYY-MM-DD s/0..5`
+
+- `n/NAME` — the student’s full name (case-insensitive).
+- `d/YYYY-MM-DD` — the class date in ISO format (e.g., `2025-09-19`).
+- `s/0..5` — an integer participation score from 0 to 5.
+
+**Examples:**
+- `attendance n/Alex Yeoh d/2025-09-19 s/3`
+- `attendance n/Alex Yeoh d/2025-09-20 s/5`
+
+**What you’ll see in the UI:**
+- The right side of each person card shows **two rows**:
+  - **Top row:** Dates (formatted `MM-dd`) for up to the last five classes, oldest → newest.
+  - **Bottom row:** Five boxes showing the corresponding participation scores.
+- When you record a new score, the date and score shift right as the history grows; the newest class is the **rightmost** box.
+
+**Notes:**
+- Names are matched ignoring extra spaces and letter case (e.g., `alex  yeoh` matches `Alex Yeoh`).
+- Dates must be valid ISO dates (e.g., `2025-09-19`).
+- Scores must be integers in `0..5`.
+  - If the score is not a number, you’ll see:
+    `Invalid participation score. Use an integer 0..5.`
+  - If the score is outside the range, you’ll see:
+    `Invalid participation score. Must be between 0 and 5 inclusive.`
+- The history shows **up to five most recent** entries.
+
+**Troubleshooting:**
+- If you typed `participation ...` and got “unknown command”, use `attendance` (this is the command word).
+
+
 ### Archiving data files `[coming in v2.0]`
 
 _Details coming soon ..._
@@ -233,3 +268,4 @@ Action     | Format, Examples
 **Search**   | `search-student k/KEYWORD [MORE_KEYWORDS]` <br> e.g., `search-student k/marcus lee`
 **List**   | `list`
 **Help**   | `help`
+**Attendance / Participation** | `attendance n/NAME d/YYYY-MM-DD s/0..5`<br> e.g., `attendance n/Alex Yeoh d/2025-09-19 s/3`
