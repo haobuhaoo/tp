@@ -13,6 +13,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 
 <!-- Added stylesheets attribute to load participation.css -->
+<?import javafx.scene.layout.AnchorPane?>
 <HBox id="cardPane" fx:id="cardPane"
       xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
       stylesheets="@participation.css">
@@ -47,6 +48,13 @@
             <Region prefHeight="4" />
             <Label fx:id="paymentStatus" styleClass="cell_small_label" text="\$paymentStatus" />
             <Region prefHeight="4" />
+        </VBox>
+
+        <!-- Homework List -->
+        <VBox spacing = "4" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2">
+            <padding><Insets left="15" right="15" bottom="10"/></padding>
+            <Label text="Homework" styleClass="cell_small_label"></Label>
+            <AnchorPane fx:id="homeworkPlaceholder" prefHeight="90"/>
         </VBox>
 
         <!-- RIGHT: participation panel with per-box dates -->

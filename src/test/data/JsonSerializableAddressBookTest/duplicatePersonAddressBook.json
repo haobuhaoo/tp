@@ -7,5 +7,9 @@
     "name": "Alice Pauline",
     "phone": "94351253",
     "lessonTime": ["1000 Sun"]
+  } ],
+  "reminders" : [ {
+    "dueDate" : "2025-10-21 1530",
+    "description" : "Alice: Submit homework for Math"
   } ]
 }

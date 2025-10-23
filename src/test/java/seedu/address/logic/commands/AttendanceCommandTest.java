@@ -25,6 +25,7 @@ import seedu.address.model.group.Group;
 import seedu.address.model.group.GroupName;
 import seedu.address.model.person.ParticipationRecord;
 import seedu.address.model.person.Person;
+import seedu.address.model.reminder.Reminder;
 import seedu.address.testutil.PersonBuilder;
 
 /**
@@ -181,9 +182,9 @@ public class AttendanceCommandTest {
     /**
      *  Minimal model stub supporting hasPersonName() and AttendanceIndex.
      * Model stub that:
-     *  - says a single person name exists via hasPersonName(...)
-     *  - exposes a tiny ReadOnlyAddressBook containing that Person
-     *  - provides an AttendanceIndex for the command to update UI date
+     * - says a single person name exists via hasPersonName(...)
+     * - exposes a tiny ReadOnlyAddressBook containing that Person
+     * - provides an AttendanceIndex for the command to update UI date
      */
     static class ModelStubWithPerson implements Model {
         final Person person;
@@ -216,6 +217,11 @@ public class AttendanceCommandTest {
                 public ObservableList<Person> getPersonList() {
                     return list;
                 }
+
+                @Override
+                public ObservableList<Reminder> getReminderList() {
+                    return null;
+                }
             };
         }
 
@@ -227,6 +233,11 @@ public class AttendanceCommandTest {
         @Override
         public void updateFilteredPersonList(Predicate<Person> predicate) {
             // no-op for tests
+        }
+
+        @Override
+        public void updateFilteredReminderList(Predicate<Reminder> predicate) {
+            // no-op
         }
 
         // --- Unused methods (throw AssertionError if called) ---
@@ -287,7 +298,32 @@ public class AttendanceCommandTest {
         }
 
         @Override
+        public boolean hasReminder(Reminder reminder) {
+            throw new AssertionError();
+        }
+
+        @Override
+        public void deleteReminder(Reminder target) {
+            throw new AssertionError();
+        }
+
+        @Override
+        public void addReminder(Reminder reminder) {
+            throw new AssertionError();
+        }
+
+        @Override
+        public void setReminder(Reminder target, Reminder editedReminder) {
+            throw new AssertionError();
+        }
+
+        @Override
         public ObservableList<Person> getFilteredPersonList() {
+            return FXCollections.observableArrayList();
+        }
+
+        @Override
+        public ObservableList<Reminder> getFilteredReminderList() {
             return FXCollections.observableArrayList();
         }
 

@@ -35,6 +35,7 @@ import seedu.address.model.person.LessonTime;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.reminder.Reminder;
 
 
 public class MarkUndoneHwCommandTest {
@@ -201,6 +202,35 @@ public class MarkUndoneHwCommandTest {
             throw new AssertionError("This method should not be called.");
         }
 
+        @Override
+        public void addReminder(Reminder reminder) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public boolean hasReminder(Reminder reminder) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void deleteReminder(Reminder target) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void setReminder(Reminder target, Reminder editedReminder) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public ObservableList<Reminder> getFilteredReminderList() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void updateFilteredReminderList(Predicate<Reminder> predicate) {
+            throw new AssertionError("This method should not be called.");
+        }
     }
 
     /**

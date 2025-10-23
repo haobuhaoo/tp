@@ -157,6 +157,32 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 This section describes some noteworthy details on how certain features are implemented.
 
+### Grouping feature
+
+The grouping feature lets you organize students into named groups and manage memberships with commands such as group-create, group-add, group-remove, and group-delete. This is useful for filtering by group (e.g., “Sec3”, “MorningClass”) and showing group badges on each student card.
+
+Key ideas
+
+* A Group has a GroupName and a set of Person members.
+
+* Commands operate through the Model interface; storage lives in the AddressBook via a UniqueGroupList.
+
+* UI reads memberships via a small bridge (UiGroupAccess) to render badges next to each name.
+
+<puml src="diagrams/Grouping.puml" alt="Class Diagram for Grouping" />
+
+### Attendance / Participation Command (overview)
+
+The participation feature records a per-class score (`s/0..5`) for a student and updates the 5-box history shown on each Person card, with the **class date above** each box and the **score inside**.
+
+<img src="diagrams/src/AttendanceCommand.png" alt="Attendance / Participation Command Diagram" width="720"/>
+
+### Add student feature
+
+This feature adds a student into the students list. This feature is facilitated by the `LogicManger`, `AddressBookParser`, `AddCommandParser`, `AddCommand`, `CommandResult` and `Model` classes. Given below is a high level overview of how a student is being added into the students list.
+
+<puml src="diagrams/AddSequenceDiagram.puml" width="550" />
+
 ### \[Proposed\] Undo/redo feature
 
 #### Proposed Implementation
@@ -272,10 +298,10 @@ _{Explain here how the data archiving feature will be implemented}_
 ### Product scope
 
 **Target user profile**:
-- Private tutors managing ~20–40 students individually.  
-- Need to keep track of **student + parent contact details, lesson times, homework, payments, and performance notes**.  
-- Prefer **fast, keyboard-driven CLI apps** over complex GUIs.  
-- Comfortable with basic computer operations, but want **lightweight, no-frills software**.  
+- Private tutors managing ~20–40 students individually.
+- Need to keep track of **student + parent contact details, lesson times, homework, payments, and performance notes**.
+- Prefer **fast, keyboard-driven CLI apps** over complex GUIs.
+- Comfortable with basic computer operations, but want **lightweight, no-frills software**.
 
 **Value proposition**: ClassConnect allows tutors to manage lessons, admin tasks, and student progress **faster and more accurately** than traditional notebooks or bloated management systems.
 
@@ -306,41 +332,41 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Use case 1: Add Student**
 
 **MSS**
-1. Tutor enters `add-student n/Marcus p/98765432 t/Mon 1900 lvl/Sec3 sub/Math`.  
-2. System validates the input.  
-3. System stores the student record.  
-4. System confirms addition.  
+1. Tutor enters `add-student n/Marcus p/98765432 t/Mon 1900 lvl/Sec3 sub/Math`.
+2. System validates the input.
+3. System stores the student record.
+4. System confirms addition.
 
 **Extensions**
-- 2a. Input is invalid (e.g., wrong phone format).  
-  → System shows error and requests re-entry.  
+- 2a. Input is invalid (e.g., wrong phone format).
+  → System shows error and requests re-entry.
 
 ---
 
 **Use case 2: Record Homework**
 
 **MSS**
-1. Tutor enters `add-homework sid/1 d/Finish Ch.3 problems due/2025-10-05`.  
-2. System validates and links homework to student.  
-3. System confirms creation.  
+1. Tutor enters `add-homework sid/1 d/Finish Ch.3 problems due/2025-10-05`.
+2. System validates and links homework to student.
+3. System confirms creation.
 
 **Extensions**
-- 2a. Student ID not found.  
-  → System shows error and suggests checking student list.  
+- 2a. Student ID not found.
+  → System shows error and suggests checking student list.
 
 ---
 
 **Use case 3: Track Payments**
 
 **MSS**
-1. Tutor enters `record-payment sid/1 amt/240 notes/Sep tuition`.  
-2. System stores payment as **UNPAID**.  
-3. Tutor later enters `pay 3`.  
-4. System updates status and confirms.  
+1. Tutor enters `record-payment sid/1 amt/240 notes/Sep tuition`.
+2. System stores payment as **UNPAID**.
+3. Tutor later enters `pay 3`.
+4. System updates status and confirms.
 
 **Extensions**
-- 1a. Invalid amount format entered.  
-  → System rejects input and shows correct format.  
+- 1a. Invalid amount format entered.
+  → System rejects input and shows correct format.
 
 ---
 
@@ -355,13 +381,13 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 3. **Scalability**
 - Able to scale up to 10000 students without any significant decrease in performance
-- Data structures should be implemented in a way such that adding more students minimally affects search and 
+- Data structures should be implemented in a way such that adding more students minimally affects search and
 delete methods
 
 4. **Usability**
 - Every command entered will print out either a success message or a specific error message
 - Help command will print out clear list of commands with their respective usage examples
-- A user with above average typing speed for regular English text should be able to accomplish most of the tasks faster 
+- A user with above average typing speed for regular English text should be able to accomplish most of the tasks faster
 using commands than using the mouse.
 
 5. **Maintainability**

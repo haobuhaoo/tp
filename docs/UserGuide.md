@@ -132,7 +132,7 @@ You can delete a student in two ways:
    * The index refers to the index number shown in the displayed student list.
    * The index **must be a positive integer** 1, 2, 3, …​
    * The list cannot be empty.
-   
+
 2. By keyword
    * Deletes the student whose name, phone number or lesson time matches the given keyword.
    * If multiple students match the keyword, the app will list all possible matches and ask you to refine your search.
@@ -152,26 +152,6 @@ Examples:
 Notes:
 * You cannot use `i/` and `k/` in the same command
 * The command is not case-sensitive
-
-### Recording attendance : `attendance`
-
-Records a student’s attendance for a specific date.
-
-Format: `attendance n/NAME d/YYYY-MM-DD s/1|0`
-* `NAME` is the name of the student whose attendance is to be recorded. It is case-insensitive. e.g. `marcus` is the same as `Marcus`.
-* `DATE` should be in the format `YYYY-MM-DD`. e.g. `2025-09-19` for 19th September 2025.
-* `STATUS` should be either `1` (for Present) or `0` (for Absent).
-* If attendance for the same student and date is already recorded with the same status, the command is rejected as redundant. e.g. “Student marcus is already marked as Present on 2025-09-19.”
-* If attendance exists but the status is different, the new status is recorded (updates the entry).
-
-Examples:
-* `attendance n/marcus d/2025-09-19 s/1` Marks student `marcus` as Present on 19th September 2025.
-→ Success: Attendance recorded: marcus, 2025-09-19, Present.
-
-Note:
-
-* Attendance is tracked in-memory alongside the address book.
-* Using clear resets the address book and clears all attendance records
 
 ### Creating a group : `group-create`
 

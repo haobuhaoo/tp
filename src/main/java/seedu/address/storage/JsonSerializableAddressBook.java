@@ -2,7 +2,6 @@ package seedu.address.storage;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,23 +11,31 @@ import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.person.Person;
+import seedu.address.model.reminder.Reminder;
 
 /**
  * An Immutable AddressBook that is serializable to JSON format.
  */
 @JsonRootName(value = "addressbook")
 class JsonSerializableAddressBook {
-
     public static final String MESSAGE_DUPLICATE_PERSON = "Students list contains duplicate student(s).";
+    public static final String MESSAGE_DUPLICATE_REMINDER = "Reminders list contains duplicate reminder(s).";
 
     private final List<JsonAdaptedPerson> persons = new ArrayList<>();
+    private final List<JsonAdaptedReminder> reminders = new ArrayList<>();
 
     /**
-     * Constructs a {@code JsonSerializableAddressBook} with the given persons.
+     * Constructs a {@code JsonSerializableAddressBook} with the given persons and reminders.
      */
     @JsonCreator
-    public JsonSerializableAddressBook(@JsonProperty("persons") List<JsonAdaptedPerson> persons) {
-        this.persons.addAll(persons);
+    public JsonSerializableAddressBook(@JsonProperty("persons") List<JsonAdaptedPerson> persons,
+                                       @JsonProperty("reminders") List<JsonAdaptedReminder> reminders) {
+        if (persons != null) {
+            this.persons.addAll(persons);
+        }
+        if (reminders != null) {
+            this.reminders.addAll(reminders);
+        }
     }
 
     /**
@@ -37,7 +44,8 @@ class JsonSerializableAddressBook {
      * @param source future changes to this will not affect the created {@code JsonSerializableAddressBook}.
      */
     public JsonSerializableAddressBook(ReadOnlyAddressBook source) {
-        persons.addAll(source.getPersonList().stream().map(JsonAdaptedPerson::new).collect(Collectors.toList()));
+        persons.addAll(source.getPersonList().stream().map(JsonAdaptedPerson::new).toList());
+        reminders.addAll(source.getReminderList().stream().map(JsonAdaptedReminder::new).toList());
     }
 
     /**
@@ -54,6 +62,16 @@ class JsonSerializableAddressBook {
             }
             addressBook.addPerson(person);
         }
+
+        for (JsonAdaptedReminder jsonAdaptedReminder : reminders) {
+            Reminder reminder = jsonAdaptedReminder.toModelType();
+            if (addressBook.hasReminder(reminder)) {
+                throw new IllegalValueException(MESSAGE_DUPLICATE_REMINDER);
+            }
+            addressBook.addReminder(reminder);
+        }
+        addressBook.sortReminder();
+
         return addressBook;
     }
 

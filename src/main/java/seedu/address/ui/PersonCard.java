@@ -7,7 +7,6 @@ import java.util.Set;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
@@ -29,27 +28,33 @@ public class PersonCard extends UiPart<Region> {
     private static final String FXML = "PersonListCard.fxml";
     private static final DateTimeFormatter MM_DD = DateTimeFormatter.ofPattern("MM-dd");
 
-    /** The person shown by this card. */
+    /**
+     * The person shown by this card.
+     */
     public final Person person;
 
+    @FXML
+    private HBox cardPane;
+    @FXML
+    private Label name;
+    @FXML
+    private Label id;
+    @FXML
+    private Label phone;
+    @FXML
+    private FlowPane lessonTime;
+    @FXML
+    private FlowPane groupBadges;
+    @FXML
+    private AnchorPane homeworkPlaceholder;
+    @FXML
+    private Label paymentStatus;
 
-    // Left column
-    @FXML private HBox cardPane;
-    @FXML private Label name;
-    @FXML private Label id;
-    @FXML private Label phone;
-    @FXML private FlowPane lessonTime; // FlowPane in FXML
-    @FXML private CheckBox attendanceCheck;
-    @FXML private AnchorPane homeworkPlaceholder;
-    @FXML private Label paymentStatus;
-
-    // Group badges
-    @FXML private FlowPane groupBadges;
-
-    // Right column (participation)
-    @FXML private HBox dateRow;
-    @FXML private HBox boxes;
-
+    // Participation UI
+    @FXML
+    private HBox dateRow;
+    @FXML
+    private HBox boxes;
 
     /**
      * Creates a {@code PersonCard} with the given {@code Person} and index to display.
@@ -64,19 +69,9 @@ public class PersonCard extends UiPart<Region> {
         person.getLessonTime().stream()
                 .sorted(Comparator.comparing(LessonTime::toString))
                 .forEach(lt -> lessonTime.getChildren().add(new Label(lt.toString())));
-        Boolean status = UiAttendanceAccess.getStatus(person.getName().fullName);
-        attendanceCheck.setSelected(Boolean.TRUE.equals(status));
         HomeworkListPanel panel = new HomeworkListPanel(person.getHomeworkList());
         homeworkPlaceholder.getChildren().setAll(panel.getRoot());
-
-        // Render lesson time(s). If your model stores a single LessonTime, show one label.
-        lessonTime.getChildren().clear();
-        lessonTime.getChildren().add(new Label(person.getLessonTime().toString()));
-
-        // Render group badges next to the name
         renderGroupBadges(person);
-
-        // Render participation (null-safe)
         renderParticipation(person.getParticipation());
     }
 
