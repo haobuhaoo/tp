@@ -1,9 +1,13 @@
 package seedu.address.testutil;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import seedu.address.model.person.LessonTime;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.util.SampleDataUtil;
 
 /**
  * A utility class to help with building Person objects.
@@ -11,11 +15,11 @@ import seedu.address.model.person.Phone;
 public class PersonBuilder {
     public static final String DEFAULT_NAME = "Amy Bee";
     public static final String DEFAULT_PHONE = "85355255";
-    public static final String DEFAULT_LESSON_TIME = "1000";
+    public static final String DEFAULT_LESSON_TIME = "1000 Sat";
 
     private Name name;
     private Phone phone;
-    private LessonTime lessonTime;
+    private Set<LessonTime> lessonTime = new HashSet<>();
 
     /**
      * Creates a {@code PersonBuilder} with the default details.
@@ -23,7 +27,7 @@ public class PersonBuilder {
     public PersonBuilder() {
         name = new Name(DEFAULT_NAME);
         phone = new Phone(DEFAULT_PHONE);
-        lessonTime = new LessonTime(DEFAULT_LESSON_TIME);
+        lessonTime.add(new LessonTime(DEFAULT_LESSON_TIME));
     }
 
     /**
@@ -54,8 +58,8 @@ public class PersonBuilder {
     /**
      * Sets the {@code LessonTime} of the {@code Person} that we are building.
      */
-    public PersonBuilder withLessonTime(String lessonTime) {
-        this.lessonTime = new LessonTime(lessonTime);
+    public PersonBuilder withLessonTime(String... lessonTime) {
+        this.lessonTime = SampleDataUtil.getLessonTimeSet(lessonTime);
         return this;
     }
 

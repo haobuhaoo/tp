@@ -19,7 +19,6 @@ import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentFieldsContainsKeywordsPredicate;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 
-
 /**
  * Contains helper methods for testing commands.
  */
@@ -28,15 +27,16 @@ public class CommandTestUtil {
     public static final String VALID_NAME_BOB = "Bob Choo";
     public static final String VALID_PHONE_AMY = "98765432";
     public static final String VALID_PHONE_BOB = "87654321";
-    public static final String VALID_LESSON_TIME_AMY = "1000";
-    public static final String VALID_LESSON_TIME_BOB = "1430";
+    public static final String VALID_LESSON_TIME_1 = "1000 Sat";
+    public static final String VALID_LESSON_TIME_2 = "1430 Thu";
 
     public static final String NAME_DESC_AMY = " " + PREFIX_NAME + VALID_NAME_AMY;
     public static final String NAME_DESC_BOB = " " + PREFIX_NAME + VALID_NAME_BOB;
     public static final String PHONE_DESC_AMY = " " + PREFIX_PHONE + VALID_PHONE_AMY;
     public static final String PHONE_DESC_BOB = " " + PREFIX_PHONE + VALID_PHONE_BOB;
-    public static final String LESSON_TIME_DESC_AMY = " " + PREFIX_LESSON_TIME + VALID_LESSON_TIME_AMY;
-    public static final String LESSON_TIME_DESC_BOB = " " + PREFIX_LESSON_TIME + VALID_LESSON_TIME_BOB;
+    public static final String LESSON_TIME_DESC_AMY =
+            " " + PREFIX_LESSON_TIME + VALID_LESSON_TIME_1 + " " + PREFIX_LESSON_TIME + VALID_LESSON_TIME_2;
+    public static final String LESSON_TIME_DESC_BOB = " " + PREFIX_LESSON_TIME + VALID_LESSON_TIME_2;
 
     public static final String INVALID_NAME_DESC = " " + PREFIX_NAME + "James&"; // '&' not allowed in names
     public static final String INVALID_PHONE_DESC = " " + PREFIX_PHONE + "911a"; // 'a' not allowed in phones
@@ -45,14 +45,14 @@ public class CommandTestUtil {
     public static final String PREAMBLE_WHITESPACE = "\t  \r  \n";
     public static final String PREAMBLE_NON_EMPTY = "NonEmptyPreamble";
 
-    public static final EditCommand.EditPersonDescriptor DESC_AMY;
-    public static final EditCommand.EditPersonDescriptor DESC_BOB;
+    public static final EditCommand.EditPersonDescriptor DESC_AMY; // Amy has 2 lesson time
+    public static final EditCommand.EditPersonDescriptor DESC_BOB; // Bob has 1 lesson time
 
     static {
         DESC_AMY = new EditPersonDescriptorBuilder().withName(VALID_NAME_AMY)
-                .withPhone(VALID_PHONE_AMY).withLessonTime(VALID_LESSON_TIME_AMY).build();
+                .withPhone(VALID_PHONE_AMY).withLessonTime(VALID_LESSON_TIME_1).build();
         DESC_BOB = new EditPersonDescriptorBuilder().withName(VALID_NAME_BOB)
-                .withPhone(VALID_PHONE_BOB).withLessonTime(VALID_LESSON_TIME_BOB).build();
+                .withPhone(VALID_PHONE_BOB).withLessonTime(VALID_LESSON_TIME_2).build();
     }
 
     /**

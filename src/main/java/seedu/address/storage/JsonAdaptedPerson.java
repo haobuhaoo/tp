@@ -1,13 +1,20 @@
 package seedu.address.storage;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import seedu.address.commons.exceptions.IllegalValueException;
+import seedu.address.model.homework.Homework;
 import seedu.address.model.person.LessonTime;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+
 
 /**
  * Jackson-friendly version of {@link Person}.
@@ -17,17 +24,25 @@ class JsonAdaptedPerson {
 
     private final String name;
     private final String phone;
-    private final String lessonTime;
+    private final List<JsonAdaptedHomework> homeworks = new ArrayList<>();
+    private final List<JsonAdaptedLessonTime> lessonTime = new ArrayList<>();
 
     /**
      * Constructs a {@code JsonAdaptedPerson} with the given person details.
      */
     @JsonCreator
-    public JsonAdaptedPerson(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
-                             @JsonProperty("lessonTime") String lessonTime) {
+    public JsonAdaptedPerson(@JsonProperty("name") String name,
+                         @JsonProperty("phone") String phone,
+                         @JsonProperty("lessonTime") List<JsonAdaptedLessonTime> lessonTime,
+                         @JsonProperty("homeworks") List<JsonAdaptedHomework> homeworks) {
         this.name = name;
         this.phone = phone;
-        this.lessonTime = lessonTime;
+        if (homeworks != null) {
+            this.homeworks.addAll(homeworks);
+        }
+        if (lessonTime != null) {
+            this.lessonTime.addAll(lessonTime);
+        }
     }
 
     /**
@@ -36,7 +51,10 @@ class JsonAdaptedPerson {
     public JsonAdaptedPerson(Person source) {
         name = source.getName().fullName;
         phone = source.getPhone().value;
-        lessonTime = source.getLessonTime().toInputString();
+        lessonTime.addAll(source.getLessonTime().stream()
+                .map(JsonAdaptedLessonTime::new)
+                .toList());
+        source.getHomeworkList().forEach(hw -> homeworks.add(new JsonAdaptedHomework(hw)));
     }
 
     /**
@@ -61,16 +79,26 @@ class JsonAdaptedPerson {
         }
         final Phone modelPhone = new Phone(phone);
 
-        if (lessonTime == null) {
+        if (lessonTime.isEmpty()) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
                     LessonTime.class.getSimpleName()));
         }
-        if (!LessonTime.isValidLessonTime(lessonTime)) {
-            throw new IllegalValueException(LessonTime.MESSAGE_CONSTRAINTS);
+        final List<LessonTime> modelLessonTimeList = new ArrayList<>();
+        for (JsonAdaptedLessonTime lt : lessonTime) {
+            modelLessonTimeList.add(lt.toModelType());
         }
-        final LessonTime modelLessonTime = new LessonTime(lessonTime);
+        final Set<LessonTime> modelLessonTime = new HashSet<>(modelLessonTimeList);
 
-        return new Person(modelName, modelPhone, modelLessonTime);
+        final Person person = new Person(modelName, modelPhone, modelLessonTime);
+
+        List<Homework> hwList = new ArrayList<>();
+        for (JsonAdaptedHomework jhw : homeworks) {
+            hwList.add(jhw.toModelType());
+        }
+        person.setHomeworkList(hwList);
+
+        return person;
     }
+
 
 }

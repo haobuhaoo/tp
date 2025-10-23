@@ -163,6 +163,12 @@ The participation feature records a per-class score (`s/0..5`) for a student and
 
 <img src="diagrams/src/AttendanceCommand.png" alt="Attendance / Participation Command Diagram" width="720"/>
 
+### Add student feature
+
+This feature adds a student into the students list. This feature is facilitated by the `LogicManger`, `AddressBookParser`, `AddCommandParser`, `AddCommand`, `CommandResult` and `Model` classes. Given below is a high level overview of how a student is being added into the students list.
+
+<puml src="diagrams/AddSequenceDiagram.puml" width="550" />
+
 ### \[Proposed\] Undo/redo feature
 
 #### Proposed Implementation

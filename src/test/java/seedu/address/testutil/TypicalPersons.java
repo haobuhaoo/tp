@@ -1,7 +1,7 @@
 package seedu.address.testutil;
 
-import static seedu.address.logic.commands.CommandTestUtil.VALID_LESSON_TIME_AMY;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_LESSON_TIME_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_LESSON_TIME_1;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_LESSON_TIME_2;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_AMY;
@@ -19,31 +19,31 @@ import seedu.address.model.person.Person;
  */
 public class TypicalPersons {
     public static final Person ALICE = new PersonBuilder().withName("Alice Pauline")
-            .withPhone("94351253").withLessonTime("1000").build();
+            .withPhone("94351253").withLessonTime("1000 Sun").build();
     public static final Person BENSON = new PersonBuilder().withName("Benson Meier")
-            .withPhone("98765432").withLessonTime("1200").build();
+            .withPhone("98765432").withLessonTime("1200 Mon", "1400 Wed").build();
     public static final Person CARL = new PersonBuilder().withName("Carl Kurz")
-            .withPhone("95352563").withLessonTime("1430").build();
+            .withPhone("95352563").withLessonTime("1430 Tue").build();
     public static final Person DANIEL = new PersonBuilder().withName("Daniel Meier")
-            .withPhone("87652533").withLessonTime("1830").build();
+            .withPhone("87652533").withLessonTime("1830 Thu", "1930 Fri", "2030 Sat").build();
     public static final Person ELLE = new PersonBuilder().withName("Elle Meyer")
-            .withPhone("94822240").withLessonTime("1500").build();
+            .withPhone("94822240").withLessonTime("1500 Mon", "1600 Wed").build();
     public static final Person FIONA = new PersonBuilder().withName("Fiona Kunz")
-            .withPhone("94824270").withLessonTime("1600").build();
+            .withPhone("94824270").withLessonTime("1600 Tue").build();
     public static final Person GEORGE = new PersonBuilder().withName("George Best")
-            .withPhone("94824421").withLessonTime("1700").build();
+            .withPhone("94824421").withLessonTime("1700 Fri", "1800 Sun").build();
 
     // Manually added
     public static final Person HOON = new PersonBuilder().withName("Hoon Meier")
-            .withPhone("84824241").withLessonTime("0900").build();
+            .withPhone("84824241").withLessonTime("0900 Fri").build();
     public static final Person IDA = new PersonBuilder().withName("Ida Mueller")
-            .withPhone("84821310").withLessonTime("1130").build();
+            .withPhone("84821310").withLessonTime("1130 Thu", "0900 Sun").build();
 
     // Manually added - Person's details found in {@code CommandTestUtil}
     public static final Person AMY = new PersonBuilder().withName(VALID_NAME_AMY)
-            .withPhone(VALID_PHONE_AMY).withLessonTime(VALID_LESSON_TIME_AMY).build();
+            .withPhone(VALID_PHONE_AMY).withLessonTime(VALID_LESSON_TIME_1, VALID_LESSON_TIME_2).build();
     public static final Person BOB = new PersonBuilder().withName(VALID_NAME_BOB)
-            .withPhone(VALID_PHONE_BOB).withLessonTime(VALID_LESSON_TIME_BOB).build();
+            .withPhone(VALID_PHONE_BOB).withLessonTime(VALID_LESSON_TIME_2).build();
 
     public static final String KEYWORD_MATCHING_MEIER = "Meier"; // A keyword that matches MEIER
 

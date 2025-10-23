@@ -15,10 +15,23 @@ import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.ExitCommand;
+import seedu.address.logic.commands.GroupAddCommand;
+import seedu.address.logic.commands.GroupCreateCommand;
+import seedu.address.logic.commands.GroupDeleteCommand;
+import seedu.address.logic.commands.GroupRemoveCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.SearchCommand;
+import seedu.address.logic.commands.homeworkcommands.AddHomeworkCommand;
+import seedu.address.logic.commands.homeworkcommands.DeleteHomeworkCommand;
+import seedu.address.logic.commands.homeworkcommands.MarkDoneHwCommand;
+import seedu.address.logic.commands.homeworkcommands.MarkUndoneHwCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.logic.parser.homeworkparsers.AddHomeworkCommandParser;
+import seedu.address.logic.parser.homeworkparsers.DeleteHomeworkCommandParser;
+import seedu.address.logic.parser.homeworkparsers.MarkDoneHwParser;
+import seedu.address.logic.parser.homeworkparsers.MarkUndoneHwParser;
+
 
 /**
  * Parses user input.
@@ -80,6 +93,30 @@ public class AddressBookParser {
 
         case AttendanceCommand.COMMAND_WORD:
             return new AttendanceCommandParser().parse(arguments);
+
+        case AddHomeworkCommand.COMMAND_WORD:
+            return new AddHomeworkCommandParser().parse(arguments);
+
+        case MarkDoneHwCommand.COMMAND_WORD:
+            return new MarkDoneHwParser().parse(arguments);
+
+        case MarkUndoneHwCommand.COMMAND_WORD:
+            return new MarkUndoneHwParser().parse(arguments);
+
+        case DeleteHomeworkCommand.COMMAND_WORD:
+            return new DeleteHomeworkCommandParser().parse(arguments);
+        case GroupCreateCommand.COMMAND_WORD:
+            return new GroupCreateCommandParser().parse(arguments);
+
+        case GroupDeleteCommand.COMMAND_WORD:
+            return new GroupDeleteCommandParser().parse(arguments);
+
+        case GroupAddCommand.COMMAND_WORD:
+            return new GroupAddCommandParser().parse(arguments);
+
+        case GroupRemoveCommand.COMMAND_WORD:
+            return new GroupRemoveCommandParser().parse(arguments);
+
 
         default:
             logger.finer("This user input caused a ParseException: " + userInput);
