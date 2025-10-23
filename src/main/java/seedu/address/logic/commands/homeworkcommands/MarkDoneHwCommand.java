@@ -1,4 +1,10 @@
-package seedu.address.logic.commands.HomeworkCommands;
+package seedu.address.logic.commands.homeworkcommands;
+
+import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DESC;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
+
+import java.util.List;
 
 import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.CommandResult;
@@ -8,19 +14,13 @@ import seedu.address.model.homework.Homework;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 
-import java.util.List;
-
-import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_DESC;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
-
 /**
- * Deletes a homework item from a student's homework list.
+ * Marks homework task as done
  */
-public class DeleteHomeworkCommand extends Command {
-    public static final String COMMAND_WORD = "delete-homework";
+public class MarkDoneHwCommand extends Command {
+    public static final String COMMAND_WORD = "mark-done";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Deletes a homework item for a student. "
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Marks homework as done for student. "
             + "Parameters: "
             + PREFIX_NAME + "NAME "
             + PREFIX_DESC + "DESCRIPTION "
@@ -28,7 +28,7 @@ public class DeleteHomeworkCommand extends Command {
             + PREFIX_NAME + "Marcus "
             + PREFIX_DESC + "Math Worksheet 1";
 
-    public static final String MESSAGE_SUCCESS = "Deleted homework for %1$s: %2$s";
+    public static final String MESSAGE_SUCCESS = "Marked homework for %1$s: %2$s";
     public static final String MESSAGE_NO_PERSON_FOUND = "No student with given name";
     public static final String MESSAGE_NO_HW_FOUND = "No such homework in list";
 
@@ -36,9 +36,9 @@ public class DeleteHomeworkCommand extends Command {
     private final String description;
 
     /**
-     * Creates a DeleteHomeworkCommand to remove a homework from a student's list.
+     * Creates a MarkDoneHW to mark a homework as done in homework list
      */
-    public DeleteHomeworkCommand(Name studentName, String description) {
+    public MarkDoneHwCommand(Name studentName, String description) {
         requireNonNull(studentName);
         requireNonNull(description);
         this.studentName = studentName;
@@ -49,7 +49,6 @@ public class DeleteHomeworkCommand extends Command {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
 
-        //Able to delete homework after search command
         List<Person> lastShownList = model.getFilteredPersonList();
         Person target = null;
         for (Person p : lastShownList) {
@@ -64,7 +63,7 @@ public class DeleteHomeworkCommand extends Command {
         }
 
         Homework matched = null;
-        for (Homework hw : target.getHomeworkList()) {
+        for (Homework hw: target.getHomeworkList()) {
             if (hw.getDescription().equalsIgnoreCase(description)) {
                 matched = hw;
                 break;
@@ -75,13 +74,14 @@ public class DeleteHomeworkCommand extends Command {
             throw new CommandException(MESSAGE_NO_HW_FOUND);
         }
 
-        target.removeHomework(matched);
+        if (!matched.isDone()) {
+            matched.markDone();
+        }
 
         return new CommandResult(String.format(
                 MESSAGE_SUCCESS,
                 target.getName().fullName,
-                matched.getDescription()
-        ));
+                matched.getDescription()));
     }
 
     @Override
@@ -90,11 +90,12 @@ public class DeleteHomeworkCommand extends Command {
             return true;
         }
 
-        if (!(other instanceof DeleteHomeworkCommand)) {
+        // instanceof handles nulls
+        if (!(other instanceof MarkDoneHwCommand)) {
             return false;
         }
 
-        DeleteHomeworkCommand otherCommand = (DeleteHomeworkCommand) other;
+        MarkDoneHwCommand otherCommand = (MarkDoneHwCommand) other;
         return studentName.equals(otherCommand.studentName)
                 && description.equals(otherCommand.description);
     }

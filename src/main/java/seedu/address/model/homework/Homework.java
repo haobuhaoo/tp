@@ -14,6 +14,13 @@ public class Homework {
     private final LocalDate deadline;
     private boolean isDone;
 
+    /**
+     * Constructs a {@code Homework} object with the specified description and deadline.
+     * The homework is initially marked as not done.
+     *
+     * @param description A short text describing the homework task.
+     * @param deadline The date by which the homework is due.
+     */
     public Homework(String description, LocalDate deadline) {
         requireNonNull(description);
         requireNonNull(deadline);

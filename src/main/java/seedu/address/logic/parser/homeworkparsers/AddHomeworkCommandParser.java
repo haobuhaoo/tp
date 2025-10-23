@@ -1,22 +1,23 @@
-package seedu.address.logic.parser.Homework;
+package seedu.address.logic.parser.homeworkparsers;
 
-import seedu.address.logic.commands.HomeworkCommands.AddHomeworkCommand;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DEADLINE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DESC;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
+
+import java.time.LocalDate;
+import java.util.stream.Stream;
+
+import seedu.address.logic.commands.homeworkcommands.AddHomeworkCommand;
 import seedu.address.logic.parser.ArgumentMultimap;
 import seedu.address.logic.parser.ArgumentTokenizer;
 import seedu.address.logic.parser.Parser;
 import seedu.address.logic.parser.ParserUtil;
 import seedu.address.logic.parser.Prefix;
 import seedu.address.logic.parser.exceptions.ParseException;
-
-import java.time.LocalDate;
-import java.util.stream.Stream;
-
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_DESC;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_DEADLINE;
 import seedu.address.model.homework.Homework;
 import seedu.address.model.person.Name;
+
 
 /**
  * Parses input arguments and creates a new {@code AddHomeworkCommand} object.

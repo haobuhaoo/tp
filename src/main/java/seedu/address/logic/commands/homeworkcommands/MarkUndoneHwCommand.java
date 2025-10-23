@@ -1,5 +1,10 @@
-package seedu.address.logic.commands.HomeworkCommands;
+package seedu.address.logic.commands.homeworkcommands;
 
+import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DESC;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
+
+import java.util.List;
 
 import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.CommandResult;
@@ -9,27 +14,22 @@ import seedu.address.model.homework.Homework;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 
-import java.util.List;
-
-import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_DESC;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 
 /**
  * Marks homework task as done
  */
-public class MarkDoneHwCommand extends Command {
-    public static final String COMMAND_WORD = "mark-done";
+public class MarkUndoneHwCommand extends Command {
+    public static final String COMMAND_WORD = "mark-undone";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Marks homework as done for student. "
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Marks homework as undone for student. "
             + "Parameters: "
             + PREFIX_NAME + "NAME "
             + PREFIX_DESC + "DESCRIPTION "
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_NAME + "Marcus "
-            + PREFIX_DESC+ "Math Worksheet 1";
+            + PREFIX_DESC + "Math Worksheet 1";
 
-    public static final String MESSAGE_SUCCESS = "Marked homework for %1$s: %2$s";
+    public static final String MESSAGE_SUCCESS = "Marked homework as undone for %1$s: %2$s";
     public static final String MESSAGE_NO_PERSON_FOUND = "No student with given name";
     public static final String MESSAGE_NO_HW_FOUND = "No such homework in list";
 
@@ -37,13 +37,13 @@ public class MarkDoneHwCommand extends Command {
     private final String description;
 
     /**
-     * Creates a MarkDoneHW to mark a homework as done in homework list
+     * Creates a MarkunDoneHW to mark a homework as undone in homework list
      */
-    public MarkDoneHwCommand(Name studentName, String description) {
+    public MarkUndoneHwCommand(Name studentName, String description) {
         requireNonNull(studentName);
         requireNonNull(description);
         this.studentName = studentName;
-        this.description= description;
+        this.description = description;
     }
 
     @Override
@@ -75,8 +75,8 @@ public class MarkDoneHwCommand extends Command {
             throw new CommandException(MESSAGE_NO_HW_FOUND);
         }
 
-        if (!matched.isDone()) {
-            matched.markDone();
+        if (matched.isDone()) {
+            matched.markUndone();
         }
 
         return new CommandResult(String.format(
@@ -92,11 +92,10 @@ public class MarkDoneHwCommand extends Command {
         }
 
         // instanceof handles nulls
-        if (!(other instanceof MarkDoneHwCommand)) {
+        if (!(other instanceof MarkUndoneHwCommand)) {
             return false;
         }
-
-        MarkDoneHwCommand otherCommand = (MarkDoneHwCommand) other;
+        MarkUndoneHwCommand otherCommand = (MarkUndoneHwCommand) other;
         return studentName.equals(otherCommand.studentName)
                 && description.equals(otherCommand.description);
     }

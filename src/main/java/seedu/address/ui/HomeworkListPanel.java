@@ -16,11 +16,11 @@ import seedu.address.model.homework.Homework;
  * Each homework item is shown with a checkbox (mark as done/undone)
  * and a label containing its description and deadline
  */
-public class HomeworkListPanel extends UiPart<Region>{
+public class HomeworkListPanel extends UiPart<Region> {
     private static final String FXML = "HomeworkListPanel.fxml";
 
     @FXML
-    public ListView<Homework> homeworkListView;
+    private ListView<Homework> homeworkListView;
 
     /**
      * Creates a HomeworkListPanel that displays list of homework

@@ -1,14 +1,26 @@
-package seedu.address.logic.commands.HomeworkTests;
+package seedu.address.logic.commands.homeworktests;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.nio.file.Path;
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Predicate;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.logic.commands.CommandResult;
-import seedu.address.logic.commands.HomeworkCommands.AddHomeworkCommand;
 import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.logic.commands.homeworkcommands.AddHomeworkCommand;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
@@ -19,17 +31,7 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 
-import java.nio.file.Path;
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
-import java.util.function.Predicate;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests for {@link AddHomeworkCommand}.
@@ -61,10 +63,9 @@ public class AddHomeworkCommandTest {
         this.johnLessonTime = new LessonTime("1400");
         this.john = new Person(johnName, johnPhone, johnLessonTime);
     }
-
-/**
- * Minimal {@link Model} stub for {@link AddHomeworkCommand} tests.
- */
+    /**
+     * * Minimal {@link Model} stub for {@link AddHomeworkCommand} tests.
+     * */
     private static class ModelStubFilteredOnly implements Model {
         private final ObservableList<Person> filtered;
 
@@ -157,21 +158,21 @@ public class AddHomeworkCommandTest {
         }
     }
 
-/**
- * Verifies that executing {@link AddHomeworkCommand} with a matching student
- * in the filtered list adds homework to list and displays success message
- */
+    /**
+    * Verifies that executing {@link AddHomeworkCommand} with a matching student
+    * in the filtered list adds homework to list and displays success message
+    */
     @Test
     public void execute_success_addhomework() throws Exception {
         Homework homework = new Homework("Math WS 3", LocalDate.parse("2025-10-23"));
-        AddHomeworkCommand command = new AddHomeworkCommand(marcusName,homework);
+        AddHomeworkCommand command = new AddHomeworkCommand(marcusName, homework);
         Model model = new ModelStubFilteredOnly(List.of(marcus));
         CommandResult result = command.execute(model);
 
         String expected = String.format(AddHomeworkCommand.MESSAGE_SUCCESS, marcus.getName(),
-                homework.getDescription(),homework.getDeadline());
+                homework.getDescription(), homework.getDeadline());
 
-        assertEquals(expected,result.getFeedbackToUser());
+        assertEquals(expected, result.getFeedbackToUser());
         assertTrue(marcus.getHomeworkList().contains(homework));
     }
 
@@ -183,8 +184,7 @@ public class AddHomeworkCommandTest {
     @Test
     public void execute_nameNotInFilteredList() {
         Model model = new ModelStubFilteredOnly(List.of(john));
-        Homework homework  = new Homework("Math WS 3", LocalDate.parse("2025-10-23"));
-
+        Homework homework = new Homework("Math WS 3", LocalDate.parse("2025-10-23"));
         AddHomeworkCommand command = new AddHomeworkCommand(marcusName, homework);
         CommandException exception = assertThrows(CommandException.class, () -> command.execute(model));
         assertEquals(AddHomeworkCommand.MESSAGE_NO_PERSON_FOUND, exception.getMessage());
@@ -237,7 +237,6 @@ public class AddHomeworkCommandTest {
     public void equals_various() {
         Homework homework1 = new Homework("A", LocalDate.parse("2025-10-01"));
         Homework homework2 = new Homework("B", LocalDate.parse("2025-10-02"));
-
         AddHomeworkCommand a1 = new AddHomeworkCommand(marcusName, homework1);
         AddHomeworkCommand a1copy = new AddHomeworkCommand(new Name("Marcus"),
                 new Homework("A", LocalDate.parse("2025-10-01")));

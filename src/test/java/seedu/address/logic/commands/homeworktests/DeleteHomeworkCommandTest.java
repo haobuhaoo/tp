@@ -1,13 +1,26 @@
-package seedu.address.logic.commands.HomeworkTests;
+package seedu.address.logic.commands.homeworktests;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.nio.file.Path;
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Predicate;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.logic.commands.CommandResult;
-import seedu.address.logic.commands.HomeworkCommands.DeleteHomeworkCommand;
 import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.logic.commands.homeworkcommands.DeleteHomeworkCommand;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
@@ -18,17 +31,6 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 
-import java.nio.file.Path;
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
-import java.util.function.Predicate;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DeleteHomeworkCommandTest {
     private Name marcusName;
@@ -159,7 +161,7 @@ public class DeleteHomeworkCommandTest {
      * removes it and returns the expected message.
      */
     @Test
-    public void execute_success_deletesHomework_caseInsensitiveMatch() throws Exception {
+    public void execute_success_deletesHomework() throws Exception {
         Homework homework = new Homework("Math WS 3", LocalDate.parse("2025-10-23"));
         marcus.addHomework(homework);
 
@@ -232,7 +234,6 @@ public class DeleteHomeworkCommandTest {
 
     /**
      * Tests for equality as specified under {@link DeleteHomeworkCommand}
-    }
      */
     @Test
     public void equals_various() {
@@ -241,12 +242,12 @@ public class DeleteHomeworkCommandTest {
         DeleteHomeworkCommand a2 = new DeleteHomeworkCommand(marcusName, "B");
         DeleteHomeworkCommand b1 = new DeleteHomeworkCommand(johnName, "A");
 
-        assertEquals(a1, a1);          // same object
-        assertEquals(a1, a1copy);      // same values
-        assertNotEquals(a1, null);     // null
-        assertNotEquals(a1, "str");    // different type
-        assertNotEquals(a1, a2);       // different description
-        assertNotEquals(a1, b1);       // different student
+        assertEquals(a1, a1);
+        assertEquals(a1, a1copy);
+        assertNotEquals(a1, null);
+        assertNotEquals(a1, "str");
+        assertNotEquals(a1, a2);
+        assertNotEquals(a1, b1);
     }
 
 

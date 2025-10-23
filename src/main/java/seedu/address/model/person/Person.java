@@ -54,9 +54,13 @@ public class Person {
         homeworkList.add(hw);
     }
 
-    public void removeHomework(Homework hw) { homeworkList.remove(hw); }
+    public void removeHomework(Homework hw) {
+        homeworkList.remove(hw);
+    }
 
-    public void setHomeworkList(List<Homework> list) { homeworkList.setAll(list); }
+    public void setHomeworkList(List<Homework> list) {
+        homeworkList.setAll(list);
+    }
 
 
 

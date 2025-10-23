@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.commands.AddCommand;
-import seedu.address.logic.commands.HomeworkCommands.AddHomeworkCommand;
 import seedu.address.logic.commands.AttendanceCommand;
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.Command;
@@ -17,16 +16,18 @@ import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.HelpCommand;
-import seedu.address.logic.commands.HomeworkCommands.DeleteHomeworkCommand;
-import seedu.address.logic.commands.HomeworkCommands.MarkUndoneHwCommand;
 import seedu.address.logic.commands.ListCommand;
-import seedu.address.logic.commands.HomeworkCommands.MarkDoneHwCommand;
 import seedu.address.logic.commands.SearchCommand;
-import seedu.address.logic.parser.Homework.AddHomeworkCommandParser;
-import seedu.address.logic.parser.Homework.DeleteHomeworkCommandParser;
-import seedu.address.logic.parser.Homework.MarkDoneHwParser;
-import seedu.address.logic.parser.Homework.MarkUndoneHwParser;
+import seedu.address.logic.commands.homeworkcommands.AddHomeworkCommand;
+import seedu.address.logic.commands.homeworkcommands.DeleteHomeworkCommand;
+import seedu.address.logic.commands.homeworkcommands.MarkDoneHwCommand;
+import seedu.address.logic.commands.homeworkcommands.MarkUndoneHwCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.logic.parser.homeworkparsers.AddHomeworkCommandParser;
+import seedu.address.logic.parser.homeworkparsers.DeleteHomeworkCommandParser;
+import seedu.address.logic.parser.homeworkparsers.MarkDoneHwParser;
+import seedu.address.logic.parser.homeworkparsers.MarkUndoneHwParser;
+
 
 /**
  * Parses user input.

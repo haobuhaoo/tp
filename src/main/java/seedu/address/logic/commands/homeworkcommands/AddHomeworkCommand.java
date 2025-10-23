@@ -1,4 +1,11 @@
-package seedu.address.logic.commands.HomeworkCommands;
+package seedu.address.logic.commands.homeworkcommands;
+
+import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DEADLINE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DESC;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
+
+import java.util.List;
 
 import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.CommandResult;
@@ -8,12 +15,6 @@ import seedu.address.model.homework.Homework;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 
-import java.util.List;
-
-import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_DESC;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_DEADLINE;
 
 /**
  * Adds a homework item to a students homework list (for now it works only for name but will add for group when
@@ -29,7 +30,7 @@ public class AddHomeworkCommand extends Command {
             + PREFIX_DEADLINE + "DEADLINE(yyyy-mm-dd)    "
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_NAME + "Marcus "
-            + PREFIX_DESC+ "Math Worksheet 1 "
+            + PREFIX_DESC + "Math Worksheet 1 "
             + PREFIX_DEADLINE + "2025-10-27";
 
     public static final String MESSAGE_SUCCESS = "Added homework for %1$s: %2$s (due %3$s)";
