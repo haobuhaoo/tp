@@ -2,7 +2,7 @@ package seedu.address.logic.parser;
 
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_STATUS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_STATUS; // we still reuse PREFIX_STATUS as 's/'
 
 import java.util.stream.Stream;
 
@@ -23,13 +23,13 @@ public class AttendanceCommandParser implements Parser<AttendanceCommand> {
         }
 
         String name = map.getValue(PREFIX_NAME).get(); // raw; validated in command
-        String date = map.getValue(PREFIX_DATE).get();
-        String status = map.getValue(PREFIX_STATUS).get();
+        String date = map.getValue(PREFIX_DATE).get(); // raw; validated in command
+        String score = map.getValue(PREFIX_STATUS).get(); // raw; will be parsed as int 0..5 in command
 
-        return new AttendanceCommand(name, date, status);
+        return new AttendanceCommand(name, date, score);
     }
 
-    /** Returns true if none of the prefixes are empty in the given ArgumentMultimap. */
+    /** Returns true if all prefixes are present in the given ArgumentMultimap. */
     private static boolean arePrefixesPresent(ArgumentMultimap argumentMultimap, Prefix... prefixes) {
         return Stream.of(prefixes).allMatch(prefix -> argumentMultimap.getValue(prefix).isPresent());
     }

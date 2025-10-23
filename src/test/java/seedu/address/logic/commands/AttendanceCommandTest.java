@@ -18,48 +18,51 @@ import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.attendance.AttendanceIndex;
+import seedu.address.model.person.ParticipationRecord;
 import seedu.address.model.person.Person;
+import seedu.address.testutil.PersonBuilder;
 
 /**
- * Tests for {@link AttendanceCommand}.
+ * Tests for {@link AttendanceCommand} under participation semantics (s/0..5).
  */
 public class AttendanceCommandTest {
 
     @Test
-    public void execute_success_presentRecorded() throws Exception {
-        Model model = new ModelStubWithPerson("Alex Yeoh");
+    public void execute_success_scoreRecorded() throws Exception {
+        ModelStubWithPerson model = new ModelStubWithPerson("Alex Yeoh");
         String cmdName = "Alex Yeoh";
         String date = "2025-09-19";
-        String status = "1";
+        String score = "3";
 
-        AttendanceCommand cmd = new AttendanceCommand(cmdName, date, status);
+        AttendanceCommand cmd = new AttendanceCommand(cmdName, date, score);
         CommandResult result = cmd.execute(model);
 
-        assertEquals("Success: Attendance recorded: Alex Yeoh, 2025-09-19, Present.",
+        assertEquals("Success: Participation recorded: Alex Yeoh, 2025-09-19, score=3.",
                 result.getFeedbackToUser());
 
-        AttendanceIndex idx = model.getAttendanceIndex();
-        boolean taken = idx.isTaken("Alex Yeoh", LocalDate.parse(date));
-        assertEquals(true, taken);
+        // Verify the most recent participation on the person
+        ParticipationRecord recent = model.person.getParticipation().mostRecent();
+        assertEquals(LocalDate.parse(date), recent.getDate());
+        assertEquals(3, recent.getScore());
     }
 
     @Test
-    public void execute_duplicateSameStatus_throws() throws Exception {
-        Model model = new ModelStubWithPerson("Alex Yeoh");
+    public void execute_duplicateSameScore_allowed() throws Exception {
+        // With participation model, allow multiple entries (e.g., corrections).
+        ModelStubWithPerson model = new ModelStubWithPerson("Alex Yeoh");
 
-        // first record: success
-        new AttendanceCommand("Alex Yeoh", "2025-09-19", "1").execute(model);
+        new AttendanceCommand("Alex Yeoh", "2025-09-19", "3").execute(model);
+        // same date and same score again -> allowed
+        CommandResult result = new AttendanceCommand("Alex Yeoh", "2025-09-19", "3").execute(model);
 
-        // duplicate with same status
-        AttendanceCommand dup = new AttendanceCommand("Alex Yeoh", "2025-09-19", "1");
-        CommandException ex = assertThrows(CommandException.class, () -> dup.execute(model));
-        assertEquals("Student Alex Yeoh is already marked as Present on 2025-09-19.", ex.getMessage());
+        assertEquals("Success: Participation recorded: Alex Yeoh, 2025-09-19, score=3.",
+                result.getFeedbackToUser());
     }
 
     @Test
     public void execute_invalidName_throws() {
         Model model = new ModelStubWithPerson("Alex Yeoh");
-        AttendanceCommand cmd = new AttendanceCommand("Nonexistent", "2025-09-19", "1");
+        AttendanceCommand cmd = new AttendanceCommand("Nonexistent", "2025-09-19", "3");
         CommandException ex = assertThrows(CommandException.class, () -> cmd.execute(model));
         assertEquals("Invalid student name: no matching student found.", ex.getMessage());
     }
@@ -67,28 +70,32 @@ public class AttendanceCommandTest {
     @Test
     public void execute_invalidDate_throws() {
         Model model = new ModelStubWithPerson("Alex Yeoh");
-        AttendanceCommand cmd = new AttendanceCommand("Alex Yeoh", "19-09-2025", "1");
+        AttendanceCommand cmd = new AttendanceCommand("Alex Yeoh", "19-09-2025", "3");
         CommandException ex = assertThrows(CommandException.class, () -> cmd.execute(model));
         assertEquals("Invalid date. The format must be YYYY-MM-DD.", ex.getMessage());
     }
 
     @Test
-    public void execute_invalidStatus_throws() {
+    public void execute_invalidScore_throws() {
         Model model = new ModelStubWithPerson("Alex Yeoh");
         AttendanceCommand cmd = new AttendanceCommand("Alex Yeoh", "2025-09-19", "9");
         CommandException ex = assertThrows(CommandException.class, () -> cmd.execute(model));
-        assertEquals("Invalid status. Use 1 for present, 0 for absent.", ex.getMessage());
+        assertEquals("Invalid participation score. Must be between 0 and 5 inclusive.", ex.getMessage());
     }
 
     /**
-     * Minimal model stub supporting hasPersonName() and AttendanceIndex.
+     * Model stub that:
+     *  - says a single person name exists via hasPersonName(...)
+     *  - exposes a tiny ReadOnlyAddressBook containing that Person
+     *  - provides an AttendanceIndex for the command to update UI date
      */
-    private static class ModelStubWithPerson implements Model {
-        private final String storedName;
+    static class ModelStubWithPerson implements Model {
+        final Person person;
         private final AttendanceIndex index = new AttendanceIndex();
 
         ModelStubWithPerson(String storedName) {
-            this.storedName = norm(storedName);
+            // Build a valid Person using the test builder defaults, overriding only the name
+            this.person = new PersonBuilder().withName(storedName).build();
         }
 
         private static String norm(String s) {
@@ -99,7 +106,21 @@ public class AttendanceCommandTest {
 
         @Override
         public boolean hasPersonName(String name) {
-            return norm(name).equals(storedName);
+            return norm(name).equals(norm(person.getName().fullName));
+        }
+
+        @Override
+        public ReadOnlyAddressBook getAddressBook() {
+            // Provide a tiny read-only view exposing just our person
+            return new ReadOnlyAddressBook() {
+                private final ObservableList<Person> list =
+                        FXCollections.observableArrayList(person);
+
+                @Override
+                public ObservableList<Person> getPersonList() {
+                    return list;
+                }
+            };
         }
 
         @Override
@@ -109,7 +130,7 @@ public class AttendanceCommandTest {
 
         @Override
         public void updateFilteredPersonList(Predicate<Person> predicate) {
-            // no-op
+            // no-op for tests
         }
 
         // --- Unused methods (throw AssertionError if called) ---
@@ -146,11 +167,6 @@ public class AttendanceCommandTest {
 
         @Override
         public void setAddressBook(ReadOnlyAddressBook addressBook) {
-            throw new AssertionError();
-        }
-
-        @Override
-        public ReadOnlyAddressBook getAddressBook() {
             throw new AssertionError();
         }
 
