@@ -42,6 +42,15 @@
             </HBox>
         </VBox>
 
+        <!-- Homework List -->
+        <VBox spacing = "4" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2">
+            <padding><Insets left="15" right="15" bottom="10"/></padding>
+            <Label text="Homework" styleClass="cell_small_label"></Label>
+            <AnchorPane fx:id="homeworkPlaceholder" prefHeight="90"/>
+        </VBox>
+
+        <CheckBox fx:id="attendanceCheck" disable="true"
+                  GridPane.columnIndex="1" GridPane.halignment="RIGHT">
         <!-- RIGHT: participation panel with per-box dates -->
         <VBox alignment="TOP_RIGHT" spacing="6" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
             <padding>
