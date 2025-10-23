@@ -1,5 +1,5 @@
 {
-  "_comment": "AddressBook save file which contains the same Person values as in TypicalPersons#getTypicalAddressBook()",
+  "_comment": "AddressBook save file which contains the same Person values as in TypicalPersons#getTypicalAddressBook() and same Reminder values as in TypicalReminders#getTypicalAddressBook()",
   "persons" : [ {
     "name" : "Alice Pauline",
     "phone" : "94351253",
@@ -28,5 +28,18 @@
     "name" : "George Best",
     "phone" : "94824421",
     "lessonTime": ["1700 Fri", "1800 Sun"]
+  } ],
+  "reminders" : [ {
+    "dueDate" : "2025-10-21 1530",
+    "description" : "Alice: Submit homework for Math"
+  }, {
+    "dueDate" : "2025-10-22 1000",
+    "description" : "Benson: Prepare for English lesson"
+  }, {
+    "dueDate" : "2025-10-25",
+    "description" : "Carl: Assignment review"
+  }, {
+    "dueDate" : "2025-11-01",
+    "description" : "Daniel: Feedback session"
   } ]
 }

@@ -22,6 +22,7 @@ import seedu.address.model.attendance.AttendanceIndex;
 import seedu.address.model.group.Group;
 import seedu.address.model.group.GroupName;
 import seedu.address.model.person.Person;
+import seedu.address.model.reminder.Reminder;
 import seedu.address.testutil.PersonBuilder;
 
 public class GroupDeleteCommandTest {
@@ -71,10 +72,12 @@ public class GroupDeleteCommandTest {
         }
 
         @Override
-        public void addToGroup(GroupName name, List<Person> members) { }
+        public void addToGroup(GroupName name, List<Person> members) {
+        }
 
         @Override
-        public void removeFromGroup(GroupName name, List<Person> members) { }
+        public void removeFromGroup(GroupName name, List<Person> members) {
+        }
 
         @Override
         public ObservableList<Group> getGroupList() {
@@ -92,7 +95,13 @@ public class GroupDeleteCommandTest {
         }
 
         @Override
-        public void updateFilteredPersonList(Predicate<Person> predicate) { }
+        public void updateFilteredPersonList(Predicate<Person> predicate) {
+        }
+
+        @Override
+        public void updateFilteredReminderList(Predicate<Reminder> predicate) {
+            throw new AssertionError("This method should not be called.");
+        }
 
         @Override
         public boolean hasPersonName(String name) {
@@ -110,7 +119,8 @@ public class GroupDeleteCommandTest {
         }
 
         @Override
-        public void setUserPrefs(ReadOnlyUserPrefs userPrefs) { }
+        public void setUserPrefs(ReadOnlyUserPrefs userPrefs) {
+        }
 
         @Override
         public ReadOnlyUserPrefs getUserPrefs() {
@@ -123,7 +133,8 @@ public class GroupDeleteCommandTest {
         }
 
         @Override
-        public void setGuiSettings(GuiSettings guiSettings) { }
+        public void setGuiSettings(GuiSettings guiSettings) {
+        }
 
         @Override
         public Path getAddressBookFilePath() {
@@ -131,10 +142,12 @@ public class GroupDeleteCommandTest {
         }
 
         @Override
-        public void setAddressBookFilePath(Path addressBookFilePath) { }
+        public void setAddressBookFilePath(Path addressBookFilePath) {
+        }
 
         @Override
-        public void setAddressBook(ReadOnlyAddressBook addressBook) { }
+        public void setAddressBook(ReadOnlyAddressBook addressBook) {
+        }
 
         @Override
         public ReadOnlyAddressBook getAddressBook() {
@@ -147,12 +160,40 @@ public class GroupDeleteCommandTest {
         }
 
         @Override
-        public void deletePerson(Person target) { }
+        public void deletePerson(Person target) {
+        }
 
         @Override
-        public void addPerson(Person person) { }
+        public void addPerson(Person person) {
+        }
 
         @Override
-        public void setPerson(Person target, Person editedPerson) { }
+        public void setPerson(Person target, Person editedPerson) {
+        }
+
+        @Override
+        public void addReminder(Reminder reminder) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public boolean hasReminder(Reminder reminder) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void deleteReminder(Reminder target) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void setReminder(Reminder target, Reminder editedReminder) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public ObservableList<Reminder> getFilteredReminderList() {
+            throw new AssertionError("This method should not be called.");
+        }
     }
 }

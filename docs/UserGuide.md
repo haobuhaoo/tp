@@ -132,7 +132,7 @@ You can delete a student in two ways:
    * The index refers to the index number shown in the displayed student list.
    * The index **must be a positive integer** 1, 2, 3, …​
    * The list cannot be empty.
-   
+
 2. By keyword
    * Deletes the student whose name, phone number or lesson time matches the given keyword.
    * If multiple students match the keyword, the app will list all possible matches and ask you to refine your search.

@@ -1,6 +1,6 @@
 ---
   layout: default.md
-  title: "About Us"
+    title: "About Us"
 ---
 
 # About Us
@@ -40,7 +40,6 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 * Role: Developer
 * Responsibilities: Eat & Sleep
 
-
 ### Teoh Hao Yi
 
 <img src="images/haobuhaoo.png" width="200px">
@@ -48,7 +47,7 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 [[github](http://github.com/haobuhaoo)]
 [[portfolio](team/haobuhaoo.md)]
 
-* Role: Testing 
+* Role: Testing
 * Responsibilities: Testing + Code Quality
 
 ### Seah Min-Ren
