@@ -246,7 +246,7 @@ Format: `mark-paid i/INDEX m/Month`
 Examples:
 * `mark-paid i/1 m/1` marks the first student in the list as paid for January `Marked student as paid: marcus ng
   Month: January
-  Payment Status: Payment Status: 🟩 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥`
+  Payment Status: 🟩 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥`
 
 ### Marking unpaid : `mark-unpaid`
 
@@ -264,8 +264,44 @@ Format: `mark-upaid i/INDEX m/Month`
 Examples:
 * `mark-upaid i/1 m/1` marks the first student in the list as unpaid for January `Marked student as unpaid: marcus ng
 Month: January
-Payment Status: Payment Status: 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥`
+Payment Status: 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥`
 
+### Adding homework: `add-homework`
+
+Adds a `homework` entry to the specified student.
+
+Format: `add-homework n/NAME desc/DESCRIPTION by/DATE`
+
+* `NAME` refers to the name of the student in the displayed student list.
+* `DESCRIPTION` details of the homework.
+* `DATE date` when the homework is due. (YYYY-MM-DD)
+
+### Delete homework: `delete-homework`
+
+Deletes a `homework` entry of the specified student
+
+Format: `delete-homework n/NAME desc/DESCRIPTION`
+
+* NAME refers to the name of the student in the displayed student list.
+* DESCRIPTION details of the `homework`.
+
+### Mark homework as done: `mark-done`
+
+Marks a `homework` entry of the specified student as done.
+
+Format: `mark-done n/NAME desc/DESCRIPTION`
+
+* `NAME` refers to the name of the student in the displayed student list.
+* `DESCRIPTION` details of the `homework`.
+
+### Mark homework as undone: `mark-undone`
+
+Marks a `homework` entry of the specified student as undone.
+
+Format: `mark-undone n/NAME desc/DESCRIPTION`
+
+* `NAME` refers to the name of the student in the displayed student list.
+* `DESCRIPTION` details of the homework.
 
 ### Clearing all entries : `clear`
 
