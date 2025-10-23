@@ -4,10 +4,15 @@ import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.homework.Homework;
+
 
 /**
  * Represents a Student in the student list.
@@ -19,6 +24,8 @@ public class Person {
     private final Phone phone;
 
     // Data fields
+    private final ObservableList<Homework> homeworkList = FXCollections.observableArrayList();
+
     private final Set<LessonTime> lessonTime = new HashSet<>();
 
     // Participation (mutable history of last 5 records)
@@ -49,6 +56,24 @@ public class Person {
     public Set<LessonTime> getLessonTime() {
         return Collections.unmodifiableSet(lessonTime);
     }
+
+    public ObservableList<Homework> getHomeworkList() {
+        return FXCollections.unmodifiableObservableList(homeworkList);
+    }
+
+    public void addHomework(Homework hw) {
+        homeworkList.add(hw);
+    }
+
+    public void removeHomework(Homework hw) {
+        homeworkList.remove(hw);
+    }
+
+    public void setHomeworkList(List<Homework> list) {
+        homeworkList.setAll(list);
+    }
+
+
 
     public ParticipationHistory getParticipation() {
         return participation;
@@ -93,6 +118,7 @@ public class Person {
         // use this method for custom fields hashing instead of implementing your own
         return Objects.hash(name, phone, lessonTime);
     }
+
 
     @Override
     public String toString() {
