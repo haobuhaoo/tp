@@ -5,11 +5,14 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.FlowPane?>
 
-<HBox id="cardPane" fx:id="cardPane" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<!-- Added stylesheets attribute to load participation.css -->
+<HBox id="cardPane" fx:id="cardPane"
+      xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+      stylesheets="@/view/participation.css">
     <GridPane HBox.hgrow="ALWAYS">
         <columnConstraints>
             <ColumnConstraints hgrow="ALWAYS" minWidth="10" prefWidth="400" />
-            <ColumnConstraints hgrow="NEVER" prefWidth="100" halignment="RIGHT" />
+            <ColumnConstraints hgrow="NEVER" prefWidth="220" halignment="RIGHT" />
         </columnConstraints>
         <rowConstraints>
             <RowConstraints />
@@ -35,11 +38,15 @@
             </HBox>
         </VBox>
 
-        <CheckBox fx:id="attendanceCheck" disable="true"
-                  GridPane.columnIndex="1" GridPane.halignment="RIGHT">
+        <!-- RIGHT: participation panel with per-box dates -->
+        <VBox alignment="TOP_RIGHT" spacing="6" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
             <padding>
                 <Insets right="30" />
             </padding>
-        </CheckBox>
+            <children>
+                <HBox fx:id="dateRow" spacing="8"/>
+                <HBox fx:id="boxes"   spacing="8"/>
+            </children>
+        </VBox>
     </GridPane>
 </HBox>

@@ -18,64 +18,46 @@ public interface Model {
     /** {@code Predicate} that always evaluate to true */
     Predicate<Person> PREDICATE_SHOW_ALL_PERSONS = unused -> true;
 
-    /**
-     * Replaces user prefs data with the data in {@code userPrefs}.
-     */
+    // ============ UserPrefs ===================================================
+
+    /** Replaces user prefs data with the data in {@code userPrefs}. */
     void setUserPrefs(ReadOnlyUserPrefs userPrefs);
 
-    /**
-     * Returns the user prefs.
-     */
+    /** Returns the user prefs. */
     ReadOnlyUserPrefs getUserPrefs();
 
-    /**
-     * Returns the user prefs' GUI settings.
-     */
+    /** Returns the user prefs' GUI settings. */
     GuiSettings getGuiSettings();
 
-    /**
-     * Sets the user prefs' GUI settings.
-     */
+    /** Sets the user prefs' GUI settings. */
     void setGuiSettings(GuiSettings guiSettings);
 
-    /**
-     * Returns the user prefs' address book file path.
-     */
+    /** Returns the user prefs' address book file path. */
     Path getAddressBookFilePath();
 
-    /**
-     * Sets the user prefs' address book file path.
-     */
+    /** Sets the user prefs' address book file path. */
     void setAddressBookFilePath(Path addressBookFilePath);
 
-    /**
-     * Replaces address book data with the data in {@code addressBook}.
-     */
+    // ============ AddressBook =================================================
+
+    /** Replaces address book data with the data in {@code addressBook}. */
     void setAddressBook(ReadOnlyAddressBook addressBook);
 
     /** Returns the AddressBook */
     ReadOnlyAddressBook getAddressBook();
 
-    /**
-     * Returns true if a person with the same identity as {@code person} exists in the address book.
-     */
+    /** Returns true if a person with the same identity as {@code person} exists in the address book. */
     boolean hasPerson(Person person);
 
-    /**
-     * Deletes the given person.
-     * The person must exist in the address book.
-     */
+    /** Deletes the given person. The person must exist in the address book. */
     void deletePerson(Person target);
 
-    /**
-     * Adds the given person.
-     * {@code person} must not already exist in the address book.
-     */
+    /** Adds the given person. {@code person} must not already exist in the address book. */
     void addPerson(Person person);
 
     /**
      * Replaces the given person {@code target} with {@code editedPerson}.
-     * {@code target} must exist in the address book.find
+     * {@code target} must exist in the address book.
      * The person identity of {@code editedPerson} must not be the same as another existing person in the address book.
      */
     void setPerson(Person target, Person editedPerson);
@@ -89,7 +71,12 @@ public interface Model {
      */
     void updateFilteredPersonList(Predicate<Person> predicate);
 
-    // ============ Attendance ============================================
+    // ============ Attendance / Participation ================================
+
+    /**
+     * Attendance index used by the UI date selection and legacy attendance functionality.
+     * (We still leverage it to propagate the "current UI date".)
+     */
     seedu.address.model.attendance.AttendanceIndex getAttendanceIndex();
     boolean hasPersonName(String name);
 
@@ -107,4 +94,6 @@ public interface Model {
         updateFilteredPersonList(p -> getGroupsOf(p).contains(name));
     }
 
+    /** Returns true if there exists a person whose normalized name equals {@code name}. */
+    boolean hasPersonName(String name);
 }
