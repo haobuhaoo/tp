@@ -1,6 +1,7 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.commands.MarkUnpaidCommand.MESSAGE_MARK_UNPAID_SUCCESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_INDEX;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_MONTH;
 
@@ -55,20 +56,21 @@ public class MarkPaidCommand extends Command {
 
         Person personToUpdate = lastShownList.get(index.getZeroBased());
 
-        if (personToUpdate.isPaidForMonth(month)) {
-            throw new CommandException(
-                    String.format(MESSAGE_ALREADY_PAID, personToUpdate.getName(), getMonthName(month)));
-        }
+        boolean currentStatus = personToUpdate.isPaidForMonth(month);
 
-        Person updatedPerson = personToUpdate.withPaymentStatus(month, true);
-        model.setPerson(personToUpdate, updatedPerson);
+        personToUpdate.setPaymentStatus(month, !currentStatus);
+
         model.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
 
         String monthName = getMonthName(month);
-        String statusDisplay = updatedPerson.getPaymentStatusDisplay();
+        String statusDisplay = personToUpdate.getPaymentStatusDisplay();
+
+        String successMessage = !currentStatus
+                ? MESSAGE_MARK_PAID_SUCCESS
+                : MESSAGE_MARK_UNPAID_SUCCESS;
 
         return new CommandResult(
-                String.format(MESSAGE_MARK_PAID_SUCCESS, updatedPerson.getName(), monthName, statusDisplay));
+                String.format(successMessage, personToUpdate.getName(), monthName, statusDisplay));
     }
 
     private String getMonthName(int month) {

@@ -25,7 +25,7 @@ public class Person {
     private final Phone phone;
 
     // Data fields
-    private final BitSet paymentStatus;
+    private BitSet paymentStatus;
     private final ObservableList<Homework> homeworkList = FXCollections.observableArrayList();
 
     private final Set<LessonTime> lessonTime = new HashSet<>();
@@ -154,21 +154,14 @@ public class Person {
     }
 
     /**
-     * Returns a new Person with the payment status updated for the specified month.
+     * Updates the payment status for a specific month.
+     * Modifies the current person object instead of creating a new one.
      */
-    public Person withPaymentStatus(int month, boolean isPaid) {
+    public void setPaymentStatus(int month, boolean isPaid) {
         if (month < 1 || month > 12) {
             throw new IllegalArgumentException("Month must be between 1 and 12");
         }
-
-        BitSet newPaymentStatus = (BitSet) this.paymentStatus.clone();
-        newPaymentStatus.set(month - 1, isPaid);
-
-        Person newPerson = new Person(this.name, this.phone, this.lessonTime, newPaymentStatus);
-
-        newPerson.setHomeworkList(this.homeworkList);
-
-        return newPerson;
+        paymentStatus.set(month - 1, isPaid);
     }
 
     /**
@@ -192,5 +185,11 @@ public class Person {
 
     public BitSet getPaymentStatusBitSet() {
         return (BitSet) paymentStatus.clone();
+    }
+
+    private void copyParticipationHistory(Person source, Person target) {
+        for (ParticipationRecord record : source.participation.asList()) {
+            target.participation.add(record);
+        }
     }
 }

@@ -1,8 +1,7 @@
 package seedu.address.storage;
 
-import java.util.BitSet;
-
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,6 +27,7 @@ class JsonAdaptedPerson {
     private final String paymentStatus;
     private final List<JsonAdaptedHomework> homeworks = new ArrayList<>();
     private final List<JsonAdaptedLessonTime> lessonTime = new ArrayList<>();
+
 
     /**
      * Constructs a {@code JsonAdaptedPerson} with the given person details.
@@ -100,14 +100,7 @@ class JsonAdaptedPerson {
         }
         final Set<LessonTime> modelLessonTime = new HashSet<>(modelLessonTimeList);
 
-        final Person person = new Person(modelName, modelPhone, modelLessonTime);
-
-        List<Homework> hwList = new ArrayList<>();
-        for (JsonAdaptedHomework jhw : homeworks) {
-            hwList.add(jhw.toModelType());
-        }
-        person.setHomeworkList(hwList);
-
+        // Handle payment status FIRST
         BitSet modelPaymentStatus = new BitSet(12);
         if (paymentStatus != null) {
             for (int i = 0; i < 12 && i < paymentStatus.length(); i++) {
@@ -120,7 +113,15 @@ class JsonAdaptedPerson {
             }
         }
 
-        return new Person(modelName, modelPhone, modelLessonTime, modelPaymentStatus);
+        final Person person = new Person(modelName, modelPhone, modelLessonTime, modelPaymentStatus);
+
+        List<Homework> hwList = new ArrayList<>();
+        for (JsonAdaptedHomework jhw : homeworks) {
+            hwList.add(jhw.toModelType());
+        }
+        person.setHomeworkList(hwList);
+
+        return person;
     }
 
 }

@@ -60,16 +60,17 @@ public class MarkUnpaidCommand extends Command {
                     String.format(MESSAGE_ALREADY_UNPAID, personToUpdate.getName(), getMonthName(month)));
         }
 
-        Person updatedPerson = personToUpdate.withPaymentStatus(month, false);
-        model.setPerson(personToUpdate, updatedPerson);
+        personToUpdate.setPaymentStatus(month, false);
+
         model.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
 
         String monthName = getMonthName(month);
-        String statusDisplay = updatedPerson.getPaymentStatusDisplay();
+        String statusDisplay = personToUpdate.getPaymentStatusDisplay();
 
         return new CommandResult(
-                String.format(MESSAGE_MARK_UNPAID_SUCCESS, updatedPerson.getName(), monthName, statusDisplay));
+                String.format(MESSAGE_MARK_UNPAID_SUCCESS, personToUpdate.getName(), monthName, statusDisplay));
     }
+
 
     private String getMonthName(int month) {
         String[] monthNames = {"January", "February", "March", "April", "May", "June",
