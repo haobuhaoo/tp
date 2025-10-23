@@ -48,7 +48,7 @@
                         <Insets top="5" right="10" bottom="5" left="10"/>
                     </padding>
                 </StackPane>
-              
+
                 <!-- Group filter row -->
                 <HBox spacing="10">
                     <padding>

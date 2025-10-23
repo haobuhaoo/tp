@@ -1,6 +1,7 @@
 package seedu.address.ui;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -14,6 +15,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import seedu.address.model.group.GroupName;
+import seedu.address.model.person.LessonTime;
 import seedu.address.model.person.ParticipationHistory;
 import seedu.address.model.person.ParticipationRecord;
 import seedu.address.model.person.Person;
@@ -62,24 +64,6 @@ public class PersonCard extends UiPart<Region> {
                 .forEach(lt -> lessonTime.getChildren().add(new Label(lt.toString())));
         renderGroupBadges(person);
         renderParticipation(person.getParticipation());
-    }
-
-    private void renderGroupBadges(Person p) {
-        if (groupBadges == null) {
-            return;
-        }
-        groupBadges.getChildren().clear();
-        try {
-            Set<GroupName> groups = UiGroupAccess.groupsOf(p);
-            for (GroupName g : groups) {
-                Label chip = new Label(g.toString());
-                chip.getStyleClass().add("group-badge");
-                chip.setMinHeight(Region.USE_PREF_SIZE); // prevent vertical compression of rounded chips
-                groupBadges.getChildren().add(chip);
-            }
-        } catch (Throwable ignored) {
-            // If bridge not installed, just show nothing
-        }
     }
 
     private void renderGroupBadges(Person p) {

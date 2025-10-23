@@ -272,10 +272,10 @@ _{Explain here how the data archiving feature will be implemented}_
 ### Product scope
 
 **Target user profile**:
-- Private tutors managing ~20–40 students individually.  
-- Need to keep track of **student + parent contact details, lesson times, homework, payments, and performance notes**.  
-- Prefer **fast, keyboard-driven CLI apps** over complex GUIs.  
-- Comfortable with basic computer operations, but want **lightweight, no-frills software**.  
+- Private tutors managing ~20–40 students individually.
+- Need to keep track of **student + parent contact details, lesson times, homework, payments, and performance notes**.
+- Prefer **fast, keyboard-driven CLI apps** over complex GUIs.
+- Comfortable with basic computer operations, but want **lightweight, no-frills software**.
 
 **Value proposition**: ClassConnect allows tutors to manage lessons, admin tasks, and student progress **faster and more accurately** than traditional notebooks or bloated management systems.
 
@@ -306,41 +306,41 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Use case 1: Add Student**
 
 **MSS**
-1. Tutor enters `add-student n/Marcus p/98765432 t/Mon 1900 lvl/Sec3 sub/Math`.  
-2. System validates the input.  
-3. System stores the student record.  
-4. System confirms addition.  
+1. Tutor enters `add-student n/Marcus p/98765432 t/Mon 1900 lvl/Sec3 sub/Math`.
+2. System validates the input.
+3. System stores the student record.
+4. System confirms addition.
 
 **Extensions**
-- 2a. Input is invalid (e.g., wrong phone format).  
-  → System shows error and requests re-entry.  
+- 2a. Input is invalid (e.g., wrong phone format).
+  → System shows error and requests re-entry.
 
 ---
 
 **Use case 2: Record Homework**
 
 **MSS**
-1. Tutor enters `add-homework sid/1 d/Finish Ch.3 problems due/2025-10-05`.  
-2. System validates and links homework to student.  
-3. System confirms creation.  
+1. Tutor enters `add-homework sid/1 d/Finish Ch.3 problems due/2025-10-05`.
+2. System validates and links homework to student.
+3. System confirms creation.
 
 **Extensions**
-- 2a. Student ID not found.  
-  → System shows error and suggests checking student list.  
+- 2a. Student ID not found.
+  → System shows error and suggests checking student list.
 
 ---
 
 **Use case 3: Track Payments**
 
 **MSS**
-1. Tutor enters `record-payment sid/1 amt/240 notes/Sep tuition`.  
-2. System stores payment as **UNPAID**.  
-3. Tutor later enters `pay 3`.  
-4. System updates status and confirms.  
+1. Tutor enters `record-payment sid/1 amt/240 notes/Sep tuition`.
+2. System stores payment as **UNPAID**.
+3. Tutor later enters `pay 3`.
+4. System updates status and confirms.
 
 **Extensions**
-- 1a. Invalid amount format entered.  
-  → System rejects input and shows correct format.  
+- 1a. Invalid amount format entered.
+  → System rejects input and shows correct format.
 
 ---
 
@@ -355,13 +355,13 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 3. **Scalability**
 - Able to scale up to 10000 students without any significant decrease in performance
-- Data structures should be implemented in a way such that adding more students minimally affects search and 
+- Data structures should be implemented in a way such that adding more students minimally affects search and
 delete methods
 
 4. **Usability**
 - Every command entered will print out either a success message or a specific error message
 - Help command will print out clear list of commands with their respective usage examples
-- A user with above average typing speed for regular English text should be able to accomplish most of the tasks faster 
+- A user with above average typing speed for regular English text should be able to accomplish most of the tasks faster
 using commands than using the mouse.
 
 5. **Maintainability**
