@@ -40,6 +40,9 @@
                 <Label fx:id="lessonTimeId" styleClass="cell_small_label" text="Lesson Time: "/>
                 <FlowPane fx:id="lessonTime" prefHeight="17.0" prefWidth="265.0" HBox.hgrow="ALWAYS"/>
             </HBox>
+            <Region prefHeight="4" />
+            <Label fx:id="paymentStatus" styleClass="cell_small_label" text="\$paymentStatus" />
+            <Region prefHeight="4" />
         </VBox>
 
         <!-- Homework List -->

@@ -15,6 +15,7 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 
+import java.util.BitSet;
 
 /**
  * Jackson-friendly version of {@link Person}.
@@ -24,6 +25,7 @@ class JsonAdaptedPerson {
 
     private final String name;
     private final String phone;
+    private final String paymentStatus;
     private final List<JsonAdaptedHomework> homeworks = new ArrayList<>();
     private final List<JsonAdaptedLessonTime> lessonTime = new ArrayList<>();
 
@@ -34,9 +36,11 @@ class JsonAdaptedPerson {
     public JsonAdaptedPerson(@JsonProperty("name") String name,
                          @JsonProperty("phone") String phone,
                          @JsonProperty("lessonTime") List<JsonAdaptedLessonTime> lessonTime,
-                         @JsonProperty("homeworks") List<JsonAdaptedHomework> homeworks) {
+                         @JsonProperty("homeworks") List<JsonAdaptedHomework> homeworks,
+                         @JsonProperty("paymentStatus") String paymentStatus) {
         this.name = name;
         this.phone = phone;
+        this.paymentStatus = paymentStatus;
         if (homeworks != null) {
             this.homeworks.addAll(homeworks);
         }
@@ -51,6 +55,13 @@ class JsonAdaptedPerson {
     public JsonAdaptedPerson(Person source) {
         name = source.getName().fullName;
         phone = source.getPhone().value;
+
+        BitSet bitSet = source.getPaymentStatusBitSet();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 12; i++) {
+            sb.append(bitSet.get(i) ? '1' : '0');
+        }
+        this.paymentStatus = sb.toString();
         lessonTime.addAll(source.getLessonTime().stream()
                 .map(JsonAdaptedLessonTime::new)
                 .toList());
@@ -97,8 +108,20 @@ class JsonAdaptedPerson {
         }
         person.setHomeworkList(hwList);
 
+        BitSet modelPaymentStatus = new BitSet(12);
+        if (paymentStatus != null) {
+            for (int i = 0; i < 12 && i < paymentStatus.length(); i++) {
+                char c = paymentStatus.charAt(i);
+                if (c == '1') {
+                    modelPaymentStatus.set(i, true);
+                } else {
+                    modelPaymentStatus.set(i, false);
+                }
+            }
+        }
+
+        return new Person(modelName, modelPhone, modelLessonTime, modelPaymentStatus);
         return person;
     }
-
 
 }

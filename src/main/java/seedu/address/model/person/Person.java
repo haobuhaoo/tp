@@ -2,6 +2,7 @@ package seedu.address.model.person;
 
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
+import java.util.BitSet;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -24,6 +25,7 @@ public class Person {
     private final Phone phone;
 
     // Data fields
+    private final BitSet paymentStatus;
     private final ObservableList<Homework> homeworkList = FXCollections.observableArrayList();
 
     private final Set<LessonTime> lessonTime = new HashSet<>();
@@ -39,6 +41,15 @@ public class Person {
         this.name = name;
         this.phone = phone;
         this.lessonTime.addAll(lessonTime);
+        this.paymentStatus = new BitSet(12);
+    }
+
+    public Person(Name name, Phone phone, Set<LessonTime> lessonTime, BitSet paymentStatus) {
+        requireAllNonNull(name, phone, lessonTime, paymentStatus);
+        this.name = name;
+        this.phone = phone;
+        this.lessonTime.addAll(lessonTime);
+        this.paymentStatus = paymentStatus;
     }
 
     public Name getName() {
@@ -119,7 +130,6 @@ public class Person {
         return Objects.hash(name, phone, lessonTime);
     }
 
-
     @Override
     public String toString() {
         return new ToStringBuilder(this)
@@ -127,5 +137,52 @@ public class Person {
                 .add("phone", phone)
                 .add("lesson time", lessonTime)
                 .toString();
+    }
+
+    /**
+     * Returns the payment status for a specific month (1-12).
+     */
+    public boolean isPaidForMonth(int month) {
+        if (month < 1 || month > 12) {
+            throw new IllegalArgumentException("Month must be between 1 and 12");
+        }
+        return paymentStatus.get(month - 1);
+    }
+
+    /**
+     * Returns a new Person with the payment status updated for the specified month.
+     */
+    public Person withPaymentStatus(int month, boolean isPaid) {
+        if (month < 1 || month > 12) {
+            throw new IllegalArgumentException("Month must be between 1 and 12");
+        }
+
+        BitSet newPaymentStatus = (BitSet) this.paymentStatus.clone();
+        newPaymentStatus.set(month - 1, isPaid);
+
+        return new Person(this.name, this.phone, this.lessonTime, newPaymentStatus);
+    }
+
+    /**
+     * @return a string of payment status for each month
+     */
+    public String getPaymentStatusDisplay() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Payment Status: ");
+        for (int i = 0; i < 12; i++) {
+            if (paymentStatus.get(i)) {
+                sb.append("\uD83D\uDFE9");
+            } else {
+                sb.append("\uD83D\uDFE5");
+            }
+            if (i < 11) {
+                sb.append(" ");
+            }
+        }
+        return sb.toString();
+    }
+
+    public BitSet getPaymentStatusBitSet() {
+        return (BitSet) paymentStatus.clone();
     }
 }

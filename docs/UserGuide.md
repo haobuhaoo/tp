@@ -250,6 +250,43 @@ Notes:
 * Do not include any other prefixes besides `g/` in this command.
 * Fails if the group does not exist.
 
+### Marking paid : `mark-paid`
+
+Marks a students payment status for a specific month as paid.
+
+Format: `mark-paid i/INDEX m/Month`
+
+* `INDEX` refers to the position of the student in the displayed student list.
+* It must be a positive integer
+* `Month` must be an integer from 1 to 12 representing each month from January to December.
+* If the given student has already paid for the given month, the command is rejected and displays:
+`Student marcus ng is already marked as paid for January.`
+* Payment status is displayed as 12 colored boxes (🟩 for paid, 🟥 for unpaid) representing January to December.
+
+Examples:
+* `mark-paid i/1 m/1` marks the first student in the list as paid for January `Marked student as paid: marcus ng
+  Month: January
+  Payment Status: Payment Status: 🟩 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥`
+
+### Marking unpaid : `mark-unpaid`
+
+Marks a students payment status for a specific month as unpaid.
+
+Format: `mark-upaid i/INDEX m/Month`
+
+* `INDEX` refers to the position of the student in the displayed student list.
+* It must be a positive integer
+* `Month` must be an integer from 1 to 12 representing each month from January to December.
+* If the given student has already paid for the given month, the command is rejected and displays:
+  `Student marcus ng is already marked as unpaid for January.`
+* Payment status is displayed as 12 colored boxes (🟩 for paid, 🟥 for unpaid) representing January to December.
+
+Examples:
+* `mark-upaid i/1 m/1` marks the first student in the list as unpaid for January `Marked student as unpaid: marcus ng
+Month: January
+Payment Status: Payment Status: 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥`
+
+
 ### Clearing all entries : `clear`
 
 Clears all entries from the student list.
@@ -343,6 +380,8 @@ Action     | Format, Examples
 **Delete** | `delete-student i/INDEX` **or** `delete-student k/KEYWORD [MORE_KEYWORDS]`<br> e.g., `delete-student i/3` or `delete-student k/marcus lee`
 **Edit**   | `edit-student i/INDEX [n/NAME] [p/PHONE_NUMBER] [t/LESSON_TIME]...`<br> e.g.,`edit-student i/2 n/James Lee t/1830 Fri t/1000 Sun`
 **Search**   | `search-student k/KEYWORD [MORE_KEYWORDS]` <br> e.g., `search-student k/marcus lee`
+**Mark paid**   | `mark-paid i/INDEX m/MONTH` <br> e.g., `mark-paid i/1 m/1`
+**Mark unpaid**   | `mark-unpaid i/INDEX m/MONTH` <br> e.g., `mark-unpaid i/1 m/1`
 **List**   | `list`
 **Help**   | `help`
 **Attendance / Participation** | `attendance n/NAME d/YYYY-MM-DD s/0..5`<br> e.g., `attendance n/Alex Yeoh d/2025-09-19 s/3`

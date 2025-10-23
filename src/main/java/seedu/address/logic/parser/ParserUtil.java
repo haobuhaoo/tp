@@ -15,7 +15,6 @@ import seedu.address.model.person.LessonTime;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
 
-
 /**
  * Contains utility methods used for parsing strings in the various *Parser classes.
  */
@@ -110,6 +109,19 @@ public class ParserUtil {
             throw new ParseException(LessonTime.MESSAGE_CONSTRAINTS);
         }
         return new LessonTime(trimmedLessonTime);
+    }
+
+    public static int parseMonth(String month) throws ParseException {
+        String trimmedMonth = month.trim();
+        try {
+            int monthValue = Integer.parseInt(trimmedMonth);
+            if (monthValue < 1 || monthValue > 12) {
+                throw new ParseException("Month must be between 1 and 12");
+            }
+            return monthValue;
+        } catch (NumberFormatException e) {
+            throw new ParseException("Month must be a valid number between 1 and 12");
+        }
     }
 
     /**
