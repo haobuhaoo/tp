@@ -1,0 +1,31 @@
+@startuml
+actor User
+participant "Main Parser" as Parser
+participant "AttendanceCommandParser" as ACP
+participant "AttendanceCommand" as AC
+participant "Model" as M
+participant "ReadOnlyAddressBook" as AB
+participant "Person" as P
+participant "ParticipationHistory" as PH
+participant "AttendanceIndex" as AI
+participant "UiAttendanceAccess" as UIA
+
+User -> Parser : attendance n/Alex Yeoh d/2025-09-19 s/3
+Parser -> ACP : parse(args)
+ACP --> Parser : AttendanceCommand
+Parser -> AC : execute(model)
+AC -> M : getAddressBook()
+M --> AC : AB
+AC -> AB : getPersonList()
+AB --> AC : List<Person>
+AC -> P : (find by name)
+AC -> P : getParticipation()
+P --> AC : PH
+AC -> PH : add(ParticipationRecord(date,3))
+AC -> M : getAttendanceIndex()
+M --> AC : AI
+AC -> AI : setCurrentUiDate(date)
+AC -> M : updateFilteredPersonList(...)
+AC -> UIA : install(getter, dateSupplier)
+AC --> Parser : CommandResult("Success...score=3")
+@enduml

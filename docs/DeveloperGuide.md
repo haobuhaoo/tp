@@ -147,6 +147,24 @@ The `Storage` component,
 * inherits from both `AddressBookStorage` and `UserPrefStorage`, which means it can be treated as either one (if only the functionality of only one is needed).
 * depends on some classes in the `Model` component (because the `Storage` component's job is to save/retrieve objects that belong to the `Model`)
 
+### Participation Feature — Design Overview
+
+The participation feature replaces the old attendance checkbox with a 5-box history (oldest → newest), with the
+class **date above each box** and the **score inside** the box.
+
+**Class Diagram**
+
+<puml src="diagrams/src/ParticipationClassDiagram.puml" width="720" />
+
+**Sequence Diagram (Recording a score)**
+
+<puml src="diagrams/src/ParticipationSequenceDiagram.puml" width="720" />
+
+**Activity Diagram (Rendering the card)**
+
+<puml src="diagrams/ParticipationActivityDiagram.puml" width="500" />
+
+
 ### Common classes
 
 Classes used by multiple components are in the `seedu.address.commons` package.
@@ -181,7 +199,7 @@ Step 2. The user executes `delete 5` command to delete the 5th person in the add
 
 Step 3. The user executes `add n/David …​` to add a new person. The `add` command also calls `Model#commitAddressBook()`, causing another modified address book state to be saved into the `addressBookStateList`.
 
-<puml src="diagrams/UndoRedoState2.puml" alt="UndoRedoState2" />
+<puml src="diagrams/UndoRedoState2.puml" alt="UndoRedoState2" /> 
 
 <box type="info" seamless>
 
