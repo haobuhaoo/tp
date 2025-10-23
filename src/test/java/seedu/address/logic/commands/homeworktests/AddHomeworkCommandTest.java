@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +26,8 @@ import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.attendance.AttendanceIndex;
+import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupName;
 import seedu.address.model.homework.Homework;
 import seedu.address.model.person.LessonTime;
 import seedu.address.model.person.Name;
@@ -156,6 +159,47 @@ public class AddHomeworkCommandTest {
         public boolean hasPersonName(String name) {
             return false;
         }
+
+        @Override
+        public boolean hasGroup(GroupName name) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void createGroup(GroupName name) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void deleteGroup(GroupName name) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void addToGroup(GroupName name, List<Person> members) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void removeFromGroup(GroupName name, List<Person> members) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public ObservableList<Group> getGroupList() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public Set<GroupName> getGroupsOf(Person person) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void filterByGroup(GroupName name) {
+            throw new AssertionError("This method should not be called.");
+        }
+
     }
 
     /**
