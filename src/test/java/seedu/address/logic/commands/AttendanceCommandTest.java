@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
@@ -81,6 +82,96 @@ public class AttendanceCommandTest {
         AttendanceCommand cmd = new AttendanceCommand("Alex Yeoh", "2025-09-19", "9");
         CommandException ex = assertThrows(CommandException.class, () -> cmd.execute(model));
         assertEquals("Invalid participation score. Must be between 0 and 5 inclusive.", ex.getMessage());
+    }
+
+    @Test
+    public void execute_scoreZero_ok() throws Exception {
+        ModelStubWithPerson model = new ModelStubWithPerson("Alex Yeoh");
+        AttendanceCommand cmd = new AttendanceCommand("Alex Yeoh", "2025-09-21", "0");
+
+        CommandResult result = cmd.execute(model);
+        assertEquals("Success: Participation recorded: Alex Yeoh, 2025-09-21, score=0.",
+                result.getFeedbackToUser());
+
+        ParticipationRecord recent = model.person.getParticipation().mostRecent();
+        assertEquals(LocalDate.parse("2025-09-21"), recent.getDate());
+        assertEquals(0, recent.getScore());
+    }
+
+    @Test
+    public void execute_scoreFive_ok() throws Exception {
+        ModelStubWithPerson model = new ModelStubWithPerson("Alex Yeoh");
+        AttendanceCommand cmd = new AttendanceCommand("Alex Yeoh", "2025-09-22", "5");
+
+        CommandResult result = cmd.execute(model);
+        assertEquals("Success: Participation recorded: Alex Yeoh, 2025-09-22, score=5.",
+                result.getFeedbackToUser());
+
+        ParticipationRecord recent = model.person.getParticipation().mostRecent();
+        assertEquals(LocalDate.parse("2025-09-22"), recent.getDate());
+        assertEquals(5, recent.getScore());
+    }
+
+    @Test
+    public void execute_nonIntegerScore_throws() {
+        Model model = new ModelStubWithPerson("Alex Yeoh");
+        AttendanceCommand cmd = new AttendanceCommand("Alex Yeoh", "2025-09-19", "abc");
+        CommandException ex = assertThrows(CommandException.class, () -> cmd.execute(model));
+        assertEquals("Invalid participation score. Use an integer 0..5.", ex.getMessage());
+    }
+
+    @Test
+    public void execute_nameNormalization_ok() throws Exception {
+        ModelStubWithPerson model = new ModelStubWithPerson("Alex   Yeoh");
+        String rawName = "  alex   YEoh  ";
+        String expectedName = rawName.trim().replaceAll("\\s+", " ");
+
+        AttendanceCommand cmd = new AttendanceCommand(rawName, "2025-09-23", "3");
+        CommandResult result = cmd.execute(model);
+
+        assertEquals("Success: Participation recorded: " + expectedName + ", 2025-09-23, score=3.",
+                result.getFeedbackToUser());
+
+        ParticipationRecord recent = model.person.getParticipation().mostRecent();
+        assertEquals(LocalDate.parse("2025-09-23"), recent.getDate());
+        assertEquals(3, recent.getScore());
+    }
+
+    @Test
+    public void execute_setsUiDate_currentDateUpdated() throws Exception {
+        ModelStubWithPerson model = new ModelStubWithPerson("Alex Yeoh");
+        AttendanceCommand cmd = new AttendanceCommand("Alex Yeoh", "2025-09-24", "2");
+
+        cmd.execute(model);
+        assertEquals(LocalDate.parse("2025-09-24"), model.getAttendanceIndex().getCurrentUiDate());
+    }
+
+    @Test
+    public void execute_historyCapsAtFive_oldestDropped() throws Exception {
+        ModelStubWithPerson model = new ModelStubWithPerson("Alex Yeoh");
+
+        // Add six consecutive classes -> only the last five remain in history
+        new AttendanceCommand("Alex Yeoh", "2025-09-10", "1").execute(model);
+        new AttendanceCommand("Alex Yeoh", "2025-09-11", "2").execute(model);
+        new AttendanceCommand("Alex Yeoh", "2025-09-12", "3").execute(model);
+        new AttendanceCommand("Alex Yeoh", "2025-09-13", "4").execute(model);
+        new AttendanceCommand("Alex Yeoh", "2025-09-14", "5").execute(model);
+        new AttendanceCommand("Alex Yeoh", "2025-09-15", "1").execute(model);
+
+        List<ParticipationRecord> five = model.person.getParticipation().asListPaddedToFive();
+        // Should be exactly five, oldest -> newest, with the *original* oldest dropped
+        assertEquals(5, five.size());
+        assertEquals(LocalDate.parse("2025-09-11"), five.get(0).getDate());
+        assertEquals(LocalDate.parse("2025-09-15"), five.get(4).getDate());
+    }
+
+    @Test
+    public void execute_invalidLongName_throws() {
+        String over50 = "A".repeat(51);
+        Model model = new ModelStubWithPerson("Alex Yeoh");
+        AttendanceCommand cmd = new AttendanceCommand(over50, "2025-09-19", "3");
+        CommandException ex = assertThrows(CommandException.class, () -> cmd.execute(model));
+        assertEquals("Invalid student name: A name that is longer than 50 characters.", ex.getMessage());
     }
 
     /**
