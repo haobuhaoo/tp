@@ -21,6 +21,9 @@ public class Person {
     // Data fields
     private final Set<LessonTime> lessonTime = new HashSet<>();
 
+    // Participation (mutable history of last 5 records)
+    private final ParticipationHistory participation = new ParticipationHistory();
+
     /**
      * Every field must be present and not null.
      */
@@ -45,6 +48,10 @@ public class Person {
      */
     public Set<LessonTime> getLessonTime() {
         return Collections.unmodifiableSet(lessonTime);
+    }
+
+    public ParticipationHistory getParticipation() {
+        return participation;
     }
 
     /**

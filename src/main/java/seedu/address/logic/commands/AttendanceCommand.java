@@ -4,49 +4,44 @@ import static java.util.Objects.requireNonNull;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.Optional;
 
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.person.ParticipationRecord;
+import seedu.address.model.person.Person;
 import seedu.address.ui.UiAttendanceAccess;
 
 /**
- * Records attendance for a student on a date.
+ * Records participation for a student on a date.
  * <p>
- * Format: {@code attendance n/NAME d/YYYY-MM-DD s/1|0}
+ * Format: {@code attendance n/NAME d/YYYY-MM-DD s/0..5}
  */
 public class AttendanceCommand extends Command {
     public static final String COMMAND_WORD = "attendance";
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Records attendance.\n"
-            + "Parameters: n/NAME d/YYYY-MM-DD s/1|0\n"
-            + "Example: " + COMMAND_WORD + " n/marcus d/2025-09-19 s/1";
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Records participation.\n"
+            + "Parameters: n/NAME d/YYYY-MM-DD s/0..5\n"
+            + "Example: " + COMMAND_WORD + " n/marcus d/2025-09-19 s/3";
 
     private static final int NAME_MAX = 50;
 
     private final String nameRaw;
     private final String dateRaw;
-    private final String statusRaw;
+    private final String scoreRaw;
 
     /**
-     * Constructs an {@code AttendanceCommand}.
+     * Creates an {@code AttendanceCommand}.
      *
-     * @param nameRaw   raw student name (validated in {@link #execute(Model)})
-     * @param dateRaw   raw date in YYYY-MM-DD (validated in {@link #execute(Model)})
-     * @param statusRaw raw status: "1" for present or "0" for absent (validated in {@link #execute(Model)})
+     * @param nameRaw  raw student name (will be trimmed and normalized during execution)
+     * @param dateRaw  raw date string in ISO format {@code YYYY-MM-DD}; validated in {@link #execute(Model)}
+     * @param scoreRaw raw participation score string expected to parse to an integer in {@code [0,5]};
+     *                 validated in {@link #execute(Model)}
      */
-    public AttendanceCommand(String nameRaw, String dateRaw, String statusRaw) {
+    public AttendanceCommand(String nameRaw, String dateRaw, String scoreRaw) {
         this.nameRaw = nameRaw;
         this.dateRaw = dateRaw;
-        this.statusRaw = statusRaw;
+        this.scoreRaw = scoreRaw;
     }
 
-    /**
-     * Executes the command to record attendance.
-     *
-     * @param model the model to operate on; must be non-null
-     * @return a {@link CommandResult} describing the outcome
-     * @throws CommandException if validation fails or the same status was already recorded for the same date
-     */
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
@@ -55,9 +50,6 @@ public class AttendanceCommand extends Command {
         String name = nameRaw.trim().replaceAll("\\s+", " ");
         if (name.length() == 0 || name.length() > NAME_MAX) {
             throw new CommandException("Invalid student name: A name that is longer than 50 characters.");
-        }
-        if (!model.hasPersonName(name)) {
-            throw new CommandException("Invalid student name: no matching student found.");
         }
 
         // --- validate date
@@ -68,38 +60,39 @@ public class AttendanceCommand extends Command {
             throw new CommandException("Invalid date. The format must be YYYY-MM-DD.");
         }
 
-        // --- validate status
-        final boolean present;
-        if ("1".equals(statusRaw)) {
-            present = true;
-        } else if ("0".equals(statusRaw)) {
-            present = false;
-        } else {
-            throw new CommandException("Invalid status. Use 1 for present, 0 for absent.");
+        // --- validate score
+        final int score;
+        try {
+            score = Integer.parseInt(scoreRaw);
+        } catch (NumberFormatException ex) {
+            throw new CommandException("Invalid participation score. Use an integer 0..5.");
+        }
+        if (score < 0 || score > 5) {
+            throw new CommandException("Invalid participation score. Must be between 0 and 5 inclusive.");
         }
 
+        // --- find the person directly from the address book (no Model API change)
+        String norm = name.trim().replaceAll("\\s+", " ").toLowerCase();
+        Person person = model.getAddressBook().getPersonList().stream()
+                .filter(p -> p.getName().fullName.trim().replaceAll("\\s+", " ").toLowerCase().equals(norm))
+                .findFirst()
+                .orElseThrow(() -> new CommandException("Invalid student name: no matching student found."));
+
+        // --- record participation on the person (keeps last 5 internally)
+        person.getParticipation().add(new ParticipationRecord(date, score));
+
+        // --- notify UI date (preserve existing behaviour)
         var idx = model.getAttendanceIndex();
-
-        // duplicate handling: same value on same date -> error
-        Optional<Boolean> existing = idx.get(name, date);
-        if (existing.isPresent() && existing.get() == present) {
-            String word = present ? "Present" : "Absent";
-            throw new CommandException(
-                    "Student " + name + " is already marked as " + word + " on " + date + ".");
-        }
-
-        idx.put(name, date, present);
         idx.setCurrentUiDate(date);
 
-        String statusWord = present ? "Present" : "Absent";
-
+        // --- refresh listing
         model.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
 
-        // Force UI to refresh PersonListPanel
-        UiAttendanceAccess.install((n, d) ->
-                model.getAttendanceIndex().get(n, d).orElse(null), () ->
-                model.getAttendanceIndex().getCurrentUiDate());
+        // legacy hook (keep for other UI parts)
+        UiAttendanceAccess.install((n, d) -> model.getAttendanceIndex().get(n, d).orElse(null), () ->
+                                    model.getAttendanceIndex().getCurrentUiDate());
 
-        return new CommandResult("Success: Attendance recorded: " + name + ", " + date + ", " + statusWord + ".");
+        return new CommandResult(String.format(
+                "Success: Participation recorded: %s, %s, score=%d.", name, date, score));
     }
 }

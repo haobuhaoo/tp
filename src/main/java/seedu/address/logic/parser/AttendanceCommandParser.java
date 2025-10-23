@@ -2,7 +2,7 @@ package seedu.address.logic.parser;
 
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_STATUS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_STATUS; // we still reuse PREFIX_STATUS as 's/'
 
 import java.util.stream.Stream;
 
