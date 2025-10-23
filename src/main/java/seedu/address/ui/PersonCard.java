@@ -41,6 +41,7 @@ public class PersonCard extends UiPart<Region> {
     @FXML private FlowPane lessonTime; // FlowPane in FXML
     @FXML private CheckBox attendanceCheck;
     @FXML private AnchorPane homeworkPlaceholder;
+    @FXML private Label paymentStatus;
 
     // Group badges
     @FXML private FlowPane groupBadges;
@@ -133,5 +134,7 @@ public class PersonCard extends UiPart<Region> {
             cell.getChildren().addAll(rect, t);
             boxes.getChildren().add(cell);
         }
+
+        paymentStatus.setText(person.getPaymentStatusDisplay());
     }
 }
