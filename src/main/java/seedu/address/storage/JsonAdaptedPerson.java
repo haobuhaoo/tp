@@ -121,7 +121,6 @@ class JsonAdaptedPerson {
         }
 
         return new Person(modelName, modelPhone, modelLessonTime, modelPaymentStatus);
-        return person;
     }
 
 }

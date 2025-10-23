@@ -164,7 +164,11 @@ public class Person {
         BitSet newPaymentStatus = (BitSet) this.paymentStatus.clone();
         newPaymentStatus.set(month - 1, isPaid);
 
-        return new Person(this.name, this.phone, this.lessonTime, newPaymentStatus);
+        Person newPerson = new Person(this.name, this.phone, this.lessonTime, newPaymentStatus);
+
+        newPerson.setHomeworkList(this.homeworkList);
+
+        return newPerson;
     }
 
     /**

@@ -8,6 +8,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.layout.AnchorPane?>
 
 <!-- Added stylesheets attribute to load participation.css -->
 <HBox id="cardPane" fx:id="cardPane"
@@ -20,10 +23,11 @@
         </columnConstraints>
         <rowConstraints>
             <RowConstraints/>
+            <RowConstraints/>
         </rowConstraints>
 
         <!-- Left: Person details -->
-        <VBox alignment="CENTER_LEFT" minHeight="105" GridPane.columnIndex="0">
+        <VBox alignment="CENTER_LEFT" minHeight="105" GridPane.columnIndex="0" GridPane.rowIndex="0">
             <padding>
                 <Insets bottom="5" left="15" right="5" top="5"/>
             </padding>
@@ -45,24 +49,21 @@
             <Region prefHeight="4" />
         </VBox>
 
-        <!-- Homework List -->
-        <VBox spacing = "4" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2">
-            <padding><Insets left="15" right="15" bottom="10"/></padding>
-            <Label text="Homework" styleClass="cell_small_label"></Label>
-            <AnchorPane fx:id="homeworkPlaceholder" prefHeight="90"/>
-        </VBox>
-
-        <CheckBox fx:id="attendanceCheck" disable="true"
-                  GridPane.columnIndex="1" GridPane.halignment="RIGHT">
         <!-- RIGHT: participation panel with per-box dates -->
-        <VBox alignment="TOP_RIGHT" spacing="6" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
+        <VBox alignment="TOP_RIGHT" spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.halignment="RIGHT">
             <padding>
                 <Insets right="30"/>
             </padding>
-            <children>
-                <HBox fx:id="dateRow" spacing="8"/>
-                <HBox fx:id="boxes" spacing="8"/>
-            </children>
+            <CheckBox fx:id="attendanceCheck" disable="true"/>
+            <HBox fx:id="dateRow" spacing="8"/>
+            <HBox fx:id="boxes" spacing="8"/>
+        </VBox>
+
+        <!-- Homework List -->
+        <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2">
+            <padding><Insets left="15" right="15" bottom="10"/></padding>
+            <Label text="Homework" styleClass="cell_small_label"></Label>
+            <AnchorPane fx:id="homeworkPlaceholder" prefHeight="90"/>
         </VBox>
     </GridPane>
 </HBox>
