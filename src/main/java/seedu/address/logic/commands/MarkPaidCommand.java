@@ -20,13 +20,20 @@ public class MarkPaidCommand extends Command {
             + "MONTH must be a number from 1 to 12 (January to December)\n"
             + "Example: " + COMMAND_WORD + " " + PREFIX_INDEX + "1 " + PREFIX_MONTH + "9";
 
-    public static final String MESSAGE_MARK_PAID_SUCCESS = "Marked student as paid: %1$s\nMonth: %2$s\nPayment Status: %3$s";
+    public static final String MESSAGE_MARK_PAID_SUCCESS =
+            "Marked student as paid: %1$s\nMonth: %2$s\nPayment Status: %3$s";
     public static final String MESSAGE_ALREADY_PAID = "Student %1$s is already marked as paid for %2$s.";
     public static final String MESSAGE_INVALID_MONTH = "Invalid month. Month must be between 1 and 12.";
 
     private final Index index;
     private final int month;
 
+    /**
+     * Constructs a {@code MarkPaidCommand} to mark a student as paid for a month.
+     *
+     * @param index the index of the student in the displayed list
+     * @param month the month to be marked as paid
+     */
     public MarkPaidCommand(Index index, int month) {
         requireNonNull(index);
         this.index = index;
@@ -66,7 +73,7 @@ public class MarkPaidCommand extends Command {
 
     private String getMonthName(int month) {
         String[] monthNames = {"January", "February", "March", "April", "May", "June",
-                "July", "August", "September", "October", "November", "December"};
+            "July", "August", "September", "October", "November", "December"};
         return monthNames[month - 1];
     }
 

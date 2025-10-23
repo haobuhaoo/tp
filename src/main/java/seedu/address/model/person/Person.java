@@ -44,6 +44,10 @@ public class Person {
         this.paymentStatus = new BitSet(12);
     }
 
+    /**
+     * Every field must be present and not null.
+     * Second constructor used by storage layer to reconstruct a person with existing payment data
+     */
     public Person(Name name, Phone phone, Set<LessonTime> lessonTime, BitSet paymentStatus) {
         requireAllNonNull(name, phone, lessonTime, paymentStatus);
         this.name = name;

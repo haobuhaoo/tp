@@ -111,6 +111,12 @@ public class ParserUtil {
         return new LessonTime(trimmedLessonTime);
     }
 
+    /**
+     * Parses a {@code String month} into an {@code integer}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code month} is invalid.
+     */
     public static int parseMonth(String month) throws ParseException {
         String trimmedMonth = month.trim();
         try {

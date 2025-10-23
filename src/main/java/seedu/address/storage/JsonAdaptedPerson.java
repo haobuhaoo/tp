@@ -1,5 +1,7 @@
 package seedu.address.storage;
 
+import java.util.BitSet;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -14,8 +16,6 @@ import seedu.address.model.person.LessonTime;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
-
-import java.util.BitSet;
 
 /**
  * Jackson-friendly version of {@link Person}.
