@@ -3,12 +3,16 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.FlowPane?>
 
-<HBox id="cardPane" fx:id="cardPane" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<!-- Added stylesheets attribute to load participation.css -->
+<HBox id="cardPane" fx:id="cardPane"
+      xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+      stylesheets="@/view/participation.css">
     <GridPane HBox.hgrow="ALWAYS">
         <columnConstraints>
             <ColumnConstraints hgrow="ALWAYS" minWidth="10" prefWidth="400" />
-            <ColumnConstraints hgrow="NEVER" prefWidth="100" halignment="RIGHT" />
+            <ColumnConstraints hgrow="NEVER" prefWidth="220" halignment="RIGHT" />
         </columnConstraints>
         <rowConstraints>
             <RowConstraints />
@@ -19,9 +23,10 @@
             <padding>
                 <Insets bottom="5" left="15" right="5" top="5" />
             </padding>
-            <HBox alignment="CENTER_LEFT" spacing="0.5">
+            <HBox alignment="CENTER_LEFT" spacing="5">
                 <Label fx:id="id" styleClass="cell_big_label" />
                 <Label fx:id="name" styleClass="cell_big_label" />
+                <FlowPane fx:id="groupBadges" hgap="6" vgap="4" prefWrapLength="0" />
             </HBox>
             <HBox alignment="CENTER_LEFT" spacing="0.5">
                 <Label fx:id="phoneId" styleClass="cell_small_label" text="Phone number:" />
@@ -42,9 +47,15 @@
 
         <CheckBox fx:id="attendanceCheck" disable="true"
                   GridPane.columnIndex="1" GridPane.halignment="RIGHT">
+        <!-- RIGHT: participation panel with per-box dates -->
+        <VBox alignment="TOP_RIGHT" spacing="6" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
             <padding>
                 <Insets right="30" />
             </padding>
-        </CheckBox>
+            <children>
+                <HBox fx:id="dateRow" spacing="8"/>
+                <HBox fx:id="boxes"   spacing="8"/>
+            </children>
+        </VBox>
     </GridPane>
 </HBox>

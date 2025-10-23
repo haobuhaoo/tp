@@ -10,10 +10,14 @@ import static seedu.address.testutil.TypicalPersons.ALICE;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.logic.Messages;
@@ -23,6 +27,8 @@ import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.attendance.AttendanceIndex;
+import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupName;
 import seedu.address.model.person.Person;
 import seedu.address.testutil.PersonBuilder;
 
@@ -167,6 +173,42 @@ public class AddCommandTest {
         @Override
         public boolean hasPersonName(String name) {
             return false; // AddCommand tests don't rely on this
+        }
+
+        // ===== Groups (no-op implementations for tests) =====
+        @Override
+        public boolean hasGroup(GroupName name) {
+            return false;
+        }
+
+        @Override
+        public void createGroup(GroupName name) {
+            // no-op for tests
+        }
+
+        @Override
+        public void deleteGroup(GroupName name) {
+            // no-op for tests
+        }
+
+        @Override
+        public void addToGroup(GroupName name, List<Person> members) {
+            // no-op for tests
+        }
+
+        @Override
+        public void removeFromGroup(GroupName name, List<Person> members) {
+            // no-op for tests
+        }
+
+        @Override
+        public ObservableList<Group> getGroupList() {
+            return FXCollections.observableArrayList();
+        }
+
+        @Override
+        public Set<GroupName> getGroupsOf(Person person) {
+            return Collections.emptySet();
         }
     }
 

@@ -12,7 +12,7 @@ import seedu.address.model.homework.Homework;
 
 /**
  * Represents a Person in the address book.
- * Guarantees: details are present and not null, field values are validated, immutable.
+ * Guarantees: details are present and not null, field values are validated, immutable (except participation history).
  */
 public class Person {
     // Identity fields
@@ -23,6 +23,9 @@ public class Person {
     private final LessonTime lessonTime;
     private final ObservableList<Homework> homeworkList = FXCollections.observableArrayList();
 
+
+    // Participation (mutable history of last 5 records)
+    private final ParticipationHistory participation = new ParticipationHistory();
 
     /**
      * Every field must be present and not null.
@@ -64,6 +67,10 @@ public class Person {
 
 
 
+    public ParticipationHistory getParticipation() {
+        return participation;
+    }
+
     /**
      * Returns true if both persons have the same name.
      * This defines a weaker notion of equality between two persons.
@@ -72,7 +79,6 @@ public class Person {
         if (otherPerson == this) {
             return true;
         }
-
         return otherPerson != null
                 && otherPerson.getName().equals(getName());
     }
@@ -86,12 +92,9 @@ public class Person {
         if (other == this) {
             return true;
         }
-
-        // instanceof handles nulls
         if (!(other instanceof Person)) {
             return false;
         }
-
         Person otherPerson = (Person) other;
         return name.equals(otherPerson.name)
                 && phone.equals(otherPerson.phone)
@@ -100,7 +103,6 @@ public class Person {
 
     @Override
     public int hashCode() {
-        // use this method for custom fields hashing instead of implementing your own
         return Objects.hash(name, phone, lessonTime);
     }
 
