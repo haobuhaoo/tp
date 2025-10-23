@@ -1,6 +1,6 @@
 package seedu.address.logic.parser.Homework;
 
-import seedu.address.logic.commands.HomeworkCommands.AddHomeworkCommand;
+import seedu.address.logic.commands.HomeworkCommands.DeleteHomeworkCommand;
 import seedu.address.logic.parser.ArgumentMultimap;
 import seedu.address.logic.parser.ArgumentTokenizer;
 import seedu.address.logic.parser.Parser;
@@ -8,52 +8,46 @@ import seedu.address.logic.parser.ParserUtil;
 import seedu.address.logic.parser.Prefix;
 import seedu.address.logic.parser.exceptions.ParseException;
 
-import java.time.LocalDate;
 import java.util.stream.Stream;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DESC;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DEADLINE;
-import seedu.address.model.homework.Homework;
 import seedu.address.model.person.Name;
 
 /**
- * Parses input arguments and creates a new {@code AddHomeworkCommand} object.
+ * Parses input arguments and creates a new {@code DeleteHomeworkCommand} object.
  * <p>
  * This parser expects three prefixes to be provided in the argument in the form:
- * {@code add-homework n/NAME d/DESCRIPTION by/DEADLINE}, where
+ * {@code delete-homework n/NAME d/DESCRIPTION by/DEADLINE}, where
  * {@code NAME} refers to the student's name,
  * {@code DESCRIPTION} refers to the homework description,
- * and {@code DEADLINE} refers to the due date of the homework in {@code yyyy-MM-dd} format.
  */
 
-public class AddHomeworkCommandParser implements Parser<AddHomeworkCommand> {
+public class DeleteHomeworkCommandParser implements Parser<DeleteHomeworkCommand> {
     /**
-     * Parses the given {@code String} of arguments in the context of the {@code AddHomeworkCommand}
-     * and returns an AddHomeworkCommand object for execution.
+     * Parses the given {@code String} of arguments in the context of the {@code DeleteHomeworkCommand}
+     * and returns an DeleteHomeworkCommand object for execution.
      *
      * @param args Full user input string containing the command arguments.
-     * @return An {@code AddHomeworkCommand} object that is ready to be executed.
+     * @return An {@code DeleteHomeworkCommand} object that is ready to be executed.
      * @throws ParseException If the user input does not conform to the expected format,
      *
      */
-    public AddHomeworkCommand parse(String args) throws ParseException {
+    public DeleteHomeworkCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap =
-                ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_DESC, PREFIX_DEADLINE);
+                ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_DESC);
 
-        if (!arePrefixesPresent(argMultimap, PREFIX_NAME, PREFIX_DESC, PREFIX_DEADLINE)
+        if (!arePrefixesPresent(argMultimap, PREFIX_NAME, PREFIX_DESC)
                 || !argMultimap.getPreamble().isEmpty()) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddHomeworkCommand.MESSAGE_USAGE));
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteHomeworkCommand.MESSAGE_USAGE));
         }
 
         Name name = ParserUtil.parseName(argMultimap.getValue(PREFIX_NAME).get());
         String description = ParserUtil.parseDescription(argMultimap.getValue(PREFIX_DESC).get());
-        LocalDate deadline = ParserUtil.parseDate(argMultimap.getValue(PREFIX_DEADLINE).get());
 
-
-        Homework hw = new Homework(description, deadline);
-        return new AddHomeworkCommand(name, hw);
+        return new DeleteHomeworkCommand(name, description);
     }
 
     /**
@@ -69,5 +63,3 @@ public class AddHomeworkCommandParser implements Parser<AddHomeworkCommand> {
     }
 
 }
-
-

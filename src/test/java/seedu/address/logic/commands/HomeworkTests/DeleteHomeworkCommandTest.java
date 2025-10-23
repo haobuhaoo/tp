@@ -6,8 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.logic.commands.CommandResult;
-import seedu.address.logic.commands.HomeworkCommands.MarkDoneHwCommand;
-import seedu.address.logic.commands.HomeworkCommands.MarkUndoneHwCommand;
+import seedu.address.logic.commands.HomeworkCommands.DeleteHomeworkCommand;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
@@ -31,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class MarkUndoneHwCommandTest {
+public class DeleteHomeworkCommandTest {
     private Name marcusName;
     private Phone marcusPhone;
     private LessonTime marcusLessonTime;
@@ -50,7 +49,7 @@ public class MarkUndoneHwCommandTest {
     public void setUp() {
         marcusName = new Name("Marcus");
         marcusPhone = new Phone("91326770");
-        marcusLessonTime = new LessonTime("1000");
+        marcusLessonTime = new LessonTime("1000"); // adjust format if your validator differs
         marcus = new Person(marcusName, marcusPhone, marcusLessonTime);
 
         johnName = new Name("John");
@@ -59,8 +58,9 @@ public class MarkUndoneHwCommandTest {
         john = new Person(johnName, johnPhone, johnLessonTime);
     }
 
+
     /**
-     * Minimal {@link Model} stub for {@link MarkUndoneHwCommandTest} tests.
+     * Minimal {@link Model} stub for {@link DeleteHomeworkCommandTest} tests.
      */
     private static class ModelStubFilteredOnly implements Model {
         private final ObservableList<Person> filtered;
@@ -69,14 +69,14 @@ public class MarkUndoneHwCommandTest {
             this.filtered = FXCollections.observableArrayList(showedPeople);
         }
 
-        //This is the method used by MarkUndoneHwCommand
+        //This is the method used by DeleteHomeworkCommand
 
         @Override
         public ObservableList<Person> getFilteredPersonList() {
             return filtered;
         }
 
-        //These are methods not used by MarkUndoneHwCommand
+        //These are methods not used by DeleteHomeworkCommand
 
         @Override
         public void setUserPrefs(ReadOnlyUserPrefs userPrefs) {
@@ -155,95 +155,103 @@ public class MarkUndoneHwCommandTest {
     }
 
     /**
-     * Verifies that executing {@link MarkUndoneHwCommandTest} with a matching student and homework
-     * marks it done and returns the expected message.
+     * Verifies that executing {@link DeleteHomeworkCommand} with a matching student and homework
+     * removes it and returns the expected message.
      */
     @Test
-    public void execute_success_markUndone() throws Exception {
-        Homework hw = new Homework("Math WS 3", LocalDate.parse("2025-10-23"));
-        marcus.addHomework(hw);
+    public void execute_success_deletesHomework_caseInsensitiveMatch() throws Exception {
+        Homework homework = new Homework("Math WS 3", LocalDate.parse("2025-10-23"));
+        marcus.addHomework(homework);
 
         Model model = new ModelStubFilteredOnly(List.of(marcus));
-        MarkDoneHwCommand command1 = new MarkDoneHwCommand(marcusName, "mAtH wS 3");
-        MarkUndoneHwCommand command2 = new MarkUndoneHwCommand(marcusName, "mAtH wS 3");
-        command1.execute(model);
-        CommandResult result2 = command2.execute(model);
+        DeleteHomeworkCommand cmd = new DeleteHomeworkCommand(marcusName, "mAtH wS 3");
+        CommandResult result = cmd.execute(model);
 
-        String expected = String.format(MarkUndoneHwCommand.MESSAGE_SUCCESS, marcus.getName().fullName,
-                hw.getDescription());
-        assertEquals(expected, result2.getFeedbackToUser());
-        assertTrue(!hw.isDone(), "Homework should be marked undone");
+        String expected = String.format(DeleteHomeworkCommand.MESSAGE_SUCCESS,
+                marcus.getName().fullName, homework.getDescription());
+        assertEquals(expected, result.getFeedbackToUser());
+        assertFalse(marcus.getHomeworkList().contains(homework), "Homework should be removed");
+        assertEquals(0, marcus.getHomeworkList().size());
     }
 
     /**
-     * Verifies that unmarking an already undone homework still succeeds and keeps it undone
+     * Verifies only the targeted student is modified when multiple persons are in the filtered list.
      */
     @Test
-    public void execute_alreadyUndone_stillSuccess() throws Exception {
-        Homework hw = new Homework("Reading", LocalDate.parse("2025-12-01"));
-        marcus.addHomework(hw);
+    public void execute_onlyTargetDeleted_whenMultipleInFilteredList() throws Exception {
+        Homework hwMarcus = new Homework("Physics WS", LocalDate.parse("2025-11-30"));
+        Homework hwJohn = new Homework("Chem WS", LocalDate.parse("2025-10-24"));
+        marcus.addHomework(hwMarcus);
+        john.addHomework(hwJohn);
 
-        Model model = new ModelStubFilteredOnly(List.of(marcus));
-        MarkUndoneHwCommand command = new MarkUndoneHwCommand(marcusName, "Reading");
-        CommandResult res = command.execute(model);
+        Model model = new ModelStubFilteredOnly(List.of(john, marcus));
+        DeleteHomeworkCommand command = new DeleteHomeworkCommand(marcusName, "Physics WS");
+        CommandResult result = command.execute(model);
 
-        String expected = String.format(MarkUndoneHwCommand.MESSAGE_SUCCESS,
-                marcus.getName().fullName, hw.getDescription());
-        assertEquals(expected, res.getFeedbackToUser());
-        assertTrue(!hw.isDone(), "Homework remains undone");
+        String expected = String.format(DeleteHomeworkCommand.MESSAGE_SUCCESS,
+                marcus.getName().fullName, "Physics WS");
+        assertEquals(expected, result.getFeedbackToUser());
+
+        assertFalse(marcus.getHomeworkList().contains(hwMarcus));
+        assertTrue(john.getHomeworkList().contains(hwJohn));
     }
 
     /**
-     * Verifies that when the target student is not present in the current filtered list
-     * (e.g., after a prior search), a {@link CommandException} is thrown with
-     * {@link MarkUndoneHwCommand#MESSAGE_NO_PERSON_FOUND}
+     * Verifies that when the target student is not present in the current filtered list,
+     * the command throws with {@link DeleteHomeworkCommand#MESSAGE_NO_PERSON_FOUND}.
      */
     @Test
     public void execute_nameNotInFilteredList_throwsNoPersonFound() {
-        Homework hw = new Homework("Math WS 3", LocalDate.parse("2025-10-23"));
-        marcus.addHomework(hw);
+        Homework homework = new Homework("Math WS 3", LocalDate.parse("2025-10-23"));
+        marcus.addHomework(homework);
 
-        Model model = new ModelStubFilteredOnly(List.of(john));
-        MarkUndoneHwCommand cmd = new MarkUndoneHwCommand(marcusName, "Math WS 3");
+        Model model = new ModelStubFilteredOnly(List.of(john)); // Marcus not shown
+        DeleteHomeworkCommand command = new DeleteHomeworkCommand(marcusName, "Math WS 3");
 
-        CommandException ex = assertThrows(CommandException.class, () -> cmd.execute(model));
-        assertEquals(MarkDoneHwCommand.MESSAGE_NO_PERSON_FOUND, ex.getMessage());
-        assertFalse(john.getHomeworkList().contains(hw), "Unrelated student should not change");
+        CommandException exception = assertThrows(CommandException.class, () -> command.execute(model));
+        assertEquals(DeleteHomeworkCommand.MESSAGE_NO_PERSON_FOUND, exception.getMessage());
+        assertTrue(marcus.getHomeworkList().contains(homework), "Original list should remain unchanged");
     }
 
     /**
      * Verifies that when the student is present but the homework description does not
-     * match any entry, a {@link CommandException} with
-     * {@link MarkUndoneHwCommand#MESSAGE_NO_HW_FOUND} is thrown.
+     * match any entry, the command throws with {@link DeleteHomeworkCommand#MESSAGE_NO_HW_FOUND}.
      */
     @Test
     public void execute_hwNotFound_throwsNoHwFound() {
-        Homework hw = new Homework("Chem WS", LocalDate.parse("2025-10-24"));
-        marcus.addHomework(hw);
+        Homework homework = new Homework("Chem WS", LocalDate.parse("2025-10-24"));
+        marcus.addHomework(homework);
 
         Model model = new ModelStubFilteredOnly(List.of(marcus));
-        MarkUndoneHwCommand cmd = new MarkUndoneHwCommand(marcusName, "Physics WS");
+        DeleteHomeworkCommand command = new DeleteHomeworkCommand(marcusName, "Physics WS"); // not present
 
-        CommandException ex = assertThrows(CommandException.class, () -> cmd.execute(model));
-        assertEquals(MarkDoneHwCommand.MESSAGE_NO_HW_FOUND, ex.getMessage());
-        assertFalse(hw.isDone(), "Non-matching homework should remain unchanged");
+        CommandException ex = assertThrows(CommandException.class, () -> command.execute(model));
+        assertEquals(DeleteHomeworkCommand.MESSAGE_NO_HW_FOUND, ex.getMessage());
+        assertTrue(marcus.getHomeworkList().contains(homework), "Non-matching homework should remain");
     }
 
     /**
-     * Tests for equality as specified under {@link MarkUndoneHwCommand}
+     * Tests for equality as specified under {@link DeleteHomeworkCommand}
+    }
      */
     @Test
     public void equals_various() {
-        MarkUndoneHwCommand a1 = new MarkUndoneHwCommand(marcusName, "A");
-        MarkUndoneHwCommand  a1copy = new MarkUndoneHwCommand(new Name("Marcus"), "A");
-        MarkUndoneHwCommand a2 = new MarkUndoneHwCommand(marcusName, "B");
-        MarkUndoneHwCommand b1 = new MarkUndoneHwCommand(johnName, "A");
+        DeleteHomeworkCommand a1 = new DeleteHomeworkCommand(marcusName, "A");
+        DeleteHomeworkCommand a1copy = new DeleteHomeworkCommand(new Name("Marcus"), "A");
+        DeleteHomeworkCommand a2 = new DeleteHomeworkCommand(marcusName, "B");
+        DeleteHomeworkCommand b1 = new DeleteHomeworkCommand(johnName, "A");
 
-        assertEquals(a1, a1);
-        assertEquals(a1, a1copy);
-        assertNotEquals(a1, null);
-        assertNotEquals(a1, "str");
-        assertNotEquals(a1, a2);
-        assertNotEquals(a1, b1);
+        assertEquals(a1, a1);          // same object
+        assertEquals(a1, a1copy);      // same values
+        assertNotEquals(a1, null);     // null
+        assertNotEquals(a1, "str");    // different type
+        assertNotEquals(a1, a2);       // different description
+        assertNotEquals(a1, b1);       // different student
     }
+
+
+
+
+
+
 }

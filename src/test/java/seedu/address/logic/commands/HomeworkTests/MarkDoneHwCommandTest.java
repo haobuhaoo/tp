@@ -41,6 +41,10 @@ public class MarkDoneHwCommandTest {
     private LessonTime johnLessonTime;
     private Person john;
 
+    /**
+     * Sets up common Person (Marcus, John) classes used across tests.
+     * Ensures each test have independent instances of person class.
+     */
     @BeforeEach
     public void setUp() {
         marcusName = new Name("Marcus");

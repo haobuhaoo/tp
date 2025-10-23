@@ -17,11 +17,13 @@ import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.HelpCommand;
+import seedu.address.logic.commands.HomeworkCommands.DeleteHomeworkCommand;
 import seedu.address.logic.commands.HomeworkCommands.MarkUndoneHwCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.HomeworkCommands.MarkDoneHwCommand;
 import seedu.address.logic.commands.SearchCommand;
 import seedu.address.logic.parser.Homework.AddHomeworkCommandParser;
+import seedu.address.logic.parser.Homework.DeleteHomeworkCommandParser;
 import seedu.address.logic.parser.Homework.MarkDoneHwParser;
 import seedu.address.logic.parser.Homework.MarkUndoneHwParser;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -95,6 +97,9 @@ public class AddressBookParser {
 
         case MarkUndoneHwCommand.COMMAND_WORD:
             return new MarkUndoneHwParser().parse(arguments);
+
+        case DeleteHomeworkCommand.COMMAND_WORD:
+            return new DeleteHomeworkCommandParser().parse(arguments);
 
         default:
             logger.finer("This user input caused a ParseException: " + userInput);
