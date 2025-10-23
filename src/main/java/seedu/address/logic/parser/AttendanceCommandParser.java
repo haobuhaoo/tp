@@ -32,7 +32,7 @@ public class AttendanceCommandParser implements Parser<AttendanceCommand> {
         String date = map.getValue(PREFIX_DATE).get();
         String status = map.getValue(PREFIX_STATUS).get();
 
-        return new AttendanceCommand(name, date, score);
+        return new AttendanceCommand(name, date, status);
     }
 
     private static boolean arePrefixesPresent(ArgumentMultimap m, Prefix... prefixes) {
