@@ -266,7 +266,7 @@ Format: `mark-paid i/INDEX m/Month`
 Examples:
 * `mark-paid i/1 m/1` marks the first student in the list as paid for January `Marked student as paid: marcus ng
   Month: January
-  Payment Status: Payment Status: 🟩 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥`
+  Payment Status: 🟩 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥`
 
 ### Marking unpaid : `mark-unpaid`
 
@@ -284,7 +284,7 @@ Format: `mark-upaid i/INDEX m/Month`
 Examples:
 * `mark-upaid i/1 m/1` marks the first student in the list as unpaid for January `Marked student as unpaid: marcus ng
 Month: January
-Payment Status: Payment Status: 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥`
+Payment Status: 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥`
 
 
 ### Clearing all entries : `clear`

@@ -100,7 +100,6 @@ class JsonAdaptedPerson {
         }
         final Set<LessonTime> modelLessonTime = new HashSet<>(modelLessonTimeList);
 
-        // Handle payment status FIRST
         BitSet modelPaymentStatus = new BitSet(12);
         if (paymentStatus != null) {
             for (int i = 0; i < 12 && i < paymentStatus.length(); i++) {
