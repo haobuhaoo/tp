@@ -7,7 +7,9 @@ import java.util.Set;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -42,6 +44,8 @@ public class PersonCard extends UiPart<Region> {
     private FlowPane lessonTime;
     @FXML
     private FlowPane groupBadges;
+    @FXML
+    private AnchorPane homeworkPlaceholder;
 
     // Participation UI
     @FXML
@@ -62,6 +66,8 @@ public class PersonCard extends UiPart<Region> {
         person.getLessonTime().stream()
                 .sorted(Comparator.comparing(LessonTime::toString))
                 .forEach(lt -> lessonTime.getChildren().add(new Label(lt.toString())));
+        HomeworkListPanel panel = new HomeworkListPanel(person.getHomeworkList());
+        homeworkPlaceholder.getChildren().setAll(panel.getRoot());
         renderGroupBadges(person);
         renderParticipation(person.getParticipation());
     }

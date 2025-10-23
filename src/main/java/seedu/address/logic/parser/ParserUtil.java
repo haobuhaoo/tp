@@ -2,6 +2,8 @@ package seedu.address.logic.parser;
 
 import static java.util.Objects.requireNonNull;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,6 +16,7 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
 import seedu.address.model.reminder.Description;
 import seedu.address.model.reminder.DueDate;
+
 
 /**
  * Contains utility methods used for parsing strings in the various *Parser classes.
@@ -63,6 +66,37 @@ public class ParserUtil {
             throw new ParseException(Phone.MESSAGE_CONSTRAINTS);
         }
         return new Phone(trimmedPhone);
+    }
+
+    /**
+     * Parses a {@code String description} into a valid description.
+     *
+     * @param description The string to be parsed.
+     * @return A trimmed non-empty description string.
+     * @throws ParseException if the given {@code description} is invalid.
+     */
+    public static String parseDescription(String description) throws ParseException {
+        requireNonNull(description);
+        String trimmedDescription = description.trim();
+        if (trimmedDescription.isEmpty()) {
+            throw new ParseException("Description cannot be empty.");
+        }
+        return trimmedDescription;
+    }
+    /**
+     * Parses a {@code String Date} into an {@code LocalDate}.
+     *
+     * @param date The date string to be parsed.
+     * @return A {@code LocalDate} representing the parsed date.
+     * @throws ParseException if the given {@code LocalDate} is invalid.
+     */
+    public static LocalDate parseDate(String date) throws ParseException {
+        requireNonNull(date);
+        try {
+            return LocalDate.parse(date.trim());
+        } catch (DateTimeParseException e) {
+            throw new ParseException("Invalid date format!Please use yyyy-MM-dd (e.g. 2025-10-25).");
+        }
     }
 
     /**

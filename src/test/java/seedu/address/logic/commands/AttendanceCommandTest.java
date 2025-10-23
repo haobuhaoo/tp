@@ -180,6 +180,7 @@ public class AttendanceCommandTest {
     }
 
     /**
+     *  Minimal model stub supporting hasPersonName() and AttendanceIndex.
      * Model stub that:
      * - says a single person name exists via hasPersonName(...)
      * - exposes a tiny ReadOnlyAddressBook containing that Person
