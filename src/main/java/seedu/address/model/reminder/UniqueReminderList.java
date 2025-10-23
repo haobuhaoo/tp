@@ -3,13 +3,13 @@ package seedu.address.model.reminder;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.SortedList;
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.model.reminder.exceptions.DuplicateReminderException;
 import seedu.address.model.reminder.exceptions.ReminderNotFoundException;
 
@@ -26,10 +26,10 @@ import seedu.address.model.reminder.exceptions.ReminderNotFoundException;
  * @see Reminder#equals(Object)
  */
 public class UniqueReminderList implements Iterable<Reminder> {
+    private static final Logger logger = LogsCenter.getLogger(UniqueReminderList.class);
     private final ObservableList<Reminder> internalList = FXCollections.observableArrayList();
-    private final SortedList<Reminder> sortedList = new SortedList<>(internalList, Comparator.naturalOrder());
     private final ObservableList<Reminder> internalUnmodifiableList =
-            FXCollections.unmodifiableObservableList(sortedList);
+            FXCollections.unmodifiableObservableList(internalList);
 
     /**
      * Returns true if the list contains an equivalent reminder as the given argument.
@@ -108,9 +108,11 @@ public class UniqueReminderList implements Iterable<Reminder> {
     }
 
     /**
-     * Returns the backing list as an unmodifiable {@code ObservableList}.
+     * Returns the sorted backing list as an unmodifiable {@code ObservableList}.
      */
     public ObservableList<Reminder> asUnmodifiableObservableList() {
+        logger.info("--- Sorting reminder list ---");
+        this.sort();
         return internalUnmodifiableList;
     }
 
