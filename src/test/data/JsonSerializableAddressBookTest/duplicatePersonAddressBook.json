@@ -2,10 +2,10 @@
   "persons": [ {
     "name": "Alice Pauline",
     "phone": "94351253",
-    "lessonTime": "1000"
+    "lessonTime": ["1000 Sun"]
   }, {
     "name": "Alice Pauline",
     "phone": "94351253",
-    "lessonTime": "1000"
+    "lessonTime": ["1000 Sun"]
   } ]
 }

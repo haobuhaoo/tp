@@ -12,23 +12,24 @@ import seedu.address.model.Model;
 import seedu.address.model.person.Person;
 
 /**
- * Adds a person to the address book.
+ * Adds a student to the student list.
  */
 public class AddCommand extends Command {
     public static final String COMMAND_WORD = "add-student";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a student to the address book. "
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a student to the student list. "
             + "Parameters: "
             + PREFIX_NAME + "NAME "
             + PREFIX_PHONE + "PHONE "
-            + PREFIX_LESSON_TIME + "LESSON TIME "
+            + PREFIX_LESSON_TIME + "LESSON TIME (note: A student can have multiple lesson times) \n"
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_NAME + "John Doe "
             + PREFIX_PHONE + "98765432 "
-            + PREFIX_LESSON_TIME + "1000";
+            + PREFIX_LESSON_TIME + "1000 Sun "
+            + PREFIX_LESSON_TIME + "1400 Thu";
 
     public static final String MESSAGE_SUCCESS = "Student added: %1$s";
-    public static final String MESSAGE_DUPLICATE_PERSON = "This student already exists in the address book";
+    public static final String MESSAGE_DUPLICATE_PERSON = "This student already exists in the student list";
 
     private final Person toAdd;
 

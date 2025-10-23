@@ -7,18 +7,23 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_LESSON_TIME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.person.LessonTime;
 
 /**
  * Parses input arguments and creates a new EditCommand object
  * <p>
  * This parser expects an index and at least 1 other prefix to be provided in the argument in the form:
- * {@code edit-student i/INDEX [n/NAME] [p/PHONE_NUMBER] [t/LESSON_TIME]}, where {@code INDEX} refers to the
+ * {@code edit-student i/INDEX [n/NAME] [p/PHONE_NUMBER] [t/LESSON_TIME]...}, where {@code INDEX} refers to the
  * position of the student in the displayed list that is to be edited, and {@code NAME}, {@code PHONE_NUMBER},
  * and {@code LESSON_TIME} refer to the new values of the respective fields to be updated.
  */
@@ -39,7 +44,7 @@ public class EditCommandParser implements Parser<EditCommand> {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE));
         }
 
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_INDEX, PREFIX_NAME, PREFIX_PHONE, PREFIX_LESSON_TIME);
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_INDEX, PREFIX_NAME, PREFIX_PHONE);
 
         Index index = ParserUtil.parseIndex(argMultimap.getValue(PREFIX_INDEX).get());
 
@@ -51,10 +56,8 @@ public class EditCommandParser implements Parser<EditCommand> {
         if (argMultimap.getValue(PREFIX_PHONE).isPresent()) {
             editPersonDescriptor.setPhone(ParserUtil.parsePhone(argMultimap.getValue(PREFIX_PHONE).get()));
         }
-        if (argMultimap.getValue(PREFIX_LESSON_TIME).isPresent()) {
-            editPersonDescriptor.setLessonTime(
-                    ParserUtil.parseLessonTime(argMultimap.getValue(PREFIX_LESSON_TIME).get()));
-        }
+        parseLessonTimeForEdit(argMultimap.getAllValues(PREFIX_LESSON_TIME))
+                .ifPresent(editPersonDescriptor::setLessonTime);
 
         if (!editPersonDescriptor.isAnyFieldEdited()) {
             throw new ParseException(EditCommand.MESSAGE_NOT_EDITED);
@@ -73,5 +76,22 @@ public class EditCommandParser implements Parser<EditCommand> {
      */
     private static boolean arePrefixesPresent(ArgumentMultimap argumentMultimap, Prefix... prefixes) {
         return Stream.of(prefixes).allMatch(prefix -> argumentMultimap.getValue(prefix).isPresent());
+    }
+
+    /**
+     * Parses {@code Collection<String> lessonTime} into a {@code Set<LessonTime>} if {@code lessonTime} is non-empty.
+     * If {@code lessonTime} contain only one element which is an empty string, it will be parsed into a
+     * {@code Set<LessonTime>} containing zero tags.
+     */
+    private Optional<Set<LessonTime>> parseLessonTimeForEdit(Collection<String> lessonTime) throws ParseException {
+        assert lessonTime != null;
+
+        if (lessonTime.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Collection<String> lessonTimeSet =
+                lessonTime.size() == 1 && lessonTime.contains("") ? Collections.emptySet() : lessonTime;
+        return Optional.of(ParserUtil.parseLessonTimeSet(lessonTimeSet));
     }
 }

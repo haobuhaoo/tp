@@ -1,6 +1,7 @@
 package seedu.address.ui;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -16,6 +17,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import seedu.address.model.group.GroupName;
+import seedu.address.model.person.LessonTime;
 import seedu.address.model.person.ParticipationHistory;
 import seedu.address.model.person.ParticipationRecord;
 import seedu.address.model.person.Person;
@@ -27,7 +29,9 @@ public class PersonCard extends UiPart<Region> {
     private static final String FXML = "PersonListCard.fxml";
     private static final DateTimeFormatter MM_DD = DateTimeFormatter.ofPattern("MM-dd");
 
-    /** The person shown by this card. */
+    /**
+     * The person shown by this card.
+     */
     public final Person person;
 
     @FXML
@@ -39,7 +43,7 @@ public class PersonCard extends UiPart<Region> {
     @FXML
     private Label phone;
     @FXML
-    private Label lessonTime;
+    private FlowPane lessonTime;
     @FXML
     private CheckBox attendanceCheck;
     @FXML
@@ -47,8 +51,10 @@ public class PersonCard extends UiPart<Region> {
     private FlowPane groupBadges;
 
     // Participation UI
-    @FXML private HBox dateRow;
-    @FXML private HBox boxes;
+    @FXML
+    private HBox dateRow;
+    @FXML
+    private HBox boxes;
 
     /**
      * Creates a {@code PersonCard} with the given {@code Person} and index to display.
@@ -60,7 +66,9 @@ public class PersonCard extends UiPart<Region> {
         id.setText(displayedIndex + ". ");
         name.setText(person.getName().fullName);
         phone.setText(person.getPhone().value);
-        lessonTime.setText(person.getLessonTime().toString());
+        person.getLessonTime().stream()
+                .sorted(Comparator.comparing(LessonTime::toString))
+                .forEach(lt -> lessonTime.getChildren().add(new Label(lt.toString())));
         Boolean status = UiAttendanceAccess.getStatus(person.getName().fullName);
         attendanceCheck.setSelected(Boolean.TRUE.equals(status));
         HomeworkListPanel panel = new HomeworkListPanel(person.getHomeworkList());

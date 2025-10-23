@@ -6,6 +6,7 @@ import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.BENSON;
 
 import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,8 @@ public class JsonAdaptedPersonTest {
         return Collections.emptyList();
     }
 
+    private static final List<JsonAdaptedLessonTime> VALID_LESSON_TIME =
+            BENSON.getLessonTime().stream().map(JsonAdaptedLessonTime::new).toList();
 
     @Test
     public void toModelType_validPersonDetails_returnsPerson() throws Exception {
@@ -67,6 +70,8 @@ public class JsonAdaptedPersonTest {
 
     @Test
     public void toModelType_invalidLessonTime_throwsIllegalValueException() {
+        List<JsonAdaptedLessonTime> invalidLessonTime = new ArrayList<>(VALID_LESSON_TIME);
+        invalidLessonTime.add(new JsonAdaptedLessonTime(INVALID_LESSON_TIME));
         JsonAdaptedPerson person =
                 new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, INVALID_LESSON_TIME, emptyHomeworks());
         String expectedMessage = LessonTime.MESSAGE_CONSTRAINTS;

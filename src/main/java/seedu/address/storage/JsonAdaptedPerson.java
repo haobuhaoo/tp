@@ -1,7 +1,9 @@
 package seedu.address.storage;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -24,21 +26,24 @@ class JsonAdaptedPerson {
     private final String phone;
     private final String lessonTime;
     private final List<JsonAdaptedHomework> homework = new ArrayList<>();
+    private final List<JsonAdaptedLessonTime> lessonTime = new ArrayList<>();
 
     /**
      * Constructs a {@code JsonAdaptedPerson} with the given person details.
      */
     @JsonCreator
-    public JsonAdaptedPerson(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
-                             @JsonProperty("lessonTime") String lessonTime,
-                             @JsonProperty("homeworks") List<JsonAdaptedHomework> homeworks) {
-        this.name = name;
-        this.phone = phone;
-        this.lessonTime = lessonTime;
-        if (homeworks != null) {
-            this.homework.addAll(homeworks);
-        }
+public JsonAdaptedPerson(@JsonProperty("name") String name,
+                         @JsonProperty("phone") String phone,
+                         @JsonProperty("lessonTime") String lessonTime,
+                         @JsonProperty("homeworks") List<JsonAdaptedHomework> homeworks) {
+    this.name = name;
+    this.phone = phone;
+    this.lessonTime = lessonTime;
+    if (homeworks != null) {
+        this.homework.addAll(homeworks);
     }
+}
+
 
     /**
      * Converts a given {@code Person} into this class for Jackson use.
@@ -46,9 +51,9 @@ class JsonAdaptedPerson {
     public JsonAdaptedPerson(Person source) {
         name = source.getName().fullName;
         phone = source.getPhone().value;
-        lessonTime = source.getLessonTime().toInputString();
-        //copy the hw
-        source.getHomeworkList().forEach(hw -> homework.add(new JsonAdaptedHomework(hw)));
+lessonTime = source.getLessonTime().toInputString();
+// copy homework
+source.getHomeworkList().forEach(hw -> homeworks.add(new JsonAdaptedHomework(hw)));
     }
 
     /**
@@ -73,14 +78,15 @@ class JsonAdaptedPerson {
         }
         final Phone modelPhone = new Phone(phone);
 
-        if (lessonTime == null) {
+        if (lessonTime.isEmpty()) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
                     LessonTime.class.getSimpleName()));
         }
-        if (!LessonTime.isValidLessonTime(lessonTime)) {
-            throw new IllegalValueException(LessonTime.MESSAGE_CONSTRAINTS);
+        final List<LessonTime> modelLessonTimeList = new ArrayList<>();
+        for (JsonAdaptedLessonTime lt : lessonTime) {
+            modelLessonTimeList.add(lt.toModelType());
         }
-        final LessonTime modelLessonTime = new LessonTime(lessonTime);
+        final Set<LessonTime> modelLessonTime = new HashSet<>(modelLessonTimeList);
 
         final Person person = new Person(modelName, modelPhone, modelLessonTime);
 

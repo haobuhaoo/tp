@@ -5,6 +5,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_LESSON_TIME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 
+import java.util.Set;
 import java.util.stream.Stream;
 
 import seedu.address.logic.commands.AddCommand;
@@ -18,9 +19,10 @@ import seedu.address.model.person.Phone;
  * Parses input arguments and creates a new AddCommand object
  * <p>
  * This parser expects 3 prefixes to be provided in the argument in the form:
- * {@code add-student n/NAME p/PHONE_NUMBER t/LESSON_TIME}, where {@code NAME} refers to the name,
+ * {@code add-student n/NAME p/PHONE_NUMBER t/LESSON_TIME...}, where {@code NAME} refers to the name,
  * {@code PHONE_NUMBER} refers to the phone number, and {@code LESSON_TIME} refers to the lesson
- * time of the student to be added to the list.
+ * time of the student to be added to the list. Multiple {@code LESSON_TIME} can be provided for each student,
+ * but at least one is required.
  */
 public class AddCommandParser implements Parser<AddCommand> {
     /**
@@ -38,10 +40,10 @@ public class AddCommandParser implements Parser<AddCommand> {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE));
         }
 
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME, PREFIX_PHONE, PREFIX_LESSON_TIME);
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME, PREFIX_PHONE);
         Name name = ParserUtil.parseName(argMultimap.getValue(PREFIX_NAME).get());
         Phone phone = ParserUtil.parsePhone(argMultimap.getValue(PREFIX_PHONE).get());
-        LessonTime lessonTime = ParserUtil.parseLessonTime(argMultimap.getValue(PREFIX_LESSON_TIME).get());
+        Set<LessonTime> lessonTime = ParserUtil.parseLessonTimeSet(argMultimap.getAllValues(PREFIX_LESSON_TIME));
 
         Person person = new Person(name, phone, lessonTime);
 

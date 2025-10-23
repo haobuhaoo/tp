@@ -4,6 +4,9 @@ import static java.util.Objects.requireNonNull;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.StringUtil;
@@ -20,8 +23,8 @@ public class ParserUtil {
     public static final String MESSAGE_INVALID_INDEX = "Index is not a non-zero unsigned integer.";
 
     /**
-     * Parses {@code oneBasedIndex} into an {@code Index} and returns it. Leading and trailing whitespaces will be
-     * trimmed.
+     * Parses {@code oneBasedIndex} into an {@code Index} and returns it.
+     * Leading and trailing whitespaces will be trimmed.
      *
      * @throws ParseException if the specified index is invalid (not non-zero unsigned integer).
      */
@@ -64,7 +67,7 @@ public class ParserUtil {
     }
 
     /**
-     * Parses a {@code String lessonTime} into an {@code LessonTime}.
+     * Parses a {@code String lessonTime} into a {@code LessonTime}.
      * Leading and trailing whitespaces will be trimmed.
      *
      * @throws ParseException if the given {@code lessonTime} is invalid.
@@ -107,5 +110,14 @@ public class ParserUtil {
         } catch (DateTimeParseException e) {
             throw new ParseException("Invalid date format!Please use yyyy-MM-dd (e.g. 2025-10-25).");
         }
+     * Parses a {@code Collection<String> lessonTime} into an {@code Set<LessonTime>}.
+     */
+    public static Set<LessonTime> parseLessonTimeSet(Collection<String> lessonTime) throws ParseException {
+        requireNonNull(lessonTime);
+        final Set<LessonTime> lessonTimeSet = new HashSet<>();
+        for (String lessonTimeString : lessonTime) {
+            lessonTimeSet.add(parseLessonTime(lessonTimeString));
+        }
+        return lessonTimeSet;
     }
 }
