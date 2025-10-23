@@ -1,10 +1,14 @@
 package seedu.address.model;
 
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupName;
 import seedu.address.model.person.Person;
 
 /**
@@ -74,6 +78,20 @@ public interface Model {
      * (We still leverage it to propagate the "current UI date".)
      */
     seedu.address.model.attendance.AttendanceIndex getAttendanceIndex();
+
+    // ============ Groups ==========================================================
+    boolean hasGroup(GroupName name);
+    void createGroup(GroupName name);
+    void deleteGroup(GroupName name);
+    void addToGroup(GroupName name, List<Person> members);
+    void removeFromGroup(GroupName name, List<Person> members);
+    ObservableList<Group> getGroupList();
+    Set<GroupName> getGroupsOf(Person person);
+
+    /** Convenience: filter list by group membership (optional but handy). */
+    default void filterByGroup(GroupName name) {
+        updateFilteredPersonList(p -> getGroupsOf(p).contains(name));
+    }
 
     /** Returns true if there exists a person whose normalized name equals {@code name}. */
     boolean hasPersonName(String name);

@@ -2,8 +2,11 @@ package seedu.address.ui;
 
 import java.util.logging.Logger;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.input.KeyCombination;
@@ -16,6 +19,8 @@ import seedu.address.logic.Logic;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupName;
 
 /**
  * The Main Window. Provides the basic application layout containing
@@ -49,6 +54,9 @@ public class MainWindow extends UiPart<Stage> {
 
     @FXML
     private StackPane statusbarPlaceholder;
+
+    @FXML
+    private ComboBox<String> groupFilterBox;
 
     /**
      * Creates a {@code MainWindow} with the given {@code Stage} and {@code Logic}.
@@ -116,6 +124,7 @@ public class MainWindow extends UiPart<Stage> {
                 logic.peekModel().getAttendanceIndex().getCurrentUiDate());
 
         System.out.println(logic.getFilteredPersonList());
+        seedu.address.ui.UiGroupAccess.install(logic::getGroupsOf);
         personListPanel = new PersonListPanel(logic.getFilteredPersonList());
         personListPanelPlaceholder.getChildren().add(personListPanel.getRoot());
 
@@ -127,6 +136,49 @@ public class MainWindow extends UiPart<Stage> {
 
         CommandBox commandBox = new CommandBox(this::executeCommand);
         commandBoxPlaceholder.getChildren().add(commandBox.getRoot());
+
+        // ---- Group dropdown filter wiring (minimal) ----
+        final String allStudent = "(All students)";
+
+        ObservableList<String> groupNames = FXCollections.observableArrayList();
+        groupNames.add(allStudent);
+
+        // initial population
+        for (Group g : logic.getGroupList()) {
+            groupNames.add(g.getName().toString());
+        }
+        groupFilterBox.setItems(groupNames);
+        groupFilterBox.getSelectionModel().select(allStudent);
+
+        // keep the dropdown list in sync when groups change
+        logic.getGroupList().addListener((javafx.collections.ListChangeListener<Group>) change -> {
+            groupNames.setAll(allStudent);
+            for (Group g : logic.getGroupList()) {
+                groupNames.add(g.getName().toString());
+            }
+            // keep selection stable if possible; otherwise fall back to allStudent
+            String sel = groupFilterBox.getSelectionModel().getSelectedItem();
+            if (sel == null || (!sel.equals(allStudent) && groupNames.stream().noneMatch(sel::equals))) {
+                groupFilterBox.getSelectionModel().select(allStudent);
+                logic.clearPersonFilter();
+            }
+        });
+
+        // apply/clear filter on selection
+        groupFilterBox.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
+            if (newV == null || newV.equals(allStudent)) {
+                logic.clearPersonFilter();
+            } else {
+                try {
+                    logic.filterByGroup(GroupName.of(newV));
+                } catch (IllegalArgumentException ex) {
+                    // If name somehow invalid, clear filter gracefully
+                    logic.clearPersonFilter();
+                    groupFilterBox.getSelectionModel().select(allStudent);
+                }
+            }
+        });
+
     }
 
     /**

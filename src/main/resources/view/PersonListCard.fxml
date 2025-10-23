@@ -3,6 +3,7 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.FlowPane?>
 
 <!-- Added stylesheets attribute to load participation.css -->
 <HBox id="cardPane" fx:id="cardPane"
@@ -22,9 +23,10 @@
             <padding>
                 <Insets bottom="5" left="15" right="5" top="5" />
             </padding>
-            <HBox alignment="CENTER_LEFT" spacing="0.5">
+            <HBox alignment="CENTER_LEFT" spacing="5">
                 <Label fx:id="id" styleClass="cell_big_label" />
                 <Label fx:id="name" styleClass="cell_big_label" />
+                <FlowPane fx:id="groupBadges" hgap="6" vgap="4" prefWrapLength="0" />
             </HBox>
             <HBox alignment="CENTER_LEFT" spacing="0.5">
                 <Label fx:id="phoneId" styleClass="cell_small_label" text="Phone number:" />

@@ -5,7 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
@@ -19,6 +21,8 @@ import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.attendance.AttendanceIndex;
+import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupName;
 import seedu.address.model.person.ParticipationRecord;
 import seedu.address.model.person.Person;
 import seedu.address.testutil.PersonBuilder;
@@ -284,6 +288,42 @@ public class AttendanceCommandTest {
         @Override
         public ObservableList<Person> getFilteredPersonList() {
             return FXCollections.observableArrayList();
+        }
+
+        // ===== Groups (no-op implementations for tests) =====
+        @Override
+        public boolean hasGroup(GroupName name) {
+            return false;
+        }
+
+        @Override
+        public void createGroup(GroupName name) {
+            // no-op for tests
+        }
+
+        @Override
+        public void deleteGroup(GroupName name) {
+            // no-op for tests
+        }
+
+        @Override
+        public void addToGroup(GroupName name, List<Person> members) {
+            // no-op for tests
+        }
+
+        @Override
+        public void removeFromGroup(GroupName name, List<Person> members) {
+            // no-op for tests
+        }
+
+        @Override
+        public ObservableList<Group> getGroupList() {
+            return FXCollections.observableArrayList();
+        }
+
+        @Override
+        public Set<GroupName> getGroupsOf(Person person) {
+            return Collections.emptySet();
         }
     }
 }
