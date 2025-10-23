@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_DESCRIPTION_1;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_LESSON_TIME_AMY;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_LESSON_TIME_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_LESSON_TIME_1;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_LESSON_TIME_2;
 import static seedu.address.testutil.Assert.assertThrows;

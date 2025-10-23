@@ -7,7 +7,6 @@ import java.util.Set;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -44,8 +43,6 @@ public class PersonCard extends UiPart<Region> {
     @FXML
     private FlowPane lessonTime;
     @FXML
-    private CheckBox attendanceCheck;
-    @FXML
     private FlowPane groupBadges;
 
     // Participation UI
@@ -67,20 +64,26 @@ public class PersonCard extends UiPart<Region> {
         person.getLessonTime().stream()
                 .sorted(Comparator.comparing(LessonTime::toString))
                 .forEach(lt -> lessonTime.getChildren().add(new Label(lt.toString())));
-        Boolean status = UiAttendanceAccess.getStatus(person.getName().fullName);
-        attendanceCheck.setSelected(Boolean.TRUE.equals(status));
-        // Render group badges next to the name
-        Set<GroupName> groups = UiGroupAccess.groupsOf(person);
-        groupBadges.getChildren().clear();
-        for (GroupName g : groups) {
-            Label chip = new Label(g.toString());
-            chip.getStyleClass().add("group-badge");
-            // prevent vertical compression of rounded chips
-            chip.setMinHeight(Region.USE_PREF_SIZE);
-            groupBadges.getChildren().add(chip);
-        }
-
+        renderGroupBadges(person);
         renderParticipation(person.getParticipation());
+    }
+
+    private void renderGroupBadges(Person p) {
+        if (groupBadges == null) {
+            return;
+        }
+        groupBadges.getChildren().clear();
+        try {
+            Set<GroupName> groups = UiGroupAccess.groupsOf(p);
+            for (GroupName g : groups) {
+                Label chip = new Label(g.toString());
+                chip.getStyleClass().add("group-badge");
+                chip.setMinHeight(Region.USE_PREF_SIZE); // prevent vertical compression of rounded chips
+                groupBadges.getChildren().add(chip);
+            }
+        } catch (Throwable ignored) {
+            // If bridge not installed, just show nothing
+        }
     }
 
     private void renderParticipation(ParticipationHistory history) {

@@ -95,7 +95,7 @@ public class AddressBookParser {
 
         case DeleteReminderCommand.COMMAND_WORD:
             return new DeleteReminderCommandParser().parse(arguments);
-            
+
         case GroupCreateCommand.COMMAND_WORD:
             return new GroupCreateCommandParser().parse(arguments);
 

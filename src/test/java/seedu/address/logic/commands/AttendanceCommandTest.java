@@ -181,9 +181,9 @@ public class AttendanceCommandTest {
 
     /**
      * Model stub that:
-     *  - says a single person name exists via hasPersonName(...)
-     *  - exposes a tiny ReadOnlyAddressBook containing that Person
-     *  - provides an AttendanceIndex for the command to update UI date
+     * - says a single person name exists via hasPersonName(...)
+     * - exposes a tiny ReadOnlyAddressBook containing that Person
+     * - provides an AttendanceIndex for the command to update UI date
      */
     static class ModelStubWithPerson implements Model {
         final Person person;
@@ -215,6 +215,11 @@ public class AttendanceCommandTest {
                 @Override
                 public ObservableList<Person> getPersonList() {
                     return list;
+                }
+
+                @Override
+                public ObservableList<Reminder> getReminderList() {
+                    return null;
                 }
             };
         }
@@ -320,7 +325,7 @@ public class AttendanceCommandTest {
         public ObservableList<Reminder> getFilteredReminderList() {
             return FXCollections.observableArrayList();
         }
-        
+
         // ===== Groups (no-op implementations for tests) =====
         @Override
         public boolean hasGroup(GroupName name) {

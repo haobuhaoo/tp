@@ -64,7 +64,22 @@ public class ParserUtil {
         }
         return new Phone(trimmedPhone);
     }
-  
+
+    /**
+     * Parses a {@code String lessonTime} into a {@code LessonTime}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code lessonTime} is invalid.
+     */
+    public static LessonTime parseLessonTime(String lessonTime) throws ParseException {
+        requireNonNull(lessonTime);
+        String trimmedLessonTime = lessonTime.trim();
+        if (!LessonTime.isValidLessonTime(trimmedLessonTime)) {
+            throw new ParseException(LessonTime.MESSAGE_CONSTRAINTS);
+        }
+        return new LessonTime(trimmedLessonTime);
+    }
+
     /**
      * Parses a {@code Collection<String> lessonTime} into an {@code Set<LessonTime>}.
      */
@@ -76,7 +91,7 @@ public class ParserUtil {
         }
         return lessonTimeSet;
     }
-  
+
     /**
      * Parses a {@code String dueDate} into an {@code DueDate}.
      * Leading and trailing whitespaces will be trimmed.
