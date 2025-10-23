@@ -1,7 +1,6 @@
 package seedu.address.ui;
 
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -15,7 +14,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import seedu.address.model.group.GroupName;
-import seedu.address.model.person.LessonTime;
 import seedu.address.model.person.ParticipationHistory;
 import seedu.address.model.person.ParticipationRecord;
 import seedu.address.model.person.Person;
@@ -27,9 +25,7 @@ public class PersonCard extends UiPart<Region> {
     private static final String FXML = "PersonListCard.fxml";
     private static final DateTimeFormatter MM_DD = DateTimeFormatter.ofPattern("MM-dd");
 
-    /**
-     * The person shown by this card.
-     */
+    /** The person shown by this card. */
     public final Person person;
 
     @FXML
@@ -86,6 +82,24 @@ public class PersonCard extends UiPart<Region> {
         }
     }
 
+    private void renderGroupBadges(Person p) {
+        if (groupBadges == null) {
+            return;
+        }
+        groupBadges.getChildren().clear();
+        try {
+            Set<GroupName> groups = UiGroupAccess.groupsOf(p);
+            for (GroupName g : groups) {
+                Label chip = new Label(g.toString());
+                chip.getStyleClass().add("group-badge");
+                chip.setMinHeight(Region.USE_PREF_SIZE); // prevent vertical compression of rounded chips
+                groupBadges.getChildren().add(chip);
+            }
+        } catch (Throwable ignored) {
+            // If bridge not installed, just show nothing
+        }
+    }
+
     private void renderParticipation(ParticipationHistory history) {
         if (boxes == null || dateRow == null || history == null) {
             return; // FXML fields not present or no history yet
@@ -109,13 +123,12 @@ public class PersonCard extends UiPart<Region> {
 
             // ----- score box (bottom row) -----
             StackPane cell = new StackPane();
-            // make each box cell as wide as the date cell so spacing matches
             cell.setMinWidth(44);
             cell.setPrefWidth(44);
             cell.setMaxWidth(Region.USE_PREF_SIZE);
-            cell.setAlignment(Pos.CENTER); // center children
+            cell.setAlignment(Pos.CENTER);
 
-            Rectangle rect = new Rectangle(24, 24); // a touch bigger looks nicer at this width
+            Rectangle rect = new Rectangle(24, 24);
             rect.getStyleClass().add("participation-box");
 
             Text t = new Text(r == null ? "" : Integer.toString(r.getScore()));
