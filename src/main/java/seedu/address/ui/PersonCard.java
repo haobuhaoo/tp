@@ -1,11 +1,13 @@
 package seedu.address.ui;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
@@ -15,6 +17,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import seedu.address.model.group.GroupName;
+import seedu.address.model.person.LessonTime;
 import seedu.address.model.person.ParticipationHistory;
 import seedu.address.model.person.ParticipationRecord;
 import seedu.address.model.person.Person;
@@ -29,33 +32,15 @@ public class PersonCard extends UiPart<Region> {
     /** The person shown by this card. */
     public final Person person;
 
-    @FXML
-    private HBox cardPane;
-    @FXML
-    private Label name;
-    @FXML
-    private Label id;
-    @FXML
-    private Label phone;
-    @FXML
-    private FlowPane lessonTime;
-    @FXML
-    private CheckBox attendanceCheck;
-    @FXML
-    private AnchorPane homeworkPlaceholder;
-    private FlowPane groupBadges;
 
-    // Participation UI
-    @FXML
-    private HBox dateRow;
-    @FXML
-    private HBox boxes;
     // Left column
     @FXML private HBox cardPane;
     @FXML private Label name;
     @FXML private Label id;
     @FXML private Label phone;
     @FXML private FlowPane lessonTime; // FlowPane in FXML
+    @FXML private CheckBox attendanceCheck;
+    @FXML private AnchorPane homeworkPlaceholder;
 
     // Group badges
     @FXML private FlowPane groupBadges;
@@ -63,6 +48,7 @@ public class PersonCard extends UiPart<Region> {
     // Right column (participation)
     @FXML private HBox dateRow;
     @FXML private HBox boxes;
+
 
     /**
      * Creates a {@code PersonCard} with the given {@code Person} and index to display.
