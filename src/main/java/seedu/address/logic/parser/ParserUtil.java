@@ -2,6 +2,10 @@ package seedu.address.logic.parser;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -16,8 +20,8 @@ public class ParserUtil {
     public static final String MESSAGE_INVALID_INDEX = "Index is not a non-zero unsigned integer.";
 
     /**
-     * Parses {@code oneBasedIndex} into an {@code Index} and returns it. Leading and trailing whitespaces will be
-     * trimmed.
+     * Parses {@code oneBasedIndex} into an {@code Index} and returns it.
+     * Leading and trailing whitespaces will be trimmed.
      *
      * @throws ParseException if the specified index is invalid (not non-zero unsigned integer).
      */
@@ -60,7 +64,7 @@ public class ParserUtil {
     }
 
     /**
-     * Parses a {@code String lessonTime} into an {@code LessonTime}.
+     * Parses a {@code String lessonTime} into a {@code LessonTime}.
      * Leading and trailing whitespaces will be trimmed.
      *
      * @throws ParseException if the given {@code lessonTime} is invalid.
@@ -72,5 +76,17 @@ public class ParserUtil {
             throw new ParseException(LessonTime.MESSAGE_CONSTRAINTS);
         }
         return new LessonTime(trimmedLessonTime);
+    }
+
+    /**
+     * Parses a {@code Collection<String> lessonTime} into an {@code Set<LessonTime>}.
+     */
+    public static Set<LessonTime> parseLessonTimeSet(Collection<String> lessonTime) throws ParseException {
+        requireNonNull(lessonTime);
+        final Set<LessonTime> lessonTimeSet = new HashSet<>();
+        for (String lessonTimeString : lessonTime) {
+            lessonTimeSet.add(parseLessonTime(lessonTimeString));
+        }
+        return lessonTimeSet;
     }
 }

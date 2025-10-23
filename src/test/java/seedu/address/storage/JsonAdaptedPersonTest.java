@@ -5,6 +5,9 @@ import static seedu.address.storage.JsonAdaptedPerson.MISSING_FIELD_MESSAGE_FORM
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.BENSON;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.exceptions.IllegalValueException;
@@ -19,7 +22,8 @@ public class JsonAdaptedPersonTest {
 
     private static final String VALID_NAME = BENSON.getName().toString();
     private static final String VALID_PHONE = BENSON.getPhone().toString();
-    private static final String VALID_LESSON_TIME = BENSON.getLessonTime().toString();
+    private static final List<JsonAdaptedLessonTime> VALID_LESSON_TIME =
+            BENSON.getLessonTime().stream().map(JsonAdaptedLessonTime::new).toList();
 
     @Test
     public void toModelType_validPersonDetails_returnsPerson() throws Exception {
@@ -59,8 +63,10 @@ public class JsonAdaptedPersonTest {
 
     @Test
     public void toModelType_invalidLessonTime_throwsIllegalValueException() {
+        List<JsonAdaptedLessonTime> invalidLessonTime = new ArrayList<>(VALID_LESSON_TIME);
+        invalidLessonTime.add(new JsonAdaptedLessonTime(INVALID_LESSON_TIME));
         JsonAdaptedPerson person =
-                new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, INVALID_LESSON_TIME);
+                new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, invalidLessonTime);
         String expectedMessage = LessonTime.MESSAGE_CONSTRAINTS;
         assertThrows(IllegalValueException.class, expectedMessage, person::toModelType);
     }

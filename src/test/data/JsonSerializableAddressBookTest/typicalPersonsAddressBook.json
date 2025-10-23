@@ -3,30 +3,30 @@
   "persons" : [ {
     "name" : "Alice Pauline",
     "phone" : "94351253",
-    "lessonTime": "1000"
+    "lessonTime": ["1000 Sun"]
   }, {
     "name" : "Benson Meier",
     "phone" : "98765432",
-    "lessonTime": "1200"
+    "lessonTime": ["1200 Mon", "1400 Wed"]
   }, {
     "name" : "Carl Kurz",
     "phone" : "95352563",
-    "lessonTime": "1430"
+    "lessonTime": ["1430 Tue"]
   }, {
     "name" : "Daniel Meier",
     "phone" : "87652533",
-    "lessonTime": "1830"
+    "lessonTime": ["1830 Thu", "1930 Fri", "2030 Sat"]
   }, {
     "name" : "Elle Meyer",
     "phone" : "94822240",
-    "lessonTime": "1500"
+    "lessonTime": ["1500 Mon", "1600 Wed"]
   }, {
     "name" : "Fiona Kunz",
     "phone" : "94824270",
-    "lessonTime": "1600"
+    "lessonTime": ["1600 Tue"]
   }, {
     "name" : "George Best",
     "phone" : "94824421",
-    "lessonTime": "1700"
+    "lessonTime": ["1700 Fri", "1800 Sun"]
   } ]
 }

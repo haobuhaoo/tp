@@ -76,7 +76,7 @@ public class NameContainsKeywordsPredicateTest {
         // Keywords match phone and lesson time, but does not match name
         predicate = new StudentFieldsContainsKeywordsPredicate(Arrays.asList("98765432", "1000"));
         assertTrue(predicate.test(new PersonBuilder().withName("Alice").withPhone("98765432")
-                .withLessonTime("1000").build()));
+                .withLessonTime("1000 Wed").build()));
     }
 
     @Test
