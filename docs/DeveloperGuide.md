@@ -157,6 +157,20 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 This section describes some noteworthy details on how certain features are implemented.
 
+### Grouping feature
+
+The grouping feature lets you organize students into named groups and manage memberships with commands such as group-create, group-add, group-remove, and group-delete. This is useful for filtering by group (e.g., “Sec3”, “MorningClass”) and showing group badges on each student card.
+
+Key ideas
+
+* A Group has a GroupName and a set of Person members.
+
+* Commands operate through the Model interface; storage lives in the AddressBook via a UniqueGroupList.
+
+* UI reads memberships via a small bridge (UiGroupAccess) to render badges next to each name.
+
+<puml src="diagrams/Grouping.puml" alt="Class Diagram for Grouping" />
+
 ### Attendance / Participation Command (overview)
 
 The participation feature records a per-class score (`s/0..5`) for a student and updates the 5-box history shown on each Person card, with the **class date above** each box and the **score inside**.
