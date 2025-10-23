@@ -2,9 +2,9 @@ package seedu.address.model.person;
 
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
-import java.util.List;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -12,6 +12,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.homework.Homework;
+
 
 /**
  * Represents a Student in the student list.
@@ -23,7 +24,6 @@ public class Person {
     private final Phone phone;
 
     // Data fields
-    private final LessonTime lessonTime;
     private final ObservableList<Homework> homeworkList = FXCollections.observableArrayList();
 
     private final Set<LessonTime> lessonTime = new HashSet<>();

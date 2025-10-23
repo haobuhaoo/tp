@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -42,12 +43,12 @@ import seedu.address.model.person.Phone;
 public class AddHomeworkCommandTest {
     private Name marcusName;
     private Phone marcusPhone;
-    private LessonTime marcusLessonTime;
+    private Set<LessonTime> marcusLessonTime;
     private Person marcus;
 
     private Name johnName;
     private Phone johnPhone;
-    private LessonTime johnLessonTime;
+    private Set<LessonTime> johnLessonTime;
     private Person john;
 
     /**
@@ -58,12 +59,14 @@ public class AddHomeworkCommandTest {
     public void setUp() {
         this.marcusName = new Name("Marcus");
         this.marcusPhone = new Phone("91326770");
-        this.marcusLessonTime = new LessonTime("1000");
+        marcusLessonTime = new HashSet<>();
+        marcusLessonTime.add(new LessonTime("1000 Sat"));
         this.marcus = new Person(marcusName, marcusPhone, marcusLessonTime);
 
         this.johnName = new Name("John");
         this.johnPhone = new Phone("99999999");
-        this.johnLessonTime = new LessonTime("1400");
+        johnLessonTime = new HashSet<>();
+        johnLessonTime.add(new LessonTime("1100 Sat"));
         this.john = new Person(johnName, johnPhone, johnLessonTime);
     }
     /**

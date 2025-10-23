@@ -5,8 +5,8 @@ import static seedu.address.storage.JsonAdaptedPerson.MISSING_FIELD_MESSAGE_FORM
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.BENSON;
 
-import java.util.Collections;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -17,20 +17,19 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
 
 
+
 public class JsonAdaptedPersonTest {
     private static final String INVALID_NAME = "R@chel";
     private static final String INVALID_PHONE = "+651234";
     private static final String INVALID_LESSON_TIME = "10:30";
-
     private static final String VALID_NAME = BENSON.getName().toString();
     private static final String VALID_PHONE = BENSON.getPhone().toString();
-    private static final String VALID_LESSON_TIME = BENSON.getLessonTime().toString();
+    private static final List<JsonAdaptedLessonTime> VALID_LESSON_TIME =
+            BENSON.getLessonTime().stream().map(JsonAdaptedLessonTime::new).toList();
     private static List<JsonAdaptedHomework> emptyHomeworks() {
         return Collections.emptyList();
     }
 
-    private static final List<JsonAdaptedLessonTime> VALID_LESSON_TIME =
-            BENSON.getLessonTime().stream().map(JsonAdaptedLessonTime::new).toList();
 
     @Test
     public void toModelType_validPersonDetails_returnsPerson() throws Exception {
@@ -73,7 +72,7 @@ public class JsonAdaptedPersonTest {
         List<JsonAdaptedLessonTime> invalidLessonTime = new ArrayList<>(VALID_LESSON_TIME);
         invalidLessonTime.add(new JsonAdaptedLessonTime(INVALID_LESSON_TIME));
         JsonAdaptedPerson person =
-                new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, INVALID_LESSON_TIME, emptyHomeworks());
+                new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, invalidLessonTime, emptyHomeworks());
         String expectedMessage = LessonTime.MESSAGE_CONSTRAINTS;
         assertThrows(IllegalValueException.class, expectedMessage, person::toModelType);
     }

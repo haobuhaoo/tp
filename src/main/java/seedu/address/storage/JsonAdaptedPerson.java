@@ -24,26 +24,26 @@ class JsonAdaptedPerson {
 
     private final String name;
     private final String phone;
-    private final String lessonTime;
-    private final List<JsonAdaptedHomework> homework = new ArrayList<>();
+    private final List<JsonAdaptedHomework> homeworks = new ArrayList<>();
     private final List<JsonAdaptedLessonTime> lessonTime = new ArrayList<>();
 
     /**
      * Constructs a {@code JsonAdaptedPerson} with the given person details.
      */
     @JsonCreator
-public JsonAdaptedPerson(@JsonProperty("name") String name,
+    public JsonAdaptedPerson(@JsonProperty("name") String name,
                          @JsonProperty("phone") String phone,
-                         @JsonProperty("lessonTime") String lessonTime,
+                         @JsonProperty("lessonTime") List<JsonAdaptedLessonTime> lessonTime,
                          @JsonProperty("homeworks") List<JsonAdaptedHomework> homeworks) {
-    this.name = name;
-    this.phone = phone;
-    this.lessonTime = lessonTime;
-    if (homeworks != null) {
-        this.homework.addAll(homeworks);
+        this.name = name;
+        this.phone = phone;
+        if (homeworks != null) {
+            this.homeworks.addAll(homeworks);
+        }
+        if (lessonTime != null) {
+            this.lessonTime.addAll(lessonTime);
+        }
     }
-}
-
 
     /**
      * Converts a given {@code Person} into this class for Jackson use.
@@ -51,9 +51,10 @@ public JsonAdaptedPerson(@JsonProperty("name") String name,
     public JsonAdaptedPerson(Person source) {
         name = source.getName().fullName;
         phone = source.getPhone().value;
-lessonTime = source.getLessonTime().toInputString();
-// copy homework
-source.getHomeworkList().forEach(hw -> homeworks.add(new JsonAdaptedHomework(hw)));
+        lessonTime.addAll(source.getLessonTime().stream()
+                .map(JsonAdaptedLessonTime::new)
+                .toList());
+        source.getHomeworkList().forEach(hw -> homeworks.add(new JsonAdaptedHomework(hw)));
     }
 
     /**
@@ -91,7 +92,7 @@ source.getHomeworkList().forEach(hw -> homeworks.add(new JsonAdaptedHomework(hw)
         final Person person = new Person(modelName, modelPhone, modelLessonTime);
 
         List<Homework> hwList = new ArrayList<>();
-        for (JsonAdaptedHomework jhw : homework) {
+        for (JsonAdaptedHomework jhw : homeworks) {
             hwList.add(jhw.toModelType());
         }
         person.setHomeworkList(hwList);

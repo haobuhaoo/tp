@@ -67,21 +67,6 @@ public class ParserUtil {
     }
 
     /**
-     * Parses a {@code String lessonTime} into a {@code LessonTime}.
-     * Leading and trailing whitespaces will be trimmed.
-     *
-     * @throws ParseException if the given {@code lessonTime} is invalid.
-     */
-    public static LessonTime parseLessonTime(String lessonTime) throws ParseException {
-        requireNonNull(lessonTime);
-        String trimmedLessonTime = lessonTime.trim();
-        if (!LessonTime.isValidLessonTime(trimmedLessonTime)) {
-            throw new ParseException(LessonTime.MESSAGE_CONSTRAINTS);
-        }
-        return new LessonTime(trimmedLessonTime);
-    }
-
-    /**
      * Parses a {@code String description} into a valid description.
      *
      * @param description The string to be parsed.
@@ -110,6 +95,24 @@ public class ParserUtil {
         } catch (DateTimeParseException e) {
             throw new ParseException("Invalid date format!Please use yyyy-MM-dd (e.g. 2025-10-25).");
         }
+    }
+
+    /**
+     * Parses a {@code String lessonTime} into a {@code LessonTime}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code lessonTime} is invalid.
+     */
+    public static LessonTime parseLessonTime(String lessonTime) throws ParseException {
+        requireNonNull(lessonTime);
+        String trimmedLessonTime = lessonTime.trim();
+        if (!LessonTime.isValidLessonTime(trimmedLessonTime)) {
+            throw new ParseException(LessonTime.MESSAGE_CONSTRAINTS);
+        }
+        return new LessonTime(trimmedLessonTime);
+    }
+
+    /**
      * Parses a {@code Collection<String> lessonTime} into an {@code Set<LessonTime>}.
      */
     public static Set<LessonTime> parseLessonTimeSet(Collection<String> lessonTime) throws ParseException {
@@ -120,4 +123,5 @@ public class ParserUtil {
         }
         return lessonTimeSet;
     }
+
 }
