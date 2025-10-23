@@ -18,7 +18,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 /**
  * Marks homework task as done
  */
-public class MarkDoneHw extends Command {
+public class MarkDoneHwCommand extends Command {
     public static final String COMMAND_WORD = "mark-done";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Marks homework as done for student. "
@@ -39,7 +39,7 @@ public class MarkDoneHw extends Command {
     /**
      * Creates a MarkDoneHW to mark a homework as done in homework list
      */
-    public MarkDoneHw(Name studentName, String description) {
+    public MarkDoneHwCommand(Name studentName, String description) {
         requireNonNull(studentName);
         requireNonNull(description);
         this.studentName = studentName;
@@ -92,11 +92,11 @@ public class MarkDoneHw extends Command {
         }
 
         // instanceof handles nulls
-        if (!(other instanceof MarkDoneHw)) {
+        if (!(other instanceof MarkDoneHwCommand)) {
             return false;
         }
 
-        MarkDoneHw otherCommand = (MarkDoneHw) other;
+        MarkDoneHwCommand otherCommand = (MarkDoneHwCommand) other;
         return studentName.equals(otherCommand.studentName)
                 && description.equals(otherCommand.description);
     }

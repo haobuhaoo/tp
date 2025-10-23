@@ -17,9 +17,9 @@ import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.HelpCommand;
-import seedu.address.logic.commands.HomeworkCommands.MarkUndoneHw;
+import seedu.address.logic.commands.HomeworkCommands.MarkUndoneHwCommand;
 import seedu.address.logic.commands.ListCommand;
-import seedu.address.logic.commands.HomeworkCommands.MarkDoneHw;
+import seedu.address.logic.commands.HomeworkCommands.MarkDoneHwCommand;
 import seedu.address.logic.commands.SearchCommand;
 import seedu.address.logic.parser.Homework.AddHomeworkCommandParser;
 import seedu.address.logic.parser.Homework.MarkDoneHwParser;
@@ -90,10 +90,10 @@ public class AddressBookParser {
         case AddHomeworkCommand.COMMAND_WORD:
             return new AddHomeworkCommandParser().parse(arguments);
 
-        case MarkDoneHw.COMMAND_WORD:
+        case MarkDoneHwCommand.COMMAND_WORD:
             return new MarkDoneHwParser().parse(arguments);
 
-        case MarkUndoneHw.COMMAND_WORD:
+        case MarkUndoneHwCommand.COMMAND_WORD:
             return new MarkUndoneHwParser().parse(arguments);
 
         default:

@@ -81,7 +81,7 @@ public class AttendanceCommandTest {
     }
 
     /**
-     * Minimal model stub supporting hasPersonName() and AttendanceIndex.
+     *  Minimal model stub supporting hasPersonName() and AttendanceIndex.
      */
     private static class ModelStubWithPerson implements Model {
         private final String storedName;

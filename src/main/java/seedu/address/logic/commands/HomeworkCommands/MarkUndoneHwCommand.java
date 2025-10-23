@@ -18,7 +18,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 /**
  * Marks homework task as done
  */
-public class MarkUndoneHw extends Command {
+public class MarkUndoneHwCommand extends Command {
     public static final String COMMAND_WORD = "mark-undone";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Marks homework as undone for student. "
@@ -39,7 +39,7 @@ public class MarkUndoneHw extends Command {
     /**
      * Creates a MarkunDoneHW to mark a homework as undone in homework list
      */
-    public MarkUndoneHw(Name studentName, String description) {
+    public MarkUndoneHwCommand(Name studentName, String description) {
         requireNonNull(studentName);
         requireNonNull(description);
         this.studentName = studentName;
@@ -92,10 +92,10 @@ public class MarkUndoneHw extends Command {
         }
 
         // instanceof handles nulls
-        if (!(other instanceof MarkUndoneHw)) {
+        if (!(other instanceof MarkUndoneHwCommand)) {
             return false;
         }
-        MarkUndoneHw otherCommand = (MarkUndoneHw) other;
+        MarkUndoneHwCommand otherCommand = (MarkUndoneHwCommand) other;
         return studentName.equals(otherCommand.studentName)
                 && description.equals(otherCommand.description);
     }

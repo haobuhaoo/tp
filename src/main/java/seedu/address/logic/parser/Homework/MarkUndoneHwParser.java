@@ -1,6 +1,6 @@
 package seedu.address.logic.parser.Homework;
 
-import seedu.address.logic.commands.HomeworkCommands.MarkUndoneHw;
+import seedu.address.logic.commands.HomeworkCommands.MarkUndoneHwCommand;
 import seedu.address.logic.parser.ArgumentMultimap;
 import seedu.address.logic.parser.ArgumentTokenizer;
 import seedu.address.logic.parser.ParserUtil;
@@ -32,19 +32,19 @@ public class MarkUndoneHwParser {
      * @throws ParseException If the user input does not conform to the expected format,
      *
      */
-    public MarkUndoneHw parse(String args) throws ParseException {
+    public MarkUndoneHwCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap =
                 ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_DESC);
 
         if (!arePrefixesPresent(argMultimap, PREFIX_NAME, PREFIX_DESC)
                 || !argMultimap.getPreamble().isEmpty()) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, MarkUndoneHw.MESSAGE_USAGE));
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, MarkUndoneHwCommand.MESSAGE_USAGE));
         }
 
         Name name = ParserUtil.parseName(argMultimap.getValue(PREFIX_NAME).get());
         String description = ParserUtil.parseDescription(argMultimap.getValue(PREFIX_DESC).get());
 
-        return new MarkUndoneHw(name, description);
+        return new MarkUndoneHwCommand(name, description);
     }
     /**
      * Returns {@code true} if all specified prefixes are present in the given {@link ArgumentMultimap},

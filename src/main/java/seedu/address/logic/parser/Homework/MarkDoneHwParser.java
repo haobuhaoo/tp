@@ -1,7 +1,6 @@
 package seedu.address.logic.parser.Homework;
 
-import seedu.address.logic.commands.AddCommand;
-import seedu.address.logic.commands.HomeworkCommands.MarkDoneHw;
+import seedu.address.logic.commands.HomeworkCommands.MarkDoneHwCommand;
 import seedu.address.logic.parser.ArgumentMultimap;
 import seedu.address.logic.parser.ArgumentTokenizer;
 import seedu.address.logic.parser.ParserUtil;
@@ -33,19 +32,19 @@ public class MarkDoneHwParser {
      * @throws ParseException If the user input does not conform to the expected format,
      *
      */
-    public MarkDoneHw parse(String args) throws ParseException {
+    public MarkDoneHwCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap =
                 ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_DESC);
 
         if (!arePrefixesPresent(argMultimap, PREFIX_NAME, PREFIX_DESC)
                 || !argMultimap.getPreamble().isEmpty()) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, MarkDoneHw.MESSAGE_USAGE));
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, MarkDoneHwCommand.MESSAGE_USAGE));
         }
 
         Name name = ParserUtil.parseName(argMultimap.getValue(PREFIX_NAME).get());
         String description = ParserUtil.parseDescription(argMultimap.getValue(PREFIX_DESC).get());
 
-        return new MarkDoneHw(name,description);
+        return new MarkDoneHwCommand(name,description);
     }
 
     /**
