@@ -177,15 +177,15 @@ Furthermore, certain edits can cause the AddressBook to behave in unexpected way
 
 Records a student's participation score for a specific class date. The score is shown on the person card as **five boxes** (oldest → newest), with the **date shown above each box**. The newest score appears on the **rightmost** box.
 
-**Format:**  
+**Format:**
 `attendance n/NAME d/YYYY-MM-DD s/0..5`
 
-- `n/NAME` — the student’s full name (case-insensitive).  
-- `d/YYYY-MM-DD` — the class date in ISO format (e.g., `2025-09-19`).  
+- `n/NAME` — the student’s full name (case-insensitive).
+- `d/YYYY-MM-DD` — the class date in ISO format (e.g., `2025-09-19`).
 - `s/0..5` — an integer participation score from 0 to 5.
 
 **Examples:**
-- `attendance n/Alex Yeoh d/2025-09-19 s/3`  
+- `attendance n/Alex Yeoh d/2025-09-19 s/3`
 - `attendance n/Alex Yeoh d/2025-09-20 s/5`
 
 **What you’ll see in the UI:**
@@ -197,10 +197,10 @@ Records a student's participation score for a specific class date. The score is 
 **Notes:**
 - Names are matched ignoring extra spaces and letter case (e.g., `alex  yeoh` matches `Alex Yeoh`).
 - Dates must be valid ISO dates (e.g., `2025-09-19`).
-- Scores must be integers in `0..5`.  
-  - If the score is not a number, you’ll see:  
-    `Invalid participation score. Use an integer 0..5.`  
-  - If the score is outside the range, you’ll see:  
+- Scores must be integers in `0..5`.
+  - If the score is not a number, you’ll see:
+    `Invalid participation score. Use an integer 0..5.`
+  - If the score is outside the range, you’ll see:
     `Invalid participation score. Must be between 0 and 5 inclusive.`
 - The history shows **up to five most recent** entries.
 
