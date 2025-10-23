@@ -47,7 +47,7 @@ public class PersonCard extends UiPart<Region> {
     private FlowPane groupBadges;
     @FXML
     private AnchorPane homeworkPlaceholder;
-    @FXML 
+    @FXML
     private Label paymentStatus;
 
     // Participation UI
