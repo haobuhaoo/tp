@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.AddReminderCommand;
-import seedu.address.logic.commands.AttendanceCommand;
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.DeleteCommand;
@@ -26,6 +25,7 @@ import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.MarkPaidCommand;
 import seedu.address.logic.commands.MarkUnpaidCommand;
+import seedu.address.logic.commands.ParticipationCommand;
 import seedu.address.logic.commands.SearchCommand;
 import seedu.address.logic.commands.homeworkcommands.AddHomeworkCommand;
 import seedu.address.logic.commands.homeworkcommands.DeleteHomeworkCommand;
@@ -95,7 +95,7 @@ public class AddressBookParser {
         case HelpCommand.COMMAND_WORD:
             return new HelpCommand();
 
-        case AttendanceCommand.COMMAND_WORD:
+        case ParticipationCommand.COMMAND_WORD:
             return new AttendanceCommandParser().parse(arguments);
 
         case AddReminderCommand.COMMAND_WORD:

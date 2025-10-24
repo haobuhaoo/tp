@@ -2,7 +2,7 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_REMINDER_DESCRIPTION;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DESC;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
@@ -19,12 +19,12 @@ public class AddReminderCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a reminder to the address book. "
             + "Parameters: "
             + PREFIX_DATE + "DATETIME "
-            + PREFIX_REMINDER_DESCRIPTION + "DESCRIPTION\n"
+            + PREFIX_DESC + "DESCRIPTION\n"
             + "(note: DATETIME can be in YYYY-MM-DD or YYYY-MM-DD HHMM format."
             + "eg. 2025-10-10 or 2025-10-10 1010)\n"
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_DATE + "2025-10-12 1500 "
-            + PREFIX_REMINDER_DESCRIPTION + "Tuition later at 3pm";
+            + PREFIX_DESC + "Tuition later at 3pm";
 
     public static final String MESSAGE_SUCCESS = "Reminder added. %1$s";
     public static final String MESSAGE_DUPLICATE_REMINDER = "This reminder already exists in the reminder list";

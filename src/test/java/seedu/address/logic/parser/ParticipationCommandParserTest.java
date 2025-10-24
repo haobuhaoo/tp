@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import seedu.address.logic.parser.exceptions.ParseException;
 
 /** Parser tests for the attendance command. */
-public class AttendanceCommandParserTest {
+public class ParticipationCommandParserTest {
 
     private final AttendanceCommandParser parser = new AttendanceCommandParser();
 

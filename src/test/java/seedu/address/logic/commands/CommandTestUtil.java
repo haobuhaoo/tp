@@ -3,10 +3,10 @@ package seedu.address.logic.commands;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DESC;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_LESSON_TIME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_REMINDER_DESCRIPTION;
 import static seedu.address.testutil.Assert.assertThrows;
 
 import java.util.ArrayList;
@@ -54,11 +54,11 @@ public class CommandTestUtil {
 
     public static final String DUEDATE_DESC_1 = " " + PREFIX_DATE + VALID_DUEDATE_1;
     public static final String DUEDATE_DESC_2 = " " + PREFIX_DATE + VALID_DUEDATE_2;
-    public static final String DESCRIPTION_DESC_1 = " " + PREFIX_REMINDER_DESCRIPTION + VALID_DESCRIPTION_1;
-    public static final String DESCRIPTION_DESC_2 = " " + PREFIX_REMINDER_DESCRIPTION + VALID_DESCRIPTION_2;
+    public static final String DESCRIPTION_DESC_1 = " " + PREFIX_DESC + VALID_DESCRIPTION_1;
+    public static final String DESCRIPTION_DESC_2 = " " + PREFIX_DESC + VALID_DESCRIPTION_2;
 
     public static final String INVALID_DUEDATE_DESC = " " + PREFIX_DATE + "20 Nov 25 10:10 am"; // incorrect format
-    public static final String INVALID_DESCRIPTION_DESC = " " + PREFIX_REMINDER_DESCRIPTION; // empty description
+    public static final String INVALID_DESCRIPTION_DESC = " " + PREFIX_DESC; // empty description
 
     public static final String PREAMBLE_WHITESPACE = "\t  \r  \n";
     public static final String PREAMBLE_NON_EMPTY = "NonEmptyPreamble";
