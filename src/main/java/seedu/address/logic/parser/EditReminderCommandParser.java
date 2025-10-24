@@ -3,8 +3,8 @@ package seedu.address.logic.parser;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DESC;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_INDEX;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_REMINDER_DESCRIPTION;
 
 import java.util.stream.Stream;
 
@@ -32,7 +32,7 @@ public class EditReminderCommandParser implements Parser<EditReminderCommand> {
     public EditReminderCommand parse(String args) throws ParseException {
         requireNonNull(args);
         ArgumentMultimap argMultimap =
-                ArgumentTokenizer.tokenize(args, PREFIX_INDEX, PREFIX_DATE, PREFIX_REMINDER_DESCRIPTION);
+                ArgumentTokenizer.tokenize(args, PREFIX_INDEX, PREFIX_DATE, PREFIX_DESC);
 
         if (!arePrefixesPresent(argMultimap, PREFIX_INDEX)
                 || !argMultimap.getPreamble().isEmpty()) {
@@ -40,7 +40,7 @@ public class EditReminderCommandParser implements Parser<EditReminderCommand> {
                     EditReminderCommand.MESSAGE_USAGE));
         }
 
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_INDEX, PREFIX_DATE, PREFIX_REMINDER_DESCRIPTION);
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_INDEX, PREFIX_DATE, PREFIX_DESC);
 
         Index index = ParserUtil.parseIndex(argMultimap.getValue(PREFIX_INDEX).get());
 
@@ -50,9 +50,9 @@ public class EditReminderCommandParser implements Parser<EditReminderCommand> {
             editReminderDescriptor.setDueDate(ParserUtil.parseDueDate(
                     argMultimap.getValue(PREFIX_DATE).get()));
         }
-        if (argMultimap.getValue(PREFIX_REMINDER_DESCRIPTION).isPresent()) {
+        if (argMultimap.getValue(PREFIX_DESC).isPresent()) {
             editReminderDescriptor.setDescription(ParserUtil.parseReminderDescription(
-                    argMultimap.getValue(PREFIX_REMINDER_DESCRIPTION).get()));
+                    argMultimap.getValue(PREFIX_DESC).get()));
         }
 
         if (!editReminderDescriptor.isAnyFieldEdited()) {
