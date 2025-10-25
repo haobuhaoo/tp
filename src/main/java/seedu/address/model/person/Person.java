@@ -26,6 +26,12 @@ import seedu.address.model.homework.Homework;
  * Guarantees: details are present and not null, field values are validated, immutable.
  */
 public class Person {
+
+    private static final String[] MONTH_NAMES = {
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    };
+
     // Identity fields
     private final Name name;
     private final Phone phone;
@@ -38,12 +44,6 @@ public class Person {
 
     // Participation (mutable history of last 5 records)
     private final ParticipationHistory participation = new ParticipationHistory();
-
-    private static final String[] MONTH_NAMES = {
-            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-    };
-
     /**
      * Every field must be present and not null.
      */
