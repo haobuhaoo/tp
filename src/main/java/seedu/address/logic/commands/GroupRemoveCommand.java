@@ -24,7 +24,7 @@ public class GroupRemoveCommand extends Command {
 
     /** Usage message shown on format errors. */
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Removes students from a group.\n"
-            + "Parameters: g/GROUP i/INDEX [i/INDEX ...]\n"
+            + "Parameters: g/GROUP i/INDEX...\n"
             + "Example: " + COMMAND_WORD + " g/Group A i/2 i/3";
 
     /** Success message template. */

@@ -18,9 +18,9 @@ public class AddReminderCommand extends Command {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a reminder to the address book. "
             + "Parameters: "
-            + PREFIX_DATE + "DATETIME "
+            + PREFIX_DATE + "DUE_DATE "
             + PREFIX_DESC + "DESCRIPTION\n"
-            + "(note: DATETIME can be in YYYY-MM-DD or YYYY-MM-DD HHMM format."
+            + "(note: DUE_DATE can be in YYYY-MM-DD or YYYY-MM-DD HHMM format."
             + "eg. 2025-10-10 or 2025-10-10 1010)\n"
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_DATE + "2025-10-12 1500 "

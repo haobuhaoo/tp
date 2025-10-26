@@ -30,7 +30,7 @@ public class EditReminderCommand extends Command {
             + "by the index number used in the displayed reminder list. "
             + "Existing values will be overwritten by the input values.\n"
             + "Parameters: " + PREFIX_INDEX + "INDEX (must be a positive integer) "
-            + "[" + PREFIX_DATE + "DATETIME] "
+            + "[" + PREFIX_DATE + "DUE_DATE] "
             + "[" + PREFIX_DESC + "DESCRIPTION]\n"
             + "Example: " + COMMAND_WORD + " " + PREFIX_INDEX + "1 "
             + PREFIX_DATE + "2025-12-25 "

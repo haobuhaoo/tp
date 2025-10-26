@@ -19,7 +19,7 @@ import seedu.address.ui.UiAttendanceAccess;
 public class ParticipationCommand extends Command {
     public static final String COMMAND_WORD = "participation";
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Records participation.\n"
-            + "Parameters: n/NAME d/YYYY-MM-DD s/SCORE\n"
+            + "Parameters: n/NAME d/DATE s/SCORE\n"
             + "Example: " + COMMAND_WORD + " n/marcus d/2025-09-19 s/3";
 
     private static final int NAME_MAX = 50;

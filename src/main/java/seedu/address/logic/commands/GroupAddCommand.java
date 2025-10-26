@@ -24,7 +24,7 @@ public class GroupAddCommand extends Command {
 
     /** Usage message shown on format errors. */
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds students to a group.\n"
-            + "Parameters: g/GROUP i/INDEX [i/INDEX ...]\n"
+            + "Parameters: g/GROUP i/INDEX...\n"
             + "Example: " + COMMAND_WORD + " g/Group A i/1 i/3 i/4";
 
     /** Success message template. */
