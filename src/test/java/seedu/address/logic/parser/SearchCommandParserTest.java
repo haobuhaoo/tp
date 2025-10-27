@@ -1,5 +1,6 @@
 package seedu.address.logic.parser;
 
+import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_KEYWORD;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
@@ -17,10 +18,12 @@ public class SearchCommandParserTest {
     @Test
     public void parse_emptyArg_throwsParseException() {
         // No k/ prefix
-        assertParseFailure(parser, "     ", "Invalid search keyword.");
+        assertParseFailure(parser, "     ",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, SearchCommand.MESSAGE_USAGE) );
 
         // k/ but empty after normalization
-        assertParseFailure(parser, PREFIX_KEYWORD + "    ", "Invalid search keyword.");
+        assertParseFailure(parser, PREFIX_KEYWORD + "    ",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, SearchCommand.MESSAGE_USAGE));
     }
 
     @Test

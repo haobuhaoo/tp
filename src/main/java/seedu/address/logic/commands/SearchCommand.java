@@ -22,9 +22,7 @@ public class SearchCommand extends Command {
             + "Purpose: Search for students\n"
             + "Command format: " + COMMAND_WORD + " " + PREFIX_KEYWORD + "KEYWORD\n"
             + "Example: " + COMMAND_WORD + " " + PREFIX_KEYWORD + "marcus\n"
-            + "Parameters and validation:\n"
-            + "  - Keyword: letters/digits; must be ≥1 char; case-insensitive; trims/collapses spaces.\n"
-            + "Error message: \"Invalid search keyword.\"";
+            + "Keywords: Marcus / 91111111 / 10:00 / Sun";
 
     public static final String MESSAGE_NO_MATCH = "No students match the search keyword.";
     public static final String MESSAGE_SUCCESS_PREFIX = "Found %d students:\n";
