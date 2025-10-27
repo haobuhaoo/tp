@@ -167,7 +167,7 @@ public class ParserUtil {
      */
     public static Description parseReminderDescription(String reminderDescription) throws ParseException {
         requireNonNull(reminderDescription);
-        String trimmedReminderDescription = reminderDescription.trim();;
+        String trimmedReminderDescription = reminderDescription.trim();
         if (!Description.isValidDescription(trimmedReminderDescription)) {
             throw new ParseException(Description.MESSAGE_CONSTRAINTS);
         }
