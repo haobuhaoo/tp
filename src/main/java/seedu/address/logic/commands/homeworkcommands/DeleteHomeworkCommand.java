@@ -24,7 +24,7 @@ public class DeleteHomeworkCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Deletes a homework item for a student. "
             + "Parameters: "
             + PREFIX_NAME + "NAME "
-            + PREFIX_DESC + "DESCRIPTION "
+            + PREFIX_DESC + "DESCRIPTION\n"
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_NAME + "Marcus "
             + PREFIX_DESC + "Math Worksheet 1";

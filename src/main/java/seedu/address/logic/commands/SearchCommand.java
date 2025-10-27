@@ -19,7 +19,8 @@ public class SearchCommand extends Command {
     public static final String COMMAND_WORD = "search-student";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Searches for students.\n"
-            + "Command format: " + COMMAND_WORD + " " + PREFIX_KEYWORD + "keyword\n"
+            + "Purpose: Search for students\n"
+            + "Command format: " + COMMAND_WORD + " " + PREFIX_KEYWORD + "KEYWORD\n"
             + "Example: " + COMMAND_WORD + " " + PREFIX_KEYWORD + "marcus\n"
             + "Keywords: Marcus / 91111111 / 10:00 / Sun";
 

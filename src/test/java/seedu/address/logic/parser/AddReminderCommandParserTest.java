@@ -14,7 +14,7 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_DESCRIPTION_2;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_DUEDATE_1;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_DUEDATE_2;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_REMINDER_DESCRIPTION;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DESC;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 
@@ -50,13 +50,13 @@ public class AddReminderCommandParserTest {
 
         // multiple description
         assertParseFailure(parser, DESCRIPTION_DESC_1 + validExpectedReminderString,
-                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_REMINDER_DESCRIPTION));
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_DESC));
 
         // multiple fields repeated
         assertParseFailure(parser,
                 validExpectedReminderString + DUEDATE_DESC_1 + DESCRIPTION_DESC_1
                         + validExpectedReminderString,
-                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_DATE, PREFIX_REMINDER_DESCRIPTION));
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_DATE, PREFIX_DESC));
 
         // invalid value followed by valid value
 
@@ -66,7 +66,7 @@ public class AddReminderCommandParserTest {
 
         // invalid description
         assertParseFailure(parser, INVALID_DESCRIPTION_DESC + validExpectedReminderString,
-                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_REMINDER_DESCRIPTION));
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_DESC));
 
         // valid value followed by invalid value
 
@@ -76,7 +76,7 @@ public class AddReminderCommandParserTest {
 
         // invalid description
         assertParseFailure(parser, validExpectedReminderString + INVALID_DESCRIPTION_DESC,
-                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_REMINDER_DESCRIPTION));
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_DESC));
     }
 
     @Test

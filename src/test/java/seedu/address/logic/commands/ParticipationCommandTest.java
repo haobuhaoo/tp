@@ -29,9 +29,9 @@ import seedu.address.model.reminder.Reminder;
 import seedu.address.testutil.PersonBuilder;
 
 /**
- * Tests for {@link AttendanceCommand} under participation semantics (s/0..5).
+ * Tests for {@link ParticipationCommand} under participation semantics (s/0..5).
  */
-public class AttendanceCommandTest {
+public class ParticipationCommandTest {
 
     @Test
     public void execute_success_scoreRecorded() throws Exception {
@@ -40,7 +40,7 @@ public class AttendanceCommandTest {
         String date = "2025-09-19";
         String score = "3";
 
-        AttendanceCommand cmd = new AttendanceCommand(cmdName, date, score);
+        ParticipationCommand cmd = new ParticipationCommand(cmdName, date, score);
         CommandResult result = cmd.execute(model);
 
         assertEquals("Success: Participation recorded: Alex Yeoh, 2025-09-19, score=3.",
@@ -57,9 +57,9 @@ public class AttendanceCommandTest {
         // With participation model, allow multiple entries (e.g., corrections).
         ModelStubWithPerson model = new ModelStubWithPerson("Alex Yeoh");
 
-        new AttendanceCommand("Alex Yeoh", "2025-09-19", "3").execute(model);
+        new ParticipationCommand("Alex Yeoh", "2025-09-19", "3").execute(model);
         // same date and same score again -> allowed
-        CommandResult result = new AttendanceCommand("Alex Yeoh", "2025-09-19", "3").execute(model);
+        CommandResult result = new ParticipationCommand("Alex Yeoh", "2025-09-19", "3").execute(model);
 
         assertEquals("Success: Participation recorded: Alex Yeoh, 2025-09-19, score=3.",
                 result.getFeedbackToUser());
@@ -68,7 +68,7 @@ public class AttendanceCommandTest {
     @Test
     public void execute_invalidName_throws() {
         Model model = new ModelStubWithPerson("Alex Yeoh");
-        AttendanceCommand cmd = new AttendanceCommand("Nonexistent", "2025-09-19", "3");
+        ParticipationCommand cmd = new ParticipationCommand("Nonexistent", "2025-09-19", "3");
         CommandException ex = assertThrows(CommandException.class, () -> cmd.execute(model));
         assertEquals("Invalid student name: no matching student found.", ex.getMessage());
     }
@@ -76,7 +76,7 @@ public class AttendanceCommandTest {
     @Test
     public void execute_invalidDate_throws() {
         Model model = new ModelStubWithPerson("Alex Yeoh");
-        AttendanceCommand cmd = new AttendanceCommand("Alex Yeoh", "19-09-2025", "3");
+        ParticipationCommand cmd = new ParticipationCommand("Alex Yeoh", "19-09-2025", "3");
         CommandException ex = assertThrows(CommandException.class, () -> cmd.execute(model));
         assertEquals("Invalid date. The format must be YYYY-MM-DD.", ex.getMessage());
     }
@@ -84,7 +84,7 @@ public class AttendanceCommandTest {
     @Test
     public void execute_invalidScore_throws() {
         Model model = new ModelStubWithPerson("Alex Yeoh");
-        AttendanceCommand cmd = new AttendanceCommand("Alex Yeoh", "2025-09-19", "9");
+        ParticipationCommand cmd = new ParticipationCommand("Alex Yeoh", "2025-09-19", "9");
         CommandException ex = assertThrows(CommandException.class, () -> cmd.execute(model));
         assertEquals("Invalid participation score. Must be between 0 and 5 inclusive.", ex.getMessage());
     }
@@ -92,7 +92,7 @@ public class AttendanceCommandTest {
     @Test
     public void execute_scoreZero_ok() throws Exception {
         ModelStubWithPerson model = new ModelStubWithPerson("Alex Yeoh");
-        AttendanceCommand cmd = new AttendanceCommand("Alex Yeoh", "2025-09-21", "0");
+        ParticipationCommand cmd = new ParticipationCommand("Alex Yeoh", "2025-09-21", "0");
 
         CommandResult result = cmd.execute(model);
         assertEquals("Success: Participation recorded: Alex Yeoh, 2025-09-21, score=0.",
@@ -106,7 +106,7 @@ public class AttendanceCommandTest {
     @Test
     public void execute_scoreFive_ok() throws Exception {
         ModelStubWithPerson model = new ModelStubWithPerson("Alex Yeoh");
-        AttendanceCommand cmd = new AttendanceCommand("Alex Yeoh", "2025-09-22", "5");
+        ParticipationCommand cmd = new ParticipationCommand("Alex Yeoh", "2025-09-22", "5");
 
         CommandResult result = cmd.execute(model);
         assertEquals("Success: Participation recorded: Alex Yeoh, 2025-09-22, score=5.",
@@ -120,9 +120,9 @@ public class AttendanceCommandTest {
     @Test
     public void execute_nonIntegerScore_throws() {
         Model model = new ModelStubWithPerson("Alex Yeoh");
-        AttendanceCommand cmd = new AttendanceCommand("Alex Yeoh", "2025-09-19", "abc");
+        ParticipationCommand cmd = new ParticipationCommand("Alex Yeoh", "2025-09-19", "abc");
         CommandException ex = assertThrows(CommandException.class, () -> cmd.execute(model));
-        assertEquals("Invalid participation score. Use an integer 0..5.", ex.getMessage());
+        assertEquals("Invalid participation score. Use an integer 0 to 5.", ex.getMessage());
     }
 
     @Test
@@ -131,7 +131,7 @@ public class AttendanceCommandTest {
         String rawName = "  alex   YEoh  ";
         String expectedName = rawName.trim().replaceAll("\\s+", " ");
 
-        AttendanceCommand cmd = new AttendanceCommand(rawName, "2025-09-23", "3");
+        ParticipationCommand cmd = new ParticipationCommand(rawName, "2025-09-23", "3");
         CommandResult result = cmd.execute(model);
 
         assertEquals("Success: Participation recorded: " + expectedName + ", 2025-09-23, score=3.",
@@ -145,7 +145,7 @@ public class AttendanceCommandTest {
     @Test
     public void execute_setsUiDate_currentDateUpdated() throws Exception {
         ModelStubWithPerson model = new ModelStubWithPerson("Alex Yeoh");
-        AttendanceCommand cmd = new AttendanceCommand("Alex Yeoh", "2025-09-24", "2");
+        ParticipationCommand cmd = new ParticipationCommand("Alex Yeoh", "2025-09-24", "2");
 
         cmd.execute(model);
         assertEquals(LocalDate.parse("2025-09-24"), model.getAttendanceIndex().getCurrentUiDate());
@@ -156,12 +156,12 @@ public class AttendanceCommandTest {
         ModelStubWithPerson model = new ModelStubWithPerson("Alex Yeoh");
 
         // Add six consecutive classes -> only the last five remain in history
-        new AttendanceCommand("Alex Yeoh", "2025-09-10", "1").execute(model);
-        new AttendanceCommand("Alex Yeoh", "2025-09-11", "2").execute(model);
-        new AttendanceCommand("Alex Yeoh", "2025-09-12", "3").execute(model);
-        new AttendanceCommand("Alex Yeoh", "2025-09-13", "4").execute(model);
-        new AttendanceCommand("Alex Yeoh", "2025-09-14", "5").execute(model);
-        new AttendanceCommand("Alex Yeoh", "2025-09-15", "1").execute(model);
+        new ParticipationCommand("Alex Yeoh", "2025-09-10", "1").execute(model);
+        new ParticipationCommand("Alex Yeoh", "2025-09-11", "2").execute(model);
+        new ParticipationCommand("Alex Yeoh", "2025-09-12", "3").execute(model);
+        new ParticipationCommand("Alex Yeoh", "2025-09-13", "4").execute(model);
+        new ParticipationCommand("Alex Yeoh", "2025-09-14", "5").execute(model);
+        new ParticipationCommand("Alex Yeoh", "2025-09-15", "1").execute(model);
 
         List<ParticipationRecord> five = model.person.getParticipation().asListPaddedToFive();
         // Should be exactly five, oldest -> newest, with the *original* oldest dropped
@@ -174,7 +174,7 @@ public class AttendanceCommandTest {
     public void execute_invalidLongName_throws() {
         String over50 = "A".repeat(51);
         Model model = new ModelStubWithPerson("Alex Yeoh");
-        AttendanceCommand cmd = new AttendanceCommand(over50, "2025-09-19", "3");
+        ParticipationCommand cmd = new ParticipationCommand(over50, "2025-09-19", "3");
         CommandException ex = assertThrows(CommandException.class, () -> cmd.execute(model));
         assertEquals("Invalid student name: A name that is longer than 50 characters.", ex.getMessage());
     }

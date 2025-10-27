@@ -2,8 +2,8 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DESC;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_INDEX;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_REMINDER_DESCRIPTION;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_REMINDERS;
 
 import java.util.List;
@@ -30,11 +30,11 @@ public class EditReminderCommand extends Command {
             + "by the index number used in the displayed reminder list. "
             + "Existing values will be overwritten by the input values.\n"
             + "Parameters: " + PREFIX_INDEX + "INDEX (must be a positive integer) "
-            + "[" + PREFIX_DATE + "DATETIME] "
-            + "[" + PREFIX_REMINDER_DESCRIPTION + "DESCRIPTION]\n"
+            + "[" + PREFIX_DATE + "DUE_DATE] "
+            + "[" + PREFIX_DESC + "DESCRIPTION]\n"
             + "Example: " + COMMAND_WORD + " " + PREFIX_INDEX + "1 "
             + PREFIX_DATE + "2025-12-25 "
-            + PREFIX_REMINDER_DESCRIPTION + "Christmas";
+            + PREFIX_DESC + "Christmas";
 
     public static final String MESSAGE_EDIT_REMINDER_SUCCESS = "Edited Reminder: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";

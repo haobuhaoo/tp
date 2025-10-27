@@ -2,7 +2,7 @@ package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_REMINDER_DESCRIPTION;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DESC;
 
 import java.util.stream.Stream;
 
@@ -28,17 +28,17 @@ public class AddReminderCommandParser implements Parser<AddReminderCommand> {
      */
     public AddReminderCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap =
-                ArgumentTokenizer.tokenize(args, PREFIX_DATE, PREFIX_REMINDER_DESCRIPTION);
+                ArgumentTokenizer.tokenize(args, PREFIX_DATE, PREFIX_DESC);
 
-        if (!arePrefixesPresent(argMultimap, PREFIX_DATE, PREFIX_REMINDER_DESCRIPTION)
+        if (!arePrefixesPresent(argMultimap, PREFIX_DATE, PREFIX_DESC)
                 || !argMultimap.getPreamble().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddReminderCommand.MESSAGE_USAGE));
         }
 
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_DATE, PREFIX_REMINDER_DESCRIPTION);
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_DATE, PREFIX_DESC);
         DueDate dueDate = ParserUtil.parseDueDate(argMultimap.getValue(PREFIX_DATE).get());
         Description description = ParserUtil.parseReminderDescription(
-                argMultimap.getValue(PREFIX_REMINDER_DESCRIPTION).get());
+                argMultimap.getValue(PREFIX_DESC).get());
 
         Reminder reminder = new Reminder(dueDate, description);
 
