@@ -21,8 +21,8 @@ import seedu.address.model.person.Person;
 public class DeleteHomeworkCommand extends Command {
     public static final String COMMAND_WORD = "delete-homework";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Deletes a homework item for a student. "
-            + "Parameters: "
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Deletes a homework item for a student.\n"
+            + "Command format: " + COMMAND_WORD + " "
             + PREFIX_NAME + "NAME "
             + PREFIX_DESC + "DESCRIPTION\n"
             + "Example: " + COMMAND_WORD + " "

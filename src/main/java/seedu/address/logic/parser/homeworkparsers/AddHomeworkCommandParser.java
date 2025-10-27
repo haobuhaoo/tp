@@ -48,6 +48,8 @@ public class AddHomeworkCommandParser implements Parser<AddHomeworkCommand> {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddHomeworkCommand.MESSAGE_USAGE));
         }
 
+        arePrefixesValid(argMultimap, PREFIX_NAME, PREFIX_DESC, PREFIX_DEADLINE);
+
         Name name = ParserUtil.parseName(argMultimap.getValue(PREFIX_NAME).get());
         String description = ParserUtil.parseDescription(argMultimap.getValue(PREFIX_DESC).get());
         LocalDate deadline = ParserUtil.parseDate(argMultimap.getValue(PREFIX_DEADLINE).get());
@@ -67,6 +69,25 @@ public class AddHomeworkCommandParser implements Parser<AddHomeworkCommand> {
      */
     private static boolean arePrefixesPresent(ArgumentMultimap argumentMultimap, Prefix... prefixes) {
         return Stream.of(prefixes).allMatch(prefix -> argumentMultimap.getValue(prefix).isPresent());
+    }
+
+    /**
+     * Checks that each given prefix appears exactly once
+     * throws a {@link ParseException} if a prefix appears more than once.
+     *
+     * @param map The argument map containing prefixes and their values.
+     * @param prefixes The prefixes to check.
+     * @return {@code true} if all prefixes are present exactly once; {@code false} if any are missing.
+     * @throws ParseException If any prefix appears more than once.
+     */
+    private static boolean arePrefixesValid(ArgumentMultimap map, Prefix... prefixes) throws ParseException {
+        for (Prefix prefix : prefixes) {
+            var values = map.getAllValues(prefix);
+            if (values.size() > 1) {
+                throw new ParseException("Multiple values specified for prefix: " + prefix.getPrefix());
+            }
+        }
+        return true;
     }
 
 }

@@ -23,13 +23,13 @@ import seedu.address.model.person.Person;
 public class AddHomeworkCommand extends Command {
     public static final String COMMAND_WORD = "add-homework";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a homework item for a student. "
-            + "Parameters: "
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a homework item for a student. \n"
+            + "Command format: " + COMMAND_WORD + " "
             + PREFIX_NAME + "NAME "
             + PREFIX_DESC + "DESCRIPTION "
             + PREFIX_DEADLINE + "DEADLINE (yyyy-mm-dd)\n"
             + "Example: " + COMMAND_WORD + " "
-            + PREFIX_NAME + "Marcus "
+            + PREFIX_NAME + " Marcus "
             + PREFIX_DESC + "Math Worksheet 1 "
             + PREFIX_DEADLINE + "2025-10-27";
 

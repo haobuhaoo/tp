@@ -77,7 +77,7 @@ public class ParserUtil {
      */
     public static String parseDescription(String description) throws ParseException {
         requireNonNull(description);
-        String trimmedDescription = description.trim();
+        String trimmedDescription = description.trim().replaceAll("\\s+", " ");
         if (trimmedDescription.isEmpty()) {
             throw new ParseException("Description cannot be empty.");
         }

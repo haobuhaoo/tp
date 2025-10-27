@@ -21,8 +21,8 @@ import seedu.address.model.person.Person;
 public class MarkUndoneHwCommand extends Command {
     public static final String COMMAND_WORD = "mark-undone";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Marks homework as undone for student. "
-            + "Parameters: "
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Marks homework as undone for student.\n"
+            + "Command format: " + COMMAND_WORD + " "
             + PREFIX_NAME + "NAME "
             + PREFIX_DESC + "DESCRIPTION\n"
             + "Example: " + COMMAND_WORD + " "
