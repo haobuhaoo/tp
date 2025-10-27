@@ -29,7 +29,7 @@ public class AddHomeworkCommand extends Command {
             + PREFIX_DESC + "DESCRIPTION "
             + PREFIX_DEADLINE + "DEADLINE(yyyy-mm-dd)    "
             + "Example: " + COMMAND_WORD + " "
-            + PREFIX_NAME + "Marcus "
+            + PREFIX_NAME + " Marcus "
             + PREFIX_DESC + "Math Worksheet 1 "
             + PREFIX_DEADLINE + "2025-10-27";
 
