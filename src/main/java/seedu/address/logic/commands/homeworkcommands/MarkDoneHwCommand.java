@@ -23,7 +23,7 @@ public class MarkDoneHwCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Marks homework as done for student.\n"
             + "Command format: " + COMMAND_WORD + " "
             + PREFIX_NAME + "NAME "
-            + PREFIX_DESC + "DESCRIPTION \n"
+            + PREFIX_DESC + "DESCRIPTION\n"
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_NAME + "Marcus "
             + PREFIX_DESC + "Math Worksheet 1";

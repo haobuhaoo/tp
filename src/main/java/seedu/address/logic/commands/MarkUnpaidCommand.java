@@ -21,7 +21,7 @@ public class MarkUnpaidCommand extends Command {
             + "Example: " + COMMAND_WORD + " " + PREFIX_INDEX + "1 " + PREFIX_MONTH + "9";
 
     public static final String MESSAGE_MARK_UNPAID_SUCCESS =
-            "Marked student as unpaid: %1$s\nMonth: %2$s\nPayment Status: %3$s";
+            "Marked student as unpaid: %1$s\nMonth: %2$s\n%3$s";
     public static final String MESSAGE_ALREADY_UNPAID = "Student %1$s is already marked as unpaid for %2$s.";
     public static final String MESSAGE_INVALID_MONTH = "Invalid month. Month must be between 1 and 12.";
 

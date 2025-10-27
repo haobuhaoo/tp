@@ -20,7 +20,7 @@ public class SearchCommand extends Command {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Searches for students.\n"
             + "Purpose: Search for students\n"
-            + "Command format: " + COMMAND_WORD + " " + PREFIX_KEYWORD + "keyword\n"
+            + "Command format: " + COMMAND_WORD + " " + PREFIX_KEYWORD + "KEYWORD\n"
             + "Example: " + COMMAND_WORD + " " + PREFIX_KEYWORD + "marcus\n"
             + "Parameters and validation:\n"
             + "  - Keyword: letters/digits; must be ≥1 char; case-insensitive; trims/collapses spaces.\n"

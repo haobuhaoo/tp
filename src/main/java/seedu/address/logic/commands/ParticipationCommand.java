@@ -16,10 +16,10 @@ import seedu.address.ui.UiAttendanceAccess;
  * <p>
  * Format: {@code attendance n/NAME d/YYYY-MM-DD s/0..5}
  */
-public class AttendanceCommand extends Command {
-    public static final String COMMAND_WORD = "attendance";
+public class ParticipationCommand extends Command {
+    public static final String COMMAND_WORD = "participation";
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Records participation.\n"
-            + "Parameters: n/NAME d/YYYY-MM-DD s/0..5\n"
+            + "Parameters: n/NAME d/DATE s/SCORE\n"
             + "Example: " + COMMAND_WORD + " n/marcus d/2025-09-19 s/3";
 
     private static final int NAME_MAX = 50;
@@ -29,14 +29,14 @@ public class AttendanceCommand extends Command {
     private final String scoreRaw;
 
     /**
-     * Creates an {@code AttendanceCommand}.
+     * Creates an {@code ParticipationCommand}.
      *
      * @param nameRaw  raw student name (will be trimmed and normalized during execution)
      * @param dateRaw  raw date string in ISO format {@code YYYY-MM-DD}; validated in {@link #execute(Model)}
      * @param scoreRaw raw participation score string expected to parse to an integer in {@code [0,5]};
      *                 validated in {@link #execute(Model)}
      */
-    public AttendanceCommand(String nameRaw, String dateRaw, String scoreRaw) {
+    public ParticipationCommand(String nameRaw, String dateRaw, String scoreRaw) {
         this.nameRaw = nameRaw;
         this.dateRaw = dateRaw;
         this.scoreRaw = scoreRaw;
@@ -65,7 +65,7 @@ public class AttendanceCommand extends Command {
         try {
             score = Integer.parseInt(scoreRaw);
         } catch (NumberFormatException ex) {
-            throw new CommandException("Invalid participation score. Use an integer 0..5.");
+            throw new CommandException("Invalid participation score. Use an integer 0 to 5.");
         }
         if (score < 0 || score > 5) {
             throw new CommandException("Invalid participation score. Must be between 0 and 5 inclusive.");

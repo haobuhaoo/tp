@@ -22,7 +22,7 @@ public class MarkPaidCommand extends Command {
             + "Example: " + COMMAND_WORD + " " + PREFIX_INDEX + "1 " + PREFIX_MONTH + "9";
 
     public static final String MESSAGE_MARK_PAID_SUCCESS =
-            "Marked student as paid: %1$s\nMonth: %2$s\nPayment Status: %3$s";
+            "Marked student as paid: %1$s\nMonth: %2$s\n%3$s";
     public static final String MESSAGE_ALREADY_PAID = "Student %1$s is already marked as paid for %2$s.";
     public static final String MESSAGE_INVALID_MONTH = "Invalid month. Month must be between 1 and 12.";
 
@@ -58,7 +58,12 @@ public class MarkPaidCommand extends Command {
 
         boolean currentStatus = personToUpdate.isPaidForMonth(month);
 
-        personToUpdate.setPaymentStatus(month, !currentStatus);
+        if (currentStatus) {
+            throw new CommandException(
+                    String.format(MESSAGE_ALREADY_PAID, personToUpdate.getName(), getMonthName(month)));
+        }
+
+        personToUpdate.setPaymentStatus(month, true);
 
         model.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
 

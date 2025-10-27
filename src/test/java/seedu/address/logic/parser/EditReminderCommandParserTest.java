@@ -12,8 +12,8 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_DESCRIPTION_2;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_DUEDATE_1;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_DUEDATE_2;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DESC;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_INDEX;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_REMINDER_DESCRIPTION;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_REMINDER;
@@ -121,20 +121,20 @@ public class EditReminderCommandParserTest {
                 + INVALID_DESCRIPTION_DESC;
 
         assertParseFailure(parser, userInput,
-                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_REMINDER_DESCRIPTION));
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_DESC));
 
         // multiple valid fields repeated
         userInput = " " + PREFIX_INDEX + targetIndex.getOneBased() + DUEDATE_DESC_2 + DESCRIPTION_DESC_1
                 + DUEDATE_DESC_1 + DESCRIPTION_DESC_2;
 
         assertParseFailure(parser, userInput,
-                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_DATE, PREFIX_REMINDER_DESCRIPTION));
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_DATE, PREFIX_DESC));
 
         // multiple invalid values
         userInput = " " + PREFIX_INDEX + targetIndex.getOneBased() + INVALID_DESCRIPTION_DESC + INVALID_DUEDATE_DESC
                 + INVALID_DESCRIPTION_DESC + INVALID_DUEDATE_DESC;
 
         assertParseFailure(parser, userInput,
-                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_DATE, PREFIX_REMINDER_DESCRIPTION));
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_DATE, PREFIX_DESC));
     }
 }

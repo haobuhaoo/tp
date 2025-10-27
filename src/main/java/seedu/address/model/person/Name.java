@@ -9,13 +9,13 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
  */
 public class Name {
     public static final String MESSAGE_CONSTRAINTS =
-            "Names should only contain letters, spaces, hyphens, apostrophes, and it should not be blank with a "
-                    + "maximum length of 50 characters";
+            "Names should only contain letters, spaces, comma, brackets, hyphens, apostrophes, slash, at sign,"
+                + " full stop, with a maximum length of 50 characters";
 
     /**
      * Names are stored and displayed in all lowercase.
      */
-    public static final String VALIDATION_REGEX = "[A-Za-z\\s'-]{1,50}";
+    public static final String VALIDATION_REGEX = "[A-Za-z\\s'@/(),.-]{1,50}";
 
     public final String fullName;
 
