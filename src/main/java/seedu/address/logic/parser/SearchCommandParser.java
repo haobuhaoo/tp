@@ -2,6 +2,7 @@ package seedu.address.logic.parser;
 
 
 import static seedu.address.logic.parser.CliSyntax.PREFIX_KEYWORD;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,8 +20,8 @@ import seedu.address.model.person.StudentFieldsContainsKeywordsPredicate;
  * @throws ParseException if the user input does not follow the expected format
  */
 public class SearchCommandParser implements Parser<SearchCommand> {
-    //allow letters, digits, and spaces only
-    private static final Pattern VALID_CHARS = Pattern.compile("[A-Za-z0-9 ':]+");
+    //allow all letters/numbers and other special characters
+    private static final Pattern VALID_CHARS = Pattern.compile("[\\p{L}\\p{N} .,'\\-/]+");
 
     @Override
     public SearchCommand parse(String args) throws ParseException {
@@ -28,13 +29,13 @@ public class SearchCommandParser implements Parser<SearchCommand> {
 
         // must start with k/
         if (!trimmed.startsWith(PREFIX_KEYWORD.getPrefix()) || trimmed.length() <= 2) {
-            throw new ParseException("Invalid search keyword.");
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,SearchCommand.MESSAGE_USAGE));
         }
 
         //take value after k then trim space
         String raw = trimmed.substring(2).trim().replaceAll("\\s+", " ");
         if (raw.isEmpty() || !VALID_CHARS.matcher(raw).matches()) {
-            throw new ParseException("Invalid search keyword.");
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,SearchCommand.MESSAGE_USAGE));
         }
 
         //split into list tokens for predicate

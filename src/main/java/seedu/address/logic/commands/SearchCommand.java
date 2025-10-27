@@ -19,12 +19,9 @@ public class SearchCommand extends Command {
     public static final String COMMAND_WORD = "search-student";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Searches for students.\n"
-            + "Purpose: Search for students\n"
             + "Command format: " + COMMAND_WORD + " " + PREFIX_KEYWORD + "keyword\n"
             + "Example: " + COMMAND_WORD + " " + PREFIX_KEYWORD + "marcus\n"
-            + "Parameters and validation:\n"
-            + "  - Keyword: letters/digits; must be ≥1 char; case-insensitive; trims/collapses spaces.\n"
-            + "Error message: \"Invalid search keyword.\"";
+            + "Keywords: Marcus / 91111111 / 10:00 / Sun";
 
     public static final String MESSAGE_NO_MATCH = "No students match the search keyword.";
     public static final String MESSAGE_SUCCESS_PREFIX = "Found %d students:\n";
