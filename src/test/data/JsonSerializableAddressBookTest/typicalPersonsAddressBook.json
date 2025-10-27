@@ -3,7 +3,8 @@
   "persons" : [ {
     "name" : "Alice Pauline",
     "phone" : "94351253",
-    "lessonTime": ["1000 Sun"]
+    "lessonTime": ["1000 Sun"],
+    "paymentStatus": "000000000000"
   }, {
     "name" : "Benson Meier",
     "phone" : "98765432",

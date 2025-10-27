@@ -1,5 +1,6 @@
 package seedu.address.testutil;
 
+import java.util.BitSet;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,6 +21,7 @@ public class PersonBuilder {
     private Name name;
     private Phone phone;
     private Set<LessonTime> lessonTime = new HashSet<>();
+    private BitSet paymentStatus = new BitSet(12);
 
     /**
      * Creates a {@code PersonBuilder} with the default details.
@@ -37,6 +39,7 @@ public class PersonBuilder {
         name = personToCopy.getName();
         phone = personToCopy.getPhone();
         lessonTime = personToCopy.getLessonTime();
+        paymentStatus = (BitSet) personToCopy.getPaymentStatusBitSet().clone();
     }
 
     /**
@@ -60,6 +63,20 @@ public class PersonBuilder {
      */
     public PersonBuilder withLessonTime(String... lessonTime) {
         this.lessonTime = SampleDataUtil.getLessonTimeSet(lessonTime);
+        return this;
+    }
+
+    /**
+     * Sets the {@code PaymentStatus} of the {@code Person} that we are building.
+     */
+    public PersonBuilder withPaymentStatus(String pattern) {
+        BitSet bits = new BitSet(12);
+        for (int i = 0; i < Math.min(12, pattern.length()); i++) {
+            if (pattern.charAt(i) == '1') {
+                bits.set(i);
+            }
+        }
+        this.paymentStatus = bits;
         return this;
     }
 

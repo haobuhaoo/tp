@@ -22,6 +22,7 @@ import seedu.address.model.reminder.DueDate;
  */
 public class ParserUtil {
     public static final String MESSAGE_INVALID_INDEX = "Index is not a non-zero unsigned integer.";
+    public static final String MESSAGE_INVALID_MONTH = "Month must be a valid number between 1 and 12";
 
     /**
      * Parses {@code oneBasedIndex} into an {@code Index} and returns it.
@@ -124,11 +125,11 @@ public class ParserUtil {
         try {
             int monthValue = Integer.parseInt(trimmedMonth);
             if (monthValue < 1 || monthValue > 12) {
-                throw new ParseException("Month must be between 1 and 12");
+                throw new ParseException(MESSAGE_INVALID_MONTH);
             }
             return monthValue;
         } catch (NumberFormatException e) {
-            throw new ParseException("Month must be a valid number between 1 and 12");
+            throw new ParseException(MESSAGE_INVALID_MONTH);
         }
     }
 
