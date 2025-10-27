@@ -3,6 +3,7 @@ package seedu.address.model.reminder;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.AppUtil.checkArgument;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -139,5 +140,16 @@ public class DueDate implements Comparable<DueDate> {
                 ? date.format(VALID_OUTPUT_DATE_FORMAT)
                 : dateTime.format(VALID_OUTPUT_DATETIME_FORMAT)
                 .replace("AM", "am").replace("PM", "pm");
+    }
+
+    /**
+     * Returns the number of days until this due date from {@code now}.
+     * If the due date is before {@code now}, returns -1.
+     */
+    public long daysUntilDue(LocalDateTime now) {
+        if (isBeforeDate(now)) {
+            return -1;
+        }
+        return Duration.between(now, toDateTime()).toDays();
     }
 }

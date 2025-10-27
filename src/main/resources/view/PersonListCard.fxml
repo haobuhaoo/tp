@@ -43,7 +43,8 @@
             </HBox>
             <HBox alignment="CENTER_LEFT" spacing="0.5">
                 <Label fx:id="lessonTimeId" styleClass="cell_small_label" text="Lesson Time: "/>
-                <FlowPane fx:id="lessonTime" prefHeight="17.0" prefWidth="265.0" HBox.hgrow="ALWAYS"/>
+                <FlowPane fx:id="lessonTime" prefHeight="17.0" prefWidth="200.0" HBox.hgrow="ALWAYS"
+                          maxWidth="250.0"/>
             </HBox>
             <Region prefHeight="4" />
             <VBox fx:id="paymentStatusContainer" spacing="2" styleClass="cell_small_label" />
@@ -53,7 +54,7 @@
         <!-- Homework List -->
         <VBox spacing = "4" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2">
             <padding><Insets left="15" right="15" bottom="10"/></padding>
-            <Label text="Homework" styleClass="cell_small_label"></Label>
+            <Label text="Homework" styleClass="cell_small_label"/>
             <AnchorPane fx:id="homeworkPlaceholder" prefHeight="90"/>
         </VBox>
 
@@ -65,13 +66,6 @@
             <CheckBox fx:id="attendanceCheck" disable="true"/>
             <HBox fx:id="dateRow" spacing="8"/>
             <HBox fx:id="boxes" spacing="8"/>
-        </VBox>
-
-        <!-- Homework List -->
-        <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2">
-            <padding><Insets left="15" right="15" bottom="10"/></padding>
-            <Label text="Homework" styleClass="cell_small_label"></Label>
-            <AnchorPane fx:id="homeworkPlaceholder" prefHeight="90"/>
         </VBox>
     </GridPane>
 </HBox>

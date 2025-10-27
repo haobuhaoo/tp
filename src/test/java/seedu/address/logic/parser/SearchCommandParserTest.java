@@ -19,7 +19,7 @@ public class SearchCommandParserTest {
     public void parse_emptyArg_throwsParseException() {
         // No k/ prefix
         assertParseFailure(parser, "     ",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, SearchCommand.MESSAGE_USAGE) );
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, SearchCommand.MESSAGE_USAGE));
 
         // k/ but empty after normalization
         assertParseFailure(parser, PREFIX_KEYWORD + "    ",

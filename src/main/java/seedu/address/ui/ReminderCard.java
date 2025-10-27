@@ -11,6 +11,7 @@ import seedu.address.model.reminder.Reminder;
  */
 public class ReminderCard extends UiPart<Region> {
     private static final String FXML = "ReminderListCard.fxml";
+    private static final String DUE_SOON_MESSAGE = " (Due Soon!)";
 
     /**
      * Note: Certain keywords such as "location" and "resources" are reserved keywords in JavaFX.
@@ -29,6 +30,8 @@ public class ReminderCard extends UiPart<Region> {
     @FXML
     private Label dueDate;
     @FXML
+    private Label isDueSoon;
+    @FXML
     private Label description;
 
     /**
@@ -39,6 +42,24 @@ public class ReminderCard extends UiPart<Region> {
         this.reminder = reminder;
         id.setText(displayedIndex + ". ");
         dueDate.setText(reminder.getDueDate().toString());
-        description.setText(reminder.getDescription().toString());
+        isDueSoon.setText("");
+        description.setText("Description: " + reminder.getDescription().toString());
+        applyColourBasedOnDueDate();
+    }
+
+    /**
+     * Applies colour style to the card based on how soon the reminder is due.
+     */
+    public void applyColourBasedOnDueDate() {
+        long daysUntilDue = reminder.daysUntilDueDate();
+        if (daysUntilDue >= 0 && daysUntilDue <= 3) {
+            isDueSoon.setText(DUE_SOON_MESSAGE);
+            isDueSoon.getStyleClass().add("due-soon-text");
+        } else if (daysUntilDue < 0) {
+            id.getStyleClass().add("overdue");
+            dueDate.getStyleClass().add("overdue");
+            description.getStyleClass().add("overdue");
+            isDueSoon.getStyleClass().add("overdue");
+        }
     }
 }

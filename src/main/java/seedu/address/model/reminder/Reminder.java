@@ -33,6 +33,14 @@ public class Reminder implements Comparable<Reminder> {
     }
 
     /**
+     * Returns the number of days until this reminder is due.
+     */
+    public long daysUntilDueDate() {
+        LocalDateTime now = LocalDateTime.now();
+        return dueDate.daysUntilDue(now);
+    }
+
+    /**
      * Returns 1 if this reminder is past but other is upcoming; Returns -1 if this reminder is
      * upcoming and other is past; If both reminders are in the same category (both past or both
      * upcoming), sort by due date ascending.

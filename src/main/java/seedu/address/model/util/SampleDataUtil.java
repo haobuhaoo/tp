@@ -1,11 +1,14 @@
 package seedu.address.model.util;
 
+import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
+import seedu.address.model.homework.Homework;
 import seedu.address.model.person.LessonTime;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
@@ -18,6 +21,17 @@ import seedu.address.model.reminder.Reminder;
  * Contains utility methods for populating {@code AddressBook} with sample data.
  */
 public class SampleDataUtil {
+    public static final Homework[] HOMEWORK = new Homework[]{
+        new Homework("Math: Complete chapter 5 exercises", LocalDate.parse("2025-11-03")),
+        new Homework("English: Write a short story", LocalDate.parse("2025-11-04")),
+        new Homework("Science: Prepare lab report", LocalDate.parse("2025-11-06")),
+        new Homework("History: Read chapter 8 and 9", LocalDate.parse("2025-11-07")),
+        new Homework("Math: Solve past year paper", LocalDate.parse("2025-11-10")),
+        new Homework("English: Revise grammar notes", LocalDate.parse("2025-11-11")),
+        new Homework("Science: Group project submission", LocalDate.parse("2025-11-13")),
+        new Homework("History: Create timeline for WW2", LocalDate.parse("2025-11-14"))
+    };
+
     public static Person[] getSamplePersons() {
         return new Person[]{
             new Person(new Name("Alex Yeoh"), new Phone("87438807"),
@@ -36,19 +50,29 @@ public class SampleDataUtil {
     }
 
     public static Reminder[] getSampleReminders() {
-        return new Reminder[] {
-            new Reminder(new DueDate("2025-10-21 1530"), new Description("Alice: Submit homework for Math")),
-            new Reminder(new DueDate("2025-10-22 1000"), new Description("Benson: Prepare for English lesson")),
-            new Reminder(new DueDate("2025-10-25"), new Description("Carl: Assignment review")),
-            new Reminder(new DueDate("2025-11-01"), new Description("Daniel: Feedback session")),
-            new Reminder(new DueDate("2025-11-03 1400"), new Description("Benson: Mock test practice")),
-            new Reminder(new DueDate("2025-11-05 1600"), new Description("Carl: Science project discussion"))
+        return new Reminder[]{
+            new Reminder(new DueDate("2025-11-03 1530"), new Description("Alice: Submit homework for Math")),
+            new Reminder(new DueDate("2025-11-05 1000"), new Description("Benson: Prepare for English lesson")),
+            new Reminder(new DueDate("2025-11-07"), new Description("Carl: Assignment review")),
+            new Reminder(new DueDate("2025-11-10"), new Description("Daniel: Feedback session")),
+            new Reminder(new DueDate("2025-11-12 1400"), new Description("Benson: Mock test practice")),
+            new Reminder(new DueDate("2025-11-14 1600"), new Description("Carl: Science project discussion"))
         };
     }
 
     public static ReadOnlyAddressBook getSampleAddressBook() {
         AddressBook sampleAb = new AddressBook();
         for (Person samplePerson : getSamplePersons()) {
+            Random random = new Random();
+            int first = random.nextInt(HOMEWORK.length);
+            int second;
+            do {
+                second = random.nextInt(HOMEWORK.length);
+            } while (second == first);
+            samplePerson.addHomework(HOMEWORK[first]);
+            samplePerson.addHomework(HOMEWORK[second]);
+            samplePerson.setPaymentStatus(first + 1, true);
+            samplePerson.setPaymentStatus(second + 1, true);
             sampleAb.addPerson(samplePerson);
         }
         for (Reminder sampleReminder : getSampleReminders()) {

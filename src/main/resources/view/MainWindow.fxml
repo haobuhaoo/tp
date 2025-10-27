@@ -66,8 +66,8 @@
                     </padding>
                     <HBox fx:id="panelPlaceholder" VBox.vgrow="ALWAYS" spacing="10">
                         <StackPane fx:id="personListPanelPlaceholder" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS"/>
-                        <StackPane fx:id="reminderListPanelPlaceholder" minWidth="400" prefWidth="400"
-                                   styleClass="reminder-cell" VBox.vgrow="ALWAYS"/>
+                        <StackPane fx:id="reminderListPanelPlaceholder" minWidth="250" prefWidth="400"
+                                   VBox.vgrow="ALWAYS"/>
                     </HBox>
                 </VBox>
 
