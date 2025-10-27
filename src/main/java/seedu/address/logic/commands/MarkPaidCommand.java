@@ -1,9 +1,10 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.commands.MarkUnpaidCommand.MESSAGE_MARK_UNPAID_SUCCESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_INDEX;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_MONTH;
+
+import java.util.Objects;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.exceptions.CommandException;
@@ -70,12 +71,8 @@ public class MarkPaidCommand extends Command {
         String monthName = getMonthName(month);
         String statusDisplay = personToUpdate.getPaymentStatusDisplay();
 
-        String successMessage = !currentStatus
-                ? MESSAGE_MARK_PAID_SUCCESS
-                : MESSAGE_MARK_UNPAID_SUCCESS;
-
         return new CommandResult(
-                String.format(successMessage, personToUpdate.getName(), monthName, statusDisplay));
+                String.format(MESSAGE_MARK_PAID_SUCCESS, personToUpdate.getName(), monthName, statusDisplay));
     }
 
     private String getMonthName(int month) {
@@ -86,7 +83,7 @@ public class MarkPaidCommand extends Command {
 
     @Override
     public boolean equals(Object other) {
-        if (other == this) {
+        if (this == other) {
             return true;
         }
         if (!(other instanceof MarkPaidCommand)) {
@@ -94,5 +91,10 @@ public class MarkPaidCommand extends Command {
         }
         MarkPaidCommand otherCommand = (MarkPaidCommand) other;
         return index.equals(otherCommand.index) && month == otherCommand.month;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(index, month);
     }
 }
