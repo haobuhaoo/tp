@@ -64,7 +64,7 @@ public class JsonAdaptedReminderTest {
     }
 
     @Test
-    public void toModelType_UnmodifiablePaymentReminder() throws Exception {
+    public void toModelType_unmodifiablePaymentReminder() throws Exception {
         JsonAdaptedReminder reminder = new JsonAdaptedReminder(VALID_DUEDATE,
                 UnmodifiablePaymentReminder.TWO_LETTER_PREFIX + VALID_DESCRIPTION, UNMODIFIABLE_REMINDER);
         UnmodifiablePaymentReminder paymentReminder =
@@ -73,7 +73,7 @@ public class JsonAdaptedReminderTest {
     }
 
     @Test
-    public void toModelType_UnmodifiableHwReminder() throws Exception {
+    public void toModelType_unmodifiableHwReminder() throws Exception {
         JsonAdaptedReminder reminder = new JsonAdaptedReminder(VALID_DUEDATE,
                 UnmodifiableHwReminder.TWO_LETTER_PREFIX + VALID_DESCRIPTION, UNMODIFIABLE_REMINDER);
         UnmodifiableHwReminder hwReminder =
