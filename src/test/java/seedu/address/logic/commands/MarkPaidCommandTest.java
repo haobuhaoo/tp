@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
+import static seedu.address.model.util.SampleDataUtil.getMonthName;
 import static seedu.address.testutil.TypicalAddressBook.getTypicalAddressBook;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
@@ -12,10 +13,12 @@ import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.index.Index;
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Person;
+import seedu.address.model.reminder.UnmodifiablePaymentReminder;
 import seedu.address.testutil.PersonBuilder;
 
 public class MarkPaidCommandTest {
@@ -93,6 +96,37 @@ public class MarkPaidCommandTest {
             }
             assertEquals(expectedSize, testModel.getFilteredReminderList().size());
         }
+    }
+
+    @Test
+    public void execute_reminderDoesntExist() throws CommandException {
+        Model testModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        Person personToMark = testModel.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+
+        int currentMonth = LocalDate.now().getMonth().getValue();
+        UnmodifiablePaymentReminder reminder =
+                UnmodifiablePaymentReminder.of(currentMonth, personToMark, getMonthName(currentMonth));
+        testModel.deleteReminder(reminder);
+
+        MarkPaidCommand markPaidCommand = new MarkPaidCommand(INDEX_FIRST_PERSON, currentMonth);
+        markPaidCommand.execute(testModel);
+        assertTrue(personToMark.isPaidForMonth(currentMonth));
+        assertFalse(testModel.getFilteredReminderList().contains(reminder));
+    }
+
+    @Test
+    public void execute_reminderExist() throws CommandException {
+        Model testModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        Person personToMark = testModel.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+
+        int currentMonth = LocalDate.now().getMonth().getValue();
+        UnmodifiablePaymentReminder reminder =
+                UnmodifiablePaymentReminder.of(currentMonth, personToMark, getMonthName(currentMonth));
+        assertTrue(testModel.hasReminder(reminder));
+
+        MarkPaidCommand markPaidCommand = new MarkPaidCommand(INDEX_FIRST_PERSON, currentMonth);
+        markPaidCommand.execute(testModel);
+        assertFalse(testModel.getFilteredReminderList().contains(reminder));
     }
 
     @Test

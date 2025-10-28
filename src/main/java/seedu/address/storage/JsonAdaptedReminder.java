@@ -52,6 +52,14 @@ class JsonAdaptedReminder {
         }
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public boolean isModifiable() {
+        return isModifiable;
+    }
+
     /**
      * Converts this Jackson-friendly adapted reminder object into the model's {@code Reminder} object.
      *
