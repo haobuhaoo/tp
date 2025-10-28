@@ -10,6 +10,7 @@
   } ],
   "reminders" : [ {
     "dueDate" : "2025-10-21 1530",
-    "description" : "Alice: Submit homework for Math"
+    "description" : "Alice: Submit homework for Math",
+    "isModifiable" : true
   } ]
 }

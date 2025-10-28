@@ -5,14 +5,16 @@ import static seedu.address.logic.commands.CommandTestUtil.showPersonAtIndex;
 import static seedu.address.logic.commands.CommandTestUtil.showReminderAtIndex;
 import static seedu.address.testutil.TypicalAddressBook.getTypicalAddressBook;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
-import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_REMINDER;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javafx.collections.ObservableList;
+import seedu.address.commons.core.index.Index;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.reminder.Reminder;
 
 /**
  * Contains integration tests (interaction with the Model) and unit tests for ListCommand.
@@ -35,7 +37,9 @@ public class ListCommandTest {
     @Test
     public void execute_listIsFiltered_showsEverything() {
         showPersonAtIndex(model, INDEX_FIRST_PERSON);
-        showReminderAtIndex(model, INDEX_FIRST_REMINDER);
+        ObservableList<Reminder> list = model.getFilteredReminderList();
+        Index index = Index.fromOneBased(list.size());
+        showReminderAtIndex(model, index);
         assertCommandSuccess(new ListCommand(), model, ListCommand.MESSAGE_SUCCESS, expectedModel);
     }
 }

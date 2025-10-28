@@ -35,7 +35,7 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.reminder.Reminder;
-
+import seedu.address.model.reminder.UnmodifiableHwReminder;
 
 public class MarkDoneHwCommandTest {
     private Name marcusName;
@@ -72,9 +72,11 @@ public class MarkDoneHwCommandTest {
      */
     private static class ModelStubFilteredOnly implements Model {
         private final ObservableList<Person> filtered;
+        private final ObservableList<Reminder> filteredReminders;
 
         ModelStubFilteredOnly(Collection<Person> showedPeople) {
             this.filtered = FXCollections.observableArrayList(showedPeople);
+            this.filteredReminders = FXCollections.observableArrayList();
         }
 
         //This is the method used by MarkDoneHwCommand
@@ -82,6 +84,21 @@ public class MarkDoneHwCommandTest {
         @Override
         public ObservableList<Person> getFilteredPersonList() {
             return filtered;
+        }
+
+        @Override
+        public void addReminder(Reminder reminder) {
+            filteredReminders.add(reminder);
+        }
+
+        @Override
+        public void deleteReminder(Reminder target) {
+            filteredReminders.remove(target);
+        }
+
+        @Override
+        public ObservableList<Reminder> getFilteredReminderList() {
+            return filteredReminders;
         }
 
         //These are methods not used by MarkDoneHwCommand
@@ -202,27 +219,12 @@ public class MarkDoneHwCommandTest {
         }
 
         @Override
-        public void addReminder(Reminder reminder) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
         public boolean hasReminder(Reminder reminder) {
             throw new AssertionError("This method should not be called.");
         }
 
         @Override
-        public void deleteReminder(Reminder target) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
         public void setReminder(Reminder target, Reminder editedReminder) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public ObservableList<Reminder> getFilteredReminderList() {
             throw new AssertionError("This method should not be called.");
         }
 
@@ -242,6 +244,7 @@ public class MarkDoneHwCommandTest {
         marcus.addHomework(hw);
 
         Model model = new ModelStubFilteredOnly(List.of(marcus));
+        model.addReminder(UnmodifiableHwReminder.of(marcus, hw));
         MarkDoneHwCommand command = new MarkDoneHwCommand(marcusName, "mAtH wS 3");
         CommandResult result = command.execute(model);
 
@@ -249,6 +252,7 @@ public class MarkDoneHwCommandTest {
                 hw.getDescription());
         assertEquals(expected, result.getFeedbackToUser());
         assertTrue(hw.isDone(), "Homework should be marked done");
+        assertEquals(0, model.getFilteredReminderList().size());
     }
 
     /**
@@ -268,6 +272,7 @@ public class MarkDoneHwCommandTest {
                 marcus.getName().fullName, hw.getDescription());
         assertEquals(expected, res.getFeedbackToUser());
         assertTrue(hw.isDone(), "Homework remains done");
+        assertEquals(0, model.getFilteredReminderList().size());
     }
 
     /**

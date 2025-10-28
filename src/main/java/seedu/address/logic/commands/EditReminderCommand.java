@@ -19,6 +19,7 @@ import seedu.address.model.Model;
 import seedu.address.model.reminder.Description;
 import seedu.address.model.reminder.DueDate;
 import seedu.address.model.reminder.Reminder;
+import seedu.address.model.reminder.UnmodifiableReminder;
 
 /**
  * Edits the details of an existing reminder in the reminder list.
@@ -58,15 +59,9 @@ public class EditReminderCommand extends Command {
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
-        List<Reminder> lastShownList = model.getFilteredReminderList();
+        Reminder reminderToEdit = getReminder(model);
 
-        if (index.getZeroBased() >= lastShownList.size()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_REMINDER_DISPLAYED_INDEX);
-        }
-
-        Reminder reminderToEdit = lastShownList.get(index.getZeroBased());
         Reminder editedReminder = createEditedReminder(reminderToEdit, editReminderDescriptor);
-
         if (!reminderToEdit.equals(editedReminder) && model.hasReminder(editedReminder)) {
             throw new CommandException(MESSAGE_DUPLICATE_REMINDER);
         }
@@ -74,6 +69,30 @@ public class EditReminderCommand extends Command {
         model.setReminder(reminderToEdit, editedReminder);
         model.updateFilteredReminderList(PREDICATE_SHOW_ALL_REMINDERS);
         return new CommandResult(String.format(MESSAGE_EDIT_REMINDER_SUCCESS, Messages.format(editedReminder)));
+    }
+
+    /**
+     * Retrieves the reminder to edit from the model based on the provided index.
+     *
+     * @throws CommandException if the index is invalid or the reminder is unmodifiable.
+     */
+    private Reminder getReminder(Model model) throws CommandException {
+        List<Reminder> lastShownList = model.getFilteredReminderList();
+
+        if (index.getZeroBased() >= lastShownList.size()) {
+            throw new CommandException(Messages.MESSAGE_INVALID_REMINDER_DISPLAYED_INDEX);
+        }
+
+        Reminder reminderToEdit = lastShownList.get(index.getZeroBased());
+        if (!reminderToEdit.isModifiable()) {
+            assert reminderToEdit instanceof UnmodifiableReminder
+                    : "Reminder should be UnmodifiableReminder if it is not modifiable.";
+
+            UnmodifiableReminder unmodifiableReminder = (UnmodifiableReminder) reminderToEdit;
+            throw new CommandException(Messages.MESSAGE_UNMODIFIABLE_REMINDER
+                    + unmodifiableReminder.getModifyMessage());
+        }
+        return reminderToEdit;
     }
 
     /**

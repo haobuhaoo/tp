@@ -7,21 +7,27 @@ import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.reminder.Description;
 import seedu.address.model.reminder.DueDate;
 import seedu.address.model.reminder.Reminder;
+import seedu.address.model.reminder.UnmodifiableHwReminder;
+import seedu.address.model.reminder.UnmodifiablePaymentReminder;
+import seedu.address.model.reminder.UnmodifiableReminder;
 
 class JsonAdaptedReminder {
     public static final String MISSING_FIELD_MESSAGE_FORMAT = "Reminder's %s field is missing!";
 
     private final String dueDate;
     private final String description;
+    private final boolean isModifiable;
 
     /**
      * Constructs a {@code JsonAdaptedReminder} with the given reminder details.
      */
     @JsonCreator
     public JsonAdaptedReminder(@JsonProperty("dueDate") String dueDate,
-                               @JsonProperty("description") String description) {
+                               @JsonProperty("description") String description,
+                               @JsonProperty("isModifiable") boolean isModifiable) {
         this.dueDate = dueDate;
         this.description = description;
+        this.isModifiable = isModifiable;
     }
 
     /**
@@ -29,7 +35,21 @@ class JsonAdaptedReminder {
      */
     public JsonAdaptedReminder(Reminder source) {
         dueDate = source.getDueDate().toInputString();
-        description = source.getDescription().toString();
+        isModifiable = source.isModifiable();
+
+        if (!isModifiable) {
+            assert source instanceof UnmodifiableReminder
+                    : "Non-modifiable reminder should be an instance of UnmodifiableReminder";
+
+            UnmodifiableReminder unmodifiableReminder = (UnmodifiableReminder) source;
+            if (unmodifiableReminder.isPaymentReminder()) {
+                description = UnmodifiablePaymentReminder.TWO_LETTER_PREFIX + source.getDescription().toString();
+            } else {
+                description = UnmodifiableHwReminder.TWO_LETTER_PREFIX + source.getDescription().toString();
+            }
+        } else {
+            description = source.getDescription().toString();
+        }
     }
 
     /**
@@ -56,6 +76,23 @@ class JsonAdaptedReminder {
         }
         final Description modelDetail = new Description(description);
 
-        return new Reminder(modelDueDate, modelDetail);
+        if (isModifiable) {
+            return new Reminder(modelDueDate, modelDetail);
+        }
+
+        assert description.length() >= 2 : "Description of unmodifiable reminder should have at least 2 characters";
+        String prefix = description.substring(0, 2);
+        String actualDescription = description.substring(2);
+
+        switch (prefix) {
+        case UnmodifiablePaymentReminder.TWO_LETTER_PREFIX:
+            return UnmodifiablePaymentReminder.of(modelDueDate, new Description(actualDescription));
+
+        case UnmodifiableHwReminder.TWO_LETTER_PREFIX:
+            return UnmodifiableHwReminder.of(modelDueDate, new Description(actualDescription));
+
+        default:
+            throw new IllegalValueException("Unknown unmodifiable reminder type with prefix: " + prefix);
+        }
     }
 }

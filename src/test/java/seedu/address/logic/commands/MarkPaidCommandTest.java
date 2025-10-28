@@ -1,10 +1,13 @@
 package seedu.address.logic.commands;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.testutil.TypicalAddressBook.getTypicalAddressBook;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
+
+import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
 
@@ -37,6 +40,7 @@ public class MarkPaidCommandTest {
         markPaidCommand.execute(model);
 
         assertTrue(model.getFilteredPersonList().get(0).isPaidForMonth(5));
+        assertEquals(0, model.getFilteredReminderList().size());
     }
 
     @Test
@@ -79,8 +83,15 @@ public class MarkPaidCommandTest {
             Person personToMark = testModel.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
             MarkPaidCommand markPaidCommand = new MarkPaidCommand(INDEX_FIRST_PERSON, month);
 
-            CommandResult result = markPaidCommand.execute(testModel);
+            markPaidCommand.execute(testModel);
             assertTrue(personToMark.isPaidForMonth(month));
+
+            int currentMonth = LocalDate.now().getMonth().getValue();
+            int expectedSize = 11;
+            if (month == currentMonth) {
+                expectedSize = 10;
+            }
+            assertEquals(expectedSize, testModel.getFilteredReminderList().size());
         }
     }
 

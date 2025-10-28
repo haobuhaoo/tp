@@ -13,6 +13,8 @@ import seedu.address.model.Model;
 import seedu.address.model.homework.Homework;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
+import seedu.address.model.reminder.UnmodifiableHwReminder;
+import seedu.address.model.reminder.exceptions.ReminderNotFoundException;
 
 
 /**
@@ -77,6 +79,13 @@ public class DeleteHomeworkCommand extends Command {
         }
 
         target.removeHomework(matched);
+
+        UnmodifiableHwReminder undoneReminder = UnmodifiableHwReminder.of(target, matched);
+        try {
+            model.deleteReminder(undoneReminder);
+        } catch (ReminderNotFoundException e) {
+            // should not happen
+        }
 
         return new CommandResult(String.format(
                 MESSAGE_SUCCESS,

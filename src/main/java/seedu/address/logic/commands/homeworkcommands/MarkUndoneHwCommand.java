@@ -13,6 +13,7 @@ import seedu.address.model.Model;
 import seedu.address.model.homework.Homework;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
+import seedu.address.model.reminder.UnmodifiableHwReminder;
 
 
 /**
@@ -77,6 +78,8 @@ public class MarkUndoneHwCommand extends Command {
 
         if (matched.isDone()) {
             matched.markUndone();
+            UnmodifiableHwReminder undoneReminder = UnmodifiableHwReminder.of(target, matched);
+            model.addReminder(undoneReminder);
         }
 
         return new CommandResult(String.format(

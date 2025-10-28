@@ -1,5 +1,6 @@
 package seedu.address.logic.commands;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
@@ -39,6 +40,7 @@ public class MarkUnpaidCommandTest {
         markUnpaidCommand.execute(model);
 
         assertFalse(model.getFilteredPersonList().get(0).isPaidForMonth(5));
+        assertEquals(0, model.getFilteredReminderList().size());
     }
 
     @Test
@@ -85,8 +87,9 @@ public class MarkUnpaidCommandTest {
 
             MarkUnpaidCommand markUnpaidCommand = new MarkUnpaidCommand(INDEX_FIRST_PERSON, month);
 
-            CommandResult result = markUnpaidCommand.execute(testModel);
+            markUnpaidCommand.execute(testModel);
             assertFalse(personToMark.isPaidForMonth(month));
+            assertEquals(11, testModel.getFilteredReminderList().size());
         }
     }
 
