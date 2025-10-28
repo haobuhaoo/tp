@@ -1,4 +1,4 @@
-package seedu.address.logic.commands.homeworktests;
+package seedu.address.logic.commands.homeworkcommandtests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -23,6 +23,7 @@ import seedu.address.commons.core.GuiSettings;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.commands.homeworkcommands.MarkDoneHwCommand;
+import seedu.address.logic.commands.homeworkcommands.MarkUndoneHwCommand;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
@@ -37,7 +38,7 @@ import seedu.address.model.person.Phone;
 import seedu.address.model.reminder.Reminder;
 
 
-public class MarkDoneHwCommandTest {
+public class MarkUndoneHwCommandTest {
     private Name marcusName;
     private Phone marcusPhone;
     private Set<LessonTime> marcusLessonTime;
@@ -68,7 +69,7 @@ public class MarkDoneHwCommandTest {
     }
 
     /**
-     * Minimal {@link Model} stub for {@link MarkDoneHwCommand} tests.
+     * Minimal {@link Model} stub for {@link MarkUndoneHwCommandTest} tests.
      */
     private static class ModelStubFilteredOnly implements Model {
         private final ObservableList<Person> filtered;
@@ -77,14 +78,14 @@ public class MarkDoneHwCommandTest {
             this.filtered = FXCollections.observableArrayList(showedPeople);
         }
 
-        //This is the method used by MarkDoneHwCommand
+        //This is the method used by MarkUndoneHwCommand
 
         @Override
         public ObservableList<Person> getFilteredPersonList() {
             return filtered;
         }
 
-        //These are methods not used by MarkDoneHwCommand
+        //These are methods not used by MarkUndoneHwCommand
 
         @Override
         public void setUserPrefs(ReadOnlyUserPrefs userPrefs) {
@@ -233,47 +234,48 @@ public class MarkDoneHwCommandTest {
     }
 
     /**
-     * Verifies that executing {@link MarkDoneHwCommand} with a matching student and homework
+     * Verifies that executing {@link MarkUndoneHwCommandTest} with a matching student and homework
      * marks it done and returns the expected message.
      */
     @Test
-    public void execute_success_markDone() throws Exception {
+    public void execute_success_markUndone() throws Exception {
         Homework hw = new Homework("Math WS 3", LocalDate.parse("2025-10-23"));
         marcus.addHomework(hw);
 
         Model model = new ModelStubFilteredOnly(List.of(marcus));
-        MarkDoneHwCommand command = new MarkDoneHwCommand(marcusName, "mAtH wS 3");
-        CommandResult result = command.execute(model);
+        MarkDoneHwCommand command1 = new MarkDoneHwCommand(marcusName, "mAtH wS 3");
+        MarkUndoneHwCommand command2 = new MarkUndoneHwCommand(marcusName, "mAtH wS 3");
+        command1.execute(model);
+        CommandResult result2 = command2.execute(model);
 
-        String expected = String.format(MarkDoneHwCommand.MESSAGE_SUCCESS, marcus.getName().fullName,
+        String expected = String.format(MarkUndoneHwCommand.MESSAGE_SUCCESS, marcus.getName().fullName,
                 hw.getDescription());
-        assertEquals(expected, result.getFeedbackToUser());
-        assertTrue(hw.isDone(), "Homework should be marked done");
+        assertEquals(expected, result2.getFeedbackToUser());
+        assertTrue(!hw.isDone(), "Homework should be marked undone");
     }
 
     /**
-     * Verifies that marking an already done homework still succeeds and keeps it done
+     * Verifies that unmarking an already undone homework still succeeds and keeps it undone
      */
     @Test
-    public void execute_alreadyDone_stillSuccess() throws Exception {
+    public void execute_alreadyUndone_stillSuccess() throws Exception {
         Homework hw = new Homework("Reading", LocalDate.parse("2025-12-01"));
-        hw.markDone();
         marcus.addHomework(hw);
 
         Model model = new ModelStubFilteredOnly(List.of(marcus));
-        MarkDoneHwCommand command = new MarkDoneHwCommand(marcusName, "Reading");
+        MarkUndoneHwCommand command = new MarkUndoneHwCommand(marcusName, "Reading");
         CommandResult res = command.execute(model);
 
-        String expected = String.format(MarkDoneHwCommand.MESSAGE_SUCCESS,
+        String expected = String.format(MarkUndoneHwCommand.MESSAGE_SUCCESS,
                 marcus.getName().fullName, hw.getDescription());
         assertEquals(expected, res.getFeedbackToUser());
-        assertTrue(hw.isDone(), "Homework remains done");
+        assertTrue(!hw.isDone(), "Homework remains undone");
     }
 
     /**
      * Verifies that when the target student is not present in the current filtered list
      * (e.g., after a prior search), a {@link CommandException} is thrown with
-     * {@link MarkDoneHwCommand#MESSAGE_NO_PERSON_FOUND}
+     * {@link MarkUndoneHwCommand#MESSAGE_NO_PERSON_FOUND}
      */
     @Test
     public void execute_nameNotInFilteredList_throwsNoPersonFound() {
@@ -281,7 +283,7 @@ public class MarkDoneHwCommandTest {
         marcus.addHomework(hw);
 
         Model model = new ModelStubFilteredOnly(List.of(john));
-        MarkDoneHwCommand cmd = new MarkDoneHwCommand(marcusName, "Math WS 3");
+        MarkUndoneHwCommand cmd = new MarkUndoneHwCommand(marcusName, "Math WS 3");
 
         CommandException ex = assertThrows(CommandException.class, () -> cmd.execute(model));
         assertEquals(MarkDoneHwCommand.MESSAGE_NO_PERSON_FOUND, ex.getMessage());
@@ -291,7 +293,7 @@ public class MarkDoneHwCommandTest {
     /**
      * Verifies that when the student is present but the homework description does not
      * match any entry, a {@link CommandException} with
-     * {@link MarkDoneHwCommand#MESSAGE_NO_HW_FOUND} is thrown.
+     * {@link MarkUndoneHwCommand#MESSAGE_NO_HW_FOUND} is thrown.
      */
     @Test
     public void execute_hwNotFound_throwsNoHwFound() {
@@ -299,7 +301,7 @@ public class MarkDoneHwCommandTest {
         marcus.addHomework(hw);
 
         Model model = new ModelStubFilteredOnly(List.of(marcus));
-        MarkDoneHwCommand cmd = new MarkDoneHwCommand(marcusName, "Physics WS");
+        MarkUndoneHwCommand cmd = new MarkUndoneHwCommand(marcusName, "Physics WS");
 
         CommandException ex = assertThrows(CommandException.class, () -> cmd.execute(model));
         assertEquals(MarkDoneHwCommand.MESSAGE_NO_HW_FOUND, ex.getMessage());
@@ -307,14 +309,15 @@ public class MarkDoneHwCommandTest {
     }
 
     /**
-     * Tests for equality as specified under {@link MarkDoneHwCommand}
+     * Tests for equality as specified under {@link MarkUndoneHwCommand}
      */
     @Test
     public void equals_various() {
-        MarkDoneHwCommand a1 = new MarkDoneHwCommand(marcusName, "A");
-        MarkDoneHwCommand a1copy = new MarkDoneHwCommand(new Name("Marcus"), "A");
-        MarkDoneHwCommand a2 = new MarkDoneHwCommand(marcusName, "B");
-        MarkDoneHwCommand b1 = new MarkDoneHwCommand(johnName, "A");
+        MarkUndoneHwCommand a1 = new MarkUndoneHwCommand(marcusName, "A");
+        MarkUndoneHwCommand a1copy = new MarkUndoneHwCommand(new Name("Marcus"), "A");
+        MarkUndoneHwCommand a2 = new MarkUndoneHwCommand(marcusName, "B");
+        MarkUndoneHwCommand b1 = new MarkUndoneHwCommand(johnName, "A");
+
         assertEquals(a1, a1);
         assertEquals(a1, a1copy);
         assertNotEquals(a1, null);
@@ -323,13 +326,3 @@ public class MarkDoneHwCommandTest {
         assertNotEquals(a1, b1);
     }
 }
-
-
-
-
-
-
-
-
-
-

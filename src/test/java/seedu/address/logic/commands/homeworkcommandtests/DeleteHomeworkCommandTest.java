@@ -1,4 +1,4 @@
-package seedu.address.logic.commands.homeworktests;
+package seedu.address.logic.commands.homeworkcommandtests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
