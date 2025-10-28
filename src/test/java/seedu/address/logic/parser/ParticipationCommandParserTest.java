@@ -13,7 +13,7 @@ import seedu.address.logic.parser.exceptions.ParseException;
 /** Parser tests for the attendance command. */
 public class ParticipationCommandParserTest {
 
-    private final AttendanceCommandParser parser = new AttendanceCommandParser();
+    private final ParticipationCommandParser parser = new ParticipationCommandParser();
 
     @Test
     public void parse_valid_success() {
