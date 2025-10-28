@@ -390,7 +390,7 @@ Edits an existing reminder in the reminder list.
 Format: `edit-reminder i/INDEX [d/DUE_DATE] [desc/DESCRIPTION]`
 
 * Edits the reminder at the specified `INDEX`.
-* `INDEX` refers to the index number shown in the displayed reminder list. 
+* `INDEX` refers to the index number shown in the displayed reminder list.
 * The `INDEX` must be a **positive integer** 1, 2, 3, ...
 * At least one of the optional fields must be provided.
 * Existing values will be updated to the input values.
