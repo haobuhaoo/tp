@@ -4,10 +4,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DESC;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_INDEX;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_KEYWORD;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_STATUS;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
+import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_REMINDER;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,18 +21,27 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.AddCommand;
+import seedu.address.logic.commands.AddReminderCommand;
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.DeleteCommand;
+import seedu.address.logic.commands.DeleteReminderCommand;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
+import seedu.address.logic.commands.EditReminderCommand;
+import seedu.address.logic.commands.EditReminderCommand.EditReminderDescriptor;
 import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
+import seedu.address.logic.commands.ParticipationCommand;
 import seedu.address.logic.commands.SearchCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentFieldsContainsKeywordsPredicate;
+import seedu.address.model.reminder.Description;
+import seedu.address.model.reminder.DueDate;
+import seedu.address.model.reminder.Reminder;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
+import seedu.address.testutil.EditReminderDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.PersonUtil;
 
@@ -87,6 +101,40 @@ public class AddressBookParserTest {
     public void parseCommand_list() throws Exception {
         assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD) instanceof ListCommand);
         assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD + " 3") instanceof ListCommand);
+    }
+
+    @Test
+    public void parseCommand_participation() throws Exception {
+        String input = ParticipationCommand.COMMAND_WORD + " " + PREFIX_NAME + "Alex "
+                + PREFIX_DATE + "2025-10-10 " + PREFIX_STATUS + "3";
+        assertTrue(parser.parseCommand(input) instanceof ParticipationCommand);
+    }
+
+    @Test
+    public void parseCommand_addReminder() throws Exception {
+        Reminder reminder = new Reminder(new DueDate("2025-10-12 1500"), new Description("Tuition later at 3pm"));
+        String input = AddReminderCommand.COMMAND_WORD + " " + PREFIX_DATE + "2025-10-12 1500 "
+                + PREFIX_DESC + "Tuition later at 3pm";
+        AddReminderCommand command = (AddReminderCommand) parser.parseCommand(input);
+        assertEquals(new AddReminderCommand(reminder), command);
+    }
+
+    @Test
+    public void parseCommand_editReminder() throws Exception {
+        Reminder reminder = new Reminder(new DueDate("2025-10-12 1500"), new Description("Tuition later at 3pm"));
+        EditReminderDescriptor descriptor = new EditReminderDescriptorBuilder()
+                .withDescription("Tuition later at 3pm").build();
+        String input = EditReminderCommand.COMMAND_WORD + " " + PREFIX_INDEX + "1 "
+                + PREFIX_DESC + "Tuition later at 3pm";
+        EditReminderCommand command = (EditReminderCommand) parser.parseCommand(input);
+        assertEquals(new EditReminderCommand(INDEX_FIRST_PERSON, descriptor), command);
+    }
+
+    @Test
+    public void parseCommand_deleteReminder() throws Exception {
+        String input = DeleteReminderCommand.COMMAND_WORD + " " + PREFIX_INDEX + "1";
+        DeleteReminderCommand command = (DeleteReminderCommand) parser.parseCommand(input);
+        assertEquals(new DeleteReminderCommand(INDEX_FIRST_REMINDER), command);
     }
 
     @Test

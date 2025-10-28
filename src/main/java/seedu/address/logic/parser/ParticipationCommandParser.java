@@ -13,10 +13,10 @@ import seedu.address.logic.parser.exceptions.ParseException;
 /**
  * Parses arguments for {@link ParticipationCommand}.
  *
- * Format: {@code attendance n/NAME d/YYYY-MM-DD s/1|0}
+ * Format: {@code participation n/NAME d/DATE s/SCORE}
  * Rules: n/, d/, s/ must each appear exactly once; values are validated in the command.
  */
-public class AttendanceCommandParser implements Parser<ParticipationCommand> {
+public class ParticipationCommandParser implements Parser<ParticipationCommand> {
     @Override
     public ParticipationCommand parse(String args) throws ParseException {
         ArgumentMultimap map = ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_DATE, PREFIX_STATUS);

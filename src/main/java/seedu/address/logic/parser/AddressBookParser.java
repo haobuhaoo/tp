@@ -96,7 +96,7 @@ public class AddressBookParser {
             return new HelpCommand();
 
         case ParticipationCommand.COMMAND_WORD:
-            return new AttendanceCommandParser().parse(arguments);
+            return new ParticipationCommandParser().parse(arguments);
 
         case AddReminderCommand.COMMAND_WORD:
             return new AddReminderCommandParser().parse(arguments);
@@ -106,6 +106,7 @@ public class AddressBookParser {
 
         case DeleteReminderCommand.COMMAND_WORD:
             return new DeleteReminderCommandParser().parse(arguments);
+
         case MarkPaidCommand.COMMAND_WORD:
             return new MarkPaidCommandParser().parse(arguments);
 
