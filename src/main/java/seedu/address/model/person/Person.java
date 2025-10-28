@@ -44,6 +44,7 @@ public class Person {
 
     // Participation (mutable history of last 5 records)
     private final ParticipationHistory participation = new ParticipationHistory();
+
     /**
      * Every field must be present and not null.
      */
@@ -98,8 +99,6 @@ public class Person {
     public void setHomeworkList(List<Homework> list) {
         homeworkList.setAll(list);
     }
-
-
 
     public ParticipationHistory getParticipation() {
         return participation;
@@ -209,7 +208,7 @@ public class Person {
             monthColumn.setAlignment(Pos.CENTER);
 
             Text monthLabel = new Text(MONTH_NAMES[i]);
-            monthLabel.setStyle("-fx-font-size: 10px; -fx-font-weight: bold;");
+            monthLabel.setStyle("-fx-font-family: \"Segoe UI\"; -fx-font-size: 16px; -fx-fill: white;");
 
             Rectangle rect = new Rectangle(24, 24);
             if (paymentStatus.get(i)) {

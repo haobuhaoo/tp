@@ -25,11 +25,11 @@
             <HBox alignment="CENTER_LEFT" spacing="0.5">
                 <Label fx:id="id" styleClass="cell_big_label"/>
                 <Label fx:id="dueDate" styleClass="cell_big_label"/>
+                <Label fx:id="isDueSoon" styleClass="cell_big_label"/>
             </HBox>
             <HBox alignment="CENTER_LEFT" spacing="0.5">
-                <Label fx:id="descriptionId" styleClass="cell_small_label" text="Description: "/>
                 <Label fx:id="description" styleClass="cell_small_label" HBox.hgrow="ALWAYS"
-                       wrapText="true" maxWidth="270"/>
+                       wrapText="true" maxWidth="350"/>
             </HBox>
         </VBox>
     </GridPane>

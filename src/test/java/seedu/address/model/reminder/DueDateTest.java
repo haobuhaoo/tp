@@ -110,4 +110,29 @@ public class DueDateTest {
         assertEquals(-1, now.compareTo(after));
         assertEquals(0, now.compareTo(now));
     }
+
+    @Test
+    public void daysUntilDue() {
+        DueDate dueDate = new DueDate("2025-12-31 1200");
+
+        // exact moment
+        LocalDateTime now = LocalDateTime.parse("2025-12-31T12:00:00");
+        assertEquals(0, dueDate.daysUntilDue(now));
+
+        // before due date
+        now = LocalDateTime.parse("2025-12-25T00:00:00");
+        assertEquals(6, dueDate.daysUntilDue(now));
+
+        // before by one minute
+        now = LocalDateTime.parse("2025-12-31T11:59:00");
+        assertEquals(0, dueDate.daysUntilDue(now));
+
+        // after due date
+        now = LocalDateTime.parse("2026-01-01T00:00:00");
+        assertEquals(-1, dueDate.daysUntilDue(now));
+
+        // after by one minute
+        now = LocalDateTime.parse("2025-12-31T12:01:00");
+        assertEquals(-1, dueDate.daysUntilDue(now));
+    }
 }

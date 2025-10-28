@@ -350,3 +350,11 @@
     -fx-background-radius: 2;
     -fx-font-size: 14;
 }
+
+.due-soon-text {
+    -fx-text-fill: #fc4c4c !important;
+}
+
+.overdue {
+    -fx-text-fill: #9e9d9d !important;
+}
