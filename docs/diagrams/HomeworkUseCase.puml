@@ -22,25 +22,25 @@ rectangle "ClassConnect — Homework Management" {
   usecase "Set Deadline" as UC_Deadline
 }
 
-T --> UC_Add
-T --> UC_Del
-T --> UC_Done
-T --> UC_Undone
-T --> UC_View
+T -- UC_Add
+T -- UC_Del
+T -- UC_Done
+T -- UC_Undone
+T -- UC_View
 
 
-UC_Add --> UC_SelectStudent : <<include>>
-UC_Add --> UC_Desc          : <<include>>
-UC_Add --> UC_Deadline      : <<include>>
+UC_Add ..> UC_SelectStudent : <<include>>
+UC_Add ..> UC_Desc          : <<include>>
+UC_Add ..> UC_Deadline      : <<include>>
 
-UC_Del --> UC_SelectStudent : <<include>>
-UC_Del --> UC_SelectItem    : <<include>>
+UC_Del ..> UC_SelectStudent : <<include>>
+UC_Del ..> UC_SelectItem    : <<include>>
 
-UC_Done --> UC_SelectStudent : <<include>>
-UC_Done --> UC_SelectItem    : <<include>>
+UC_Done ..> UC_SelectStudent : <<include>>
+UC_Done ..> UC_SelectItem    : <<include>>
 
-UC_Undone --> UC_SelectStudent : <<include>>
-UC_Undone --> UC_SelectItem    : <<include>>
+UC_Undone ..> UC_SelectStudent : <<include>>
+UC_Undone ..> UC_SelectItem    : <<include>>
 
-UC_View --> UC_SelectStudent : <<include>>
+UC_View ..> UC_SelectStudent : <<include>>
 @enduml
