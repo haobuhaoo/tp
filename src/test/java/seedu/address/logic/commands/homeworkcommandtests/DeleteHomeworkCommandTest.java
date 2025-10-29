@@ -246,7 +246,7 @@ public class DeleteHomeworkCommandTest {
 
         Model model = new ModelStubFilteredOnly(List.of(marcus));
         model.addReminder(UnmodifiableHwReminder.of(marcus, homework));
-        DeleteHomeworkCommand cmd = new DeleteHomeworkCommand(marcusName, "mAtH wS 3");
+        DeleteHomeworkCommand cmd = new DeleteHomeworkCommand(marcusName, Index.fromOneBased(1));
         CommandResult result = cmd.execute(model);
 
         String expected = String.format(DeleteHomeworkCommand.MESSAGE_SUCCESS,
@@ -271,7 +271,6 @@ public class DeleteHomeworkCommandTest {
         DeleteHomeworkCommand command = new DeleteHomeworkCommand(marcusName, Index.fromOneBased(1));
         model.addReminder(UnmodifiableHwReminder.of(marcus, hwMarcus));
         model.addReminder(UnmodifiableHwReminder.of(john, hwJohn));
-        DeleteHomeworkCommand command = new DeleteHomeworkCommand(marcusName, "Physics WS");
         CommandResult result = command.execute(model);
 
         String expected = String.format(DeleteHomeworkCommand.MESSAGE_SUCCESS,
@@ -292,7 +291,7 @@ public class DeleteHomeworkCommandTest {
         Homework homework = new Homework("Math WS 3", LocalDate.parse("2025-10-23"));
         marcus.addHomework(homework);
 
-        Model model = new ModelStubFilteredOnly(List.of(john)); // Marcus not shown
+        Model model = new ModelStubFilteredOnly(List.of(john));
         DeleteHomeworkCommand command = new DeleteHomeworkCommand(marcusName, Index.fromOneBased(1));
 
         CommandException exception = assertThrows(CommandException.class, () -> command.execute(model));

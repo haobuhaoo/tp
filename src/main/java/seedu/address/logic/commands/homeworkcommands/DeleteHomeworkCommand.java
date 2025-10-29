@@ -83,7 +83,7 @@ public class DeleteHomeworkCommand extends Command {
         target.removeHomework(toDelete);
 
 
-        UnmodifiableHwReminder undoneReminder = UnmodifiableHwReminder.of(target, matched);
+        UnmodifiableHwReminder undoneReminder = UnmodifiableHwReminder.of(target, toDelete);
         try {
             model.deleteReminder(undoneReminder);
         } catch (ReminderNotFoundException e) {

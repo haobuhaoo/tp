@@ -37,7 +37,6 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.reminder.Reminder;
-import seedu.address.model.reminder.UnmodifiableHwReminder;
 
 public class MarkDoneHwCommandTest {
     private Name marcusName;

@@ -37,7 +37,6 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.reminder.Reminder;
-import seedu.address.model.reminder.UnmodifiableHwReminder;
 
 public class MarkUndoneHwCommandTest {
     private Name marcusName;
@@ -274,7 +273,7 @@ public class MarkUndoneHwCommandTest {
                 marcus.getName().fullName, hw.getDescription());
         assertEquals(expected, res.getFeedbackToUser());
         assertFalse(hw.isDone(), "Homework remains undone");
-        assertEquals(1, model.getFilteredReminderList().size());
+        assertEquals(0, model.getFilteredReminderList().size());
     }
 
     /**

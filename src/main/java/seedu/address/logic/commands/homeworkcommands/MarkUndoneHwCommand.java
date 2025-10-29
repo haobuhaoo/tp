@@ -81,9 +81,7 @@ public class MarkUndoneHwCommand extends Command {
 
         if (toUnmark.isDone()) {
             toUnmark.markUndone();
-        if (matched.isDone()) {
-            matched.markUndone();
-            UnmodifiableHwReminder undoneReminder = UnmodifiableHwReminder.of(target, matched);
+            UnmodifiableHwReminder undoneReminder = UnmodifiableHwReminder.of(target, toUnmark);
             model.addReminder(undoneReminder);
         }
 
