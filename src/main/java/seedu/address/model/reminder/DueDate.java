@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.Locale;
 
 /**
@@ -22,16 +23,20 @@ public class DueDate implements Comparable<DueDate> {
 
     // Date only format
     public static final DateTimeFormatter VALID_INPUT_DATE_FORMAT =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
+            DateTimeFormatter.ofPattern("uuuu-MM-dd", Locale.ENGLISH)
+                    .withResolverStyle(ResolverStyle.STRICT);
     public static final DateTimeFormatter VALID_OUTPUT_DATE_FORMAT =
-            DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH);
+            DateTimeFormatter.ofPattern("dd MMM uuuu", Locale.ENGLISH)
+                    .withResolverStyle(ResolverStyle.STRICT);
     public static final String VALIDATION_DATE_REGEX = "\\d{4}-\\d{2}-\\d{2}";
 
     // DateTime format
     public static final DateTimeFormatter VALID_INPUT_DATETIME_FORMAT =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm", Locale.ENGLISH);
+            DateTimeFormatter.ofPattern("uuuu-MM-dd HHmm", Locale.ENGLISH)
+                    .withResolverStyle(ResolverStyle.STRICT);
     public static final DateTimeFormatter VALID_OUTPUT_DATETIME_FORMAT =
-            DateTimeFormatter.ofPattern("dd MMM yyyy hh:mm a", Locale.ENGLISH);
+            DateTimeFormatter.ofPattern("dd MMM uuuu hh:mm a", Locale.ENGLISH)
+                    .withResolverStyle(ResolverStyle.STRICT);
     public static final String VALIDATION_DATETIME_REGEX = "\\d{4}-\\d{2}-\\d{2} \\d{4}";
 
     private final LocalDate date;
@@ -45,15 +50,16 @@ public class DueDate implements Comparable<DueDate> {
      */
     public DueDate(String dueDate) {
         requireNonNull(dueDate);
-        checkArgument(isValidDueDate(dueDate), MESSAGE_CONSTRAINTS);
+        String collapsedDueDate = dueDate.replaceAll("\\s+", " ").trim();
+        checkArgument(isValidDueDate(collapsedDueDate), MESSAGE_CONSTRAINTS);
 
-        if (dueDate.matches(VALIDATION_DATE_REGEX)) {
-            this.date = LocalDate.parse(dueDate, VALID_INPUT_DATE_FORMAT);
+        if (collapsedDueDate.matches(VALIDATION_DATE_REGEX)) {
+            this.date = LocalDate.parse(collapsedDueDate, VALID_INPUT_DATE_FORMAT);
             this.dateTime = null;
             isDateOnly = true;
         } else {
             this.date = null;
-            this.dateTime = LocalDateTime.parse(dueDate, VALID_INPUT_DATETIME_FORMAT);
+            this.dateTime = LocalDateTime.parse(collapsedDueDate, VALID_INPUT_DATETIME_FORMAT);
             isDateOnly = false;
         }
     }
