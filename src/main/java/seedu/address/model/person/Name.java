@@ -2,6 +2,7 @@ package seedu.address.model.person;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.AppUtil.checkArgument;
+import static seedu.address.commons.util.StringUtil.toTitleCase;
 
 /**
  * Represents a Person's name in the address book.
@@ -28,7 +29,7 @@ public class Name {
         String collapsedName = name.replaceAll("\\s+", " ").trim().toLowerCase();
         requireNonNull(collapsedName);
         checkArgument(isValidName(collapsedName), MESSAGE_CONSTRAINTS);
-        fullName = collapsedName;
+        fullName = toTitleCase(collapsedName);
     }
 
     /**
