@@ -1,7 +1,10 @@
 package seedu.address.model;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.model.reminder.UniqueReminderList.createHomeworkReminder;
+import static seedu.address.model.util.SampleDataUtil.getMonthName;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -17,6 +20,8 @@ import seedu.address.model.person.Person;
 import seedu.address.model.person.UniquePersonList;
 import seedu.address.model.reminder.Reminder;
 import seedu.address.model.reminder.UniqueReminderList;
+import seedu.address.model.reminder.UnmodifiableHwReminder;
+import seedu.address.model.reminder.UnmodifiablePaymentReminder;
 
 /**
  * Wraps all data at the address-book level
@@ -244,6 +249,22 @@ public class AddressBook implements ReadOnlyAddressBook {
 
     @Override
     public ObservableList<Reminder> getReminderList() {
+        for (Person p : getPersonList()) {
+            int currentMonth = LocalDate.now().getMonth().getValue();
+            if (!p.isPaidForMonth(currentMonth)) {
+                UnmodifiablePaymentReminder paymentReminder =
+                        UnmodifiablePaymentReminder.of(currentMonth, p, getMonthName(currentMonth));
+                if (!reminders.contains(paymentReminder)) {
+                    reminders.add(paymentReminder);
+                }
+            }
+
+            for (UnmodifiableHwReminder hwReminder : createHomeworkReminder(p)) {
+                if (!reminders.contains(hwReminder)) {
+                    reminders.add(hwReminder);
+                }
+            }
+        }
         return reminders.asUnmodifiableObservableList();
     }
 

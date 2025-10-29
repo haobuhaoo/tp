@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.LogsCenter;
+import seedu.address.model.person.Person;
 import seedu.address.model.reminder.exceptions.DuplicateReminderException;
 import seedu.address.model.reminder.exceptions.ReminderNotFoundException;
 
@@ -158,5 +159,19 @@ public class UniqueReminderList implements Iterable<Reminder> {
             }
         }
         return true;
+    }
+
+    /**
+     * Creates homework reminders for the given person for all undone homework that is due in 1 day.
+     *
+     * @return A list of UnmodifiableHwReminder instances for undone homework.
+     */
+    public static List<UnmodifiableHwReminder> createHomeworkReminder(Person person) {
+        return person.getHomeworkList().stream()
+                .filter(homework -> !homework.isDone())
+                .map(homework -> UnmodifiableHwReminder.of(person, homework))
+                .filter(homework
+                        -> homework.daysUntilDueDate() <= 1 && homework.daysUntilDueDate() >= 0)
+                .toList();
     }
 }

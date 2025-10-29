@@ -33,6 +33,13 @@ public class Reminder implements Comparable<Reminder> {
     }
 
     /**
+     * Returns true always for general reminder.
+     */
+    public boolean isModifiable() {
+        return true;
+    }
+
+    /**
      * Returns the number of days until this reminder is due.
      */
     public long daysUntilDueDate() {

@@ -18,10 +18,10 @@ public class TypicalAddressBook {
     public static AddressBook getTypicalAddressBook() {
         AddressBook ab = new AddressBook();
         for (Person person : TypicalPersons.getTypicalPersons()) {
-            ab.addPerson(person);
+            ab.addPerson(new Person(person.getName(), person.getPhone(), person.getLessonTime()));
         }
         for (Reminder reminder : TypicalReminders.getTypicalReminders()) {
-            ab.addReminder(reminder);
+            ab.addReminder(new Reminder(reminder.getDueDate(), reminder.getDescription()));
         }
         ab.sortReminder();
         return ab;

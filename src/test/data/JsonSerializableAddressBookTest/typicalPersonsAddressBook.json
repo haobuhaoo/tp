@@ -32,15 +32,19 @@
   } ],
   "reminders" : [ {
     "dueDate" : "2025-10-21 1530",
-    "description" : "Alice: Submit homework for Math"
+    "description" : "Alice: Submit homework for Math",
+    "isModifiable" : true
   }, {
     "dueDate" : "2025-10-22 1000",
-    "description" : "Benson: Prepare for English lesson"
+    "description" : "Benson: Prepare for English lesson",
+    "isModifiable" : true
   }, {
     "dueDate" : "2025-10-25",
-    "description" : "Carl: Assignment review"
+    "description" : "Carl: Assignment review",
+    "isModifiable" : true
   }, {
     "dueDate" : "2025-11-01",
-    "description" : "Daniel: Feedback session"
+    "description" : "Daniel: Feedback session",
+    "isModifiable" : true
   } ]
 }

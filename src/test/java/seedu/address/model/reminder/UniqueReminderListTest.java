@@ -8,14 +8,19 @@ import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalReminders.REMINDER_1;
 import static seedu.address.testutil.TypicalReminders.REMINDER_2;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.model.homework.Homework;
+import seedu.address.model.person.Person;
 import seedu.address.model.reminder.exceptions.DuplicateReminderException;
 import seedu.address.model.reminder.exceptions.ReminderNotFoundException;
+import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.ReminderBuilder;
 
 public class UniqueReminderListTest {
@@ -161,5 +166,22 @@ public class UniqueReminderListTest {
     @Test
     public void toStringMethod() {
         assertEquals(uniqueReminderList.asUnmodifiableObservableList().toString(), uniqueReminderList.toString());
+    }
+
+    @Test
+    public void createHomeworkReminder() {
+        Person person = new PersonBuilder().build();
+        Homework hw1 = new Homework("Math worksheet", LocalDate.parse("2025-11-10"));
+        Homework hw2 = new Homework("Sci worksheet", LocalDate.parse("2025-11-11"));
+        person.setHomeworkList(List.of(hw1, hw2));
+
+        // both homework not due tomorrow
+        assertEquals(new ArrayList<>(), UniqueReminderList.createHomeworkReminder(person));
+
+        // both homework past due date
+        hw1 = new Homework("Math worksheet", LocalDate.parse("2020-11-10"));
+        hw2 = new Homework("Sci worksheet", LocalDate.parse("2020-11-11"));
+        person.setHomeworkList(List.of(hw1, hw2));
+        assertEquals(new ArrayList<>(), UniqueReminderList.createHomeworkReminder(person));
     }
 }

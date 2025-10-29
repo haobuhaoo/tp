@@ -20,14 +20,18 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
+import javafx.collections.ObservableList;
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.person.Person;
 import seedu.address.model.reminder.Reminder;
 import seedu.address.model.reminder.ReminderFieldsContainsKeywordsPredicate;
+import seedu.address.model.reminder.UnmodifiablePaymentReminder;
+import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.ReminderBuilder;
 
 /**
@@ -39,8 +43,10 @@ public class DeleteReminderCommandTest {
 
     @Test
     public void execute_validIndexUnfilteredList_success() {
-        Reminder reminderToDelete = model.getFilteredReminderList().get(INDEX_FIRST_REMINDER.getZeroBased());
-        DeleteReminderCommand deleteCommand = new DeleteReminderCommand(INDEX_FIRST_REMINDER);
+        ObservableList<Reminder> list = model.getFilteredReminderList();
+        Index index = Index.fromOneBased(list.size());
+        Reminder reminderToDelete = list.get(index.getZeroBased());
+        DeleteReminderCommand deleteCommand = new DeleteReminderCommand(index);
 
         String expectedMessage = String.format(DeleteReminderCommand.MESSAGE_DELETE_REMINDER_SUCCESS,
                 Messages.format(reminderToDelete));
@@ -65,7 +71,9 @@ public class DeleteReminderCommandTest {
 
     @Test
     public void execute_validIndexFilteredList_success() {
-        showReminderAtIndex(model, INDEX_FIRST_REMINDER);
+        ObservableList<Reminder> list = model.getFilteredReminderList();
+        Index index = Index.fromOneBased(list.size());
+        showReminderAtIndex(model, index);
 
         Reminder reminderToDelete = model.getFilteredReminderList().get(INDEX_FIRST_REMINDER.getZeroBased());
         DeleteReminderCommand deleteCommand = new DeleteReminderCommand(INDEX_FIRST_REMINDER);
@@ -82,7 +90,9 @@ public class DeleteReminderCommandTest {
 
     @Test
     public void execute_invalidIndexFilteredList_throwsCommandException() {
-        showReminderAtIndex(model, INDEX_FIRST_REMINDER);
+        ObservableList<Reminder> list = model.getFilteredReminderList();
+        Index index = Index.fromOneBased(list.size());
+        showReminderAtIndex(model, index);
 
         Index outOfBoundIndex = INDEX_SECOND_REMINDER;
         // ensures that outOfBoundIndex is still in bounds of address book list
@@ -224,6 +234,32 @@ public class DeleteReminderCommandTest {
         assertTrue(result.getFeedbackToUser().contains(Messages.format(reminder2)));
         assertTrue(model.getFilteredReminderList().contains(reminder1));
         assertTrue(model.getFilteredReminderList().contains(reminder2));
+    }
+
+    @Test
+    public void execute_deleteUnmodifiableReminderByIndex() {
+        Person person = new PersonBuilder().build();
+        UnmodifiablePaymentReminder reminder = UnmodifiablePaymentReminder.of(6, person, "June");
+        model.addReminder(reminder);
+
+        DeleteReminderCommand command = new DeleteReminderCommand(INDEX_FIRST_REMINDER);
+        String expectedMessage = Messages.MESSAGE_UNMODIFIABLE_REMINDER + reminder.getModifyMessage();
+
+        assertCommandFailure(command, model, expectedMessage);
+    }
+
+    @Test
+    public void execute_deleteUnmodifiableReminderByKeyword() {
+        Model model = new ModelManager();
+        Person person = new PersonBuilder().build();
+        UnmodifiablePaymentReminder reminder = UnmodifiablePaymentReminder.of(6, person, "June");
+        model.addReminder(reminder);
+
+        DeleteReminderCommand command = new DeleteReminderCommand(
+                new ReminderFieldsContainsKeywordsPredicate(List.of(person.getName().toString())));
+        String expectedMessage = Messages.MESSAGE_UNMODIFIABLE_REMINDER + reminder.getModifyMessage();
+
+        assertCommandFailure(command, model, expectedMessage);
     }
 
     /**
