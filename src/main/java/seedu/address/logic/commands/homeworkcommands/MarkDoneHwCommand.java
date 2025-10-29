@@ -28,7 +28,7 @@ public class MarkDoneHwCommand extends Command {
             + PREFIX_NAME + "Marcus "
             + PREFIX_DESC + "Math Worksheet 1";
 
-    public static final String MESSAGE_SUCCESS = "Marked homework for %1$s: %2$s";
+    public static final String MESSAGE_SUCCESS = "Marked homework as done for %1$s: %2$s";
     public static final String MESSAGE_NO_PERSON_FOUND = "No student with given name";
     public static final String MESSAGE_NO_HW_FOUND = "No such homework in list";
 

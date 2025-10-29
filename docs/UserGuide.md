@@ -118,16 +118,22 @@ Format: `search-student k/KEYWORD [MORE_KEYWORDS...]`
 
 * The search is case-insensitive. e.g. `marcus` will match `Marcus`
 * The order of the keywords does not matter. e.g. `Marcus Ng` will match `Ng Marcus`.
-* Names, phone numbers and lesson times are searched.
+* Names, phone numbers and lesson times or days can be searched.
 * Partial matches within a word is supported. e.g. `Mar` will match `Marcus`.
 * Students matching at least one keyword will be returned (i.e. `OR` search).
   e.g. `Marcus 9876` will return `Marcus Ng (9876 1111)`, `John Tan (9876 5432)`.
+* If in a group searching will return results in the group itself
+* If no results shown is found, use command `list` to go back to student list
 
 Examples:
 * `search-student k/marcus` Returns `Marcus Ng` and `Marcus Tan`.
 * `search-student k/9876` Returns all students whose phone number contains `9876`.
 * `search-student k/10:00` Returns all students with lesson time `10:00`.
+* `search-student k/Sun` Returns all students with lessons on `Sun`
 
+```
+Found 4 students
+  ```
 ### Deleting a student : `delete-student`
 
 Deletes the specified student from the student list.
@@ -303,46 +309,59 @@ Format: `add-homework n/NAME desc/DESCRIPTION by/DEADLINE`
 
 Examples:
 * `add-homework n/Marcus desc/Math Worksheet 1 by/2025-10-27` Assigns the homework `Math Worksheet 1` and its due date `2025-10-27` to the student `Marcus`.
+```
+Added homework for Marcus: Math Worksheet 1 (due 2025-10-27)
+  ```
 
 ### Deleting homework: `delete-homework`
 
 Deletes a homework entry of the specified student.
 
-Format: `delete-homework n/NAME desc/DESCRIPTION`
+Format: `delete-homework n/NAME i/INDEX`
 
-* Deletes the homework with the given `DESCRIPTION` from the student with the specified `NAME`.
+* Deletes the homework with the given `INDEX` from the student with the specified `NAME`.
 * `NAME` refers to the name of the student in the displayed student list. It must match the full name of the student in the list.
-* `DESCRIPTION` refers to the details of the homework.
+* `INDEX` refers to the number shown beside the homework.
 
 Examples:
-* `delete-homework n/Marcus desc/Math Worksheet 1` Deletes the homework `Math Worksheet 1` that is assigned to the student `Marcus`.
+* `delete-homework n/Marcus i/1` Deletes the homework at index 1 that is assigned to the student `Marcus`.
+```
+Deleted homework for Marcus: Math Worksheet 3
+  ```
 
 ### Marking homework as done: `mark-done`
 
 Marks a homework entry of the specified student as done.
 
-Format: `mark-done n/NAME desc/DESCRIPTION`
+Format: `mark-done n/NAME i/INDEX`
 
-* Marks the homework with the given `DESCRIPTION` from the student with the specified `NAME` as done.
+* Marks the homework with the given `INDEX` from the student with the specified `NAME` as done.
 * `NAME` refers to the name of the student in the displayed student list. It must match the full name of the student in the list.
-* `DESCRIPTION` refers to the details of the homework.
+* `INDEX` refers to the number shown beside the homework.
+* Marking a homework that is already marked will not result in any error
 
 Examples:
-* `mark-done n/Marcus desc/Math Worksheet 1` Marks the homework `Math Worksheet 1` that is assigned to the student `Marcus` as done.
+* `mark-done n/Marcus i/1` Marks the homework at index 1 that is assigned to the student `Marcus` as done.
+```
+Marked homework as done for Marcus: Science Worksheet 2
+  ```
 
 ### Marking homework as undone: `mark-undone`
 
 Marks a homework entry of the specified student as undone.
 
-Format: `mark-undone n/NAME desc/DESCRIPTION`
+Format: `mark-undone n/NAME i/INDEX`
 
-* Marks the homework with the given `DESCRIPTION` from the student with the specified `NAME` as undone.
+* Marks the homework with the given `INDEX` from the student with the specified `NAME` as undone.
 * `NAME` refers to the name of the student in the displayed student list. It must match the full name of the student in the list.
-* `DESCRIPTION` refers to the details of the homework.
+* `INDEX` refers to the number shown beside the homework.
+* Unmarking a homework that is already unmarked will not result in any error
 
 Examples:
-* `mark-undone n/Marcus desc/Math Worksheet 1` Marks the homework `Math Worksheet 1` that is assigned to the student `Marcus` as undone.
-
+* `mark-undone n/Marcus i/1` Marks the homework at index 1 that is assigned to the student `Marcus` as undone.
+```
+Marked homework as undone for Marcus: Science Worksheet 2
+  ```
 ### Recording participation: `participation`
 
 Records a student's participation score for a specific class date.
@@ -496,7 +515,7 @@ Action     | Format, Examples
 **Clear**  | `clear`
 **Create Group**   | `group-create g/GROUP` <br> e.g., `group-create g/Group A`
 **Delete Group**   | `group-delete g/GROUP` <br> e.g., `group-delete g/Group A`
-**Delete Homework**    | `delete-homework n/NAME desc/DESCRIPTION` <br> e.g., `delete-homework n/Marcus desc/Math Worksheet 1`
+**Delete Homework**    | `delete-homework n/NAME i/INDEX` <br> e.g., `delete-homework n/Marcus i/1`
 **Delete Reminder** | `delete-reminder i/INDEX` **or** `delete-reminder k/KEYWORD [MORE_KEYWORDS...]`<br> e.g., `delete-reminder i/3` **or** `delete-reminder k/assignment`
 **Delete Student** | `delete-student i/INDEX` **or** `delete-student k/KEYWORD [MORE_KEYWORDS...]`<br> e.g., `delete-student i/3` **or** `delete-student k/marcus lee`
 **Edit Reminder**   | `edit-reminder i/INDEX [d/DATETIME] [desc/DESCRIPTION]`<br> e.g.,`edit-reminder i/2 d/2025-11-01 1500 desc/Pay tuition fees`
@@ -504,8 +523,8 @@ Action     | Format, Examples
 **Exit**   | `exit`
 **Help**   | `help`
 **List**   | `list`
-**Mark Homework as Done**    | `mark-done n/NAME desc/DESCRIPTION` <br> e.g., `mark-done n/Marcus desc/Math Worksheet 1`
-**Mark Homework as Undone**    | `mark-undone n/NAME desc/DESCRIPTION` <br> e.g., `mark-undone n/Marcus desc/Math Worksheet 1`
+**Mark Homework as Done**    | `mark-done n/NAME i/INDEX` <br> e.g., `mark-done n/Marcus i/1`
+**Mark Homework as Undone**    | `mark-undone n/NAME i/INDEX` <br> e.g., `mark-undone n/Marcus i/1`
 **Mark as paid**   | `mark-paid i/INDEX m/MONTH` <br> e.g., `mark-paid i/1 m/1`
 **Mark as unpaid**   | `mark-unpaid i/INDEX m/MONTH` <br> e.g., `mark-unpaid i/1 m/1`
 **Participation**    | `participation n/NAME d/DATE s/SCORE` <br> e.g., `participation n/James Ho d/2025-09-19 s/1`
