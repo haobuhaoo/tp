@@ -51,7 +51,7 @@ public class MarkUndoneHwParserTest {
     }
 
     @Test
-    public void parse_duplicateDescPrefix_throwsParseException() {
+    public void parse_duplicateIndexPrefix_throwsParseException() {
         String input = " n/Alex Yeoh i/1 i/2";
         assertThrows(ParseException.class, () -> parser.parse(input));
     }
@@ -63,7 +63,7 @@ public class MarkUndoneHwParserTest {
     }
 
     @Test
-    public void parse_missingDescPrefix_failure() {
+    public void parse_missingIndexPrefix_failure() {
         assertInvalidFormat(" n/Alex Yeoh");
     }
 

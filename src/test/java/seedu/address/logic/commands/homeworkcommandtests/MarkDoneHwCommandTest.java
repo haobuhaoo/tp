@@ -294,9 +294,8 @@ public class MarkDoneHwCommandTest {
     }
 
     /**
-     * Verifies that when the student is present but the homework description does not
-     * match any entry, a {@link CommandException} with
-     * {@link MarkDoneHwCommand#MESSAGE_INVALID_HW_INDEX} is thrown.
+     * Verifies that when the student is present but the homework index is out of bounds
+     * a {@link CommandException} with {@link MarkDoneHwCommand#MESSAGE_INVALID_HW_INDEX} is thrown.
      */
     @Test
     public void execute_hwNotFound_throwsNoHwFound() {

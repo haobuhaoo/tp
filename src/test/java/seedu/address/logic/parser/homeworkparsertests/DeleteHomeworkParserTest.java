@@ -50,7 +50,7 @@ public class DeleteHomeworkParserTest {
 
     @Test
     public void parse_duplicateIndexPrefix_throwsParseException() {
-        String input = " n/Alex Yeoh i/1 desc/Science";
+        String input = " n/Alex Yeoh i/1 i/1";
         assertThrows(ParseException.class, () -> parser.parse(input));
     }
 

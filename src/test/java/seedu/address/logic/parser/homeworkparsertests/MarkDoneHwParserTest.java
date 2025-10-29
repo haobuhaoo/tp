@@ -50,8 +50,8 @@ public class MarkDoneHwParserTest {
     }
 
     @Test
-    public void parse_duplicateDescPrefix_throwsParseException() {
-        String input = " n/Alex Yeoh i/1 desc/Science";
+    public void parse_duplicateIndexPrefix_throwsParseException() {
+        String input = " n/Alex Yeoh i/1 i/1";
         assertThrows(ParseException.class, () -> parser.parse(input));
     }
 
@@ -62,7 +62,7 @@ public class MarkDoneHwParserTest {
     }
 
     @Test
-    public void parse_missingDescPrefix_failure() {
+    public void parse_missingIndexPrefix_failure() {
         assertInvalidFormat(" n/Alex Yeoh");
     }
 
