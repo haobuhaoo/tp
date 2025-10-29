@@ -37,11 +37,28 @@ public class ParticipationHistory {
 
     /** Adds a new record, keeping only the 5 most recent by insertion order. */
     public void add(ParticipationRecord record) {
+        if (record == null) {
+            throw new NullPointerException("record");
+        }
+
+        // Remove any existing record for the same date (compare by date only)
+        for (var it = deque.iterator(); it.hasNext(); ) {
+            ParticipationRecord existing = it.next();
+            if (existing.getDate().equals(record.getDate())) {
+                it.remove();
+                break; // only one per date is ever kept
+            }
+        }
+
+        // Add as the newest record
         deque.addLast(record);
+
+        // Enforce max size
         while (deque.size() > MAX) {
             deque.removeFirst();
         }
     }
+
 
     public void add(LocalDate date, int score) {
         add(new ParticipationRecord(date, score));

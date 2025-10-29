@@ -12,11 +12,12 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<!-- Added stylesheets attribute to load participation.css -->
-<?import javafx.scene.layout.AnchorPane?>
 <HBox id="cardPane" fx:id="cardPane"
-      xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
-      stylesheets="@participation.css">
+      xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+    <stylesheets>
+        <!-- Resolved relative to this FXML’s location (/view). -->
+        <URL value="@participation.css"/>
+    </stylesheets>
     <GridPane HBox.hgrow="ALWAYS">
         <columnConstraints>
             <ColumnConstraints hgrow="ALWAYS" minWidth="10" prefWidth="400"/>

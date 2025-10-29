@@ -11,6 +11,8 @@
     -fx-fill: transparent;
     -fx-min-width: 22;
     -fx-min-height: 22;
+    -fx-translate-x: 0.5; /* helps align strokes to device pixels on some DPRs */
+    -fx-translate-y: 0.5;
 }
 
 .date-mini {

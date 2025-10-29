@@ -14,7 +14,7 @@ import seedu.address.ui.UiAttendanceAccess;
 /**
  * Records participation for a student on a date.
  * <p>
- * Format: {@code attendance n/NAME d/YYYY-MM-DD s/0..5}
+ * Format: {@code participation n/NAME d/YYYY-MM-DD s/0..5}
  */
 public class ParticipationCommand extends Command {
     public static final String COMMAND_WORD = "participation";
@@ -48,7 +48,10 @@ public class ParticipationCommand extends Command {
 
         // --- validate name
         String name = nameRaw.trim().replaceAll("\\s+", " ");
-        if (name.length() == 0 || name.length() > NAME_MAX) {
+        if (name.length() == 0) {
+            throw new CommandException("Invalid student name: name cannot be empty.");
+        }
+        if (name.length() > NAME_MAX) {
             throw new CommandException("Invalid student name: A name that is longer than 50 characters.");
         }
 
