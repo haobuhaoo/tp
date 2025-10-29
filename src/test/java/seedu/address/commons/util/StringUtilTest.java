@@ -1,7 +1,10 @@
 package seedu.address.commons.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.commons.util.StringUtil.toTitleCase;
 import static seedu.address.testutil.Assert.assertThrows;
 
 import java.io.FileNotFoundException;
@@ -140,4 +143,19 @@ public class StringUtilTest {
         assertThrows(NullPointerException.class, () -> StringUtil.getDetails(null));
     }
 
+    @Test
+    public void toTitleCase_nullValue() {
+        assertNull(toTitleCase(null));
+    }
+
+    @Test
+    public void toTitleCase_emptyString() {
+        assertEquals("", toTitleCase(""));
+    }
+
+    @Test
+    public void toTitleCase_validString() {
+        assertEquals(" ", toTitleCase(" ")); // whitespace
+        assertEquals("This Is   A Test   String.", toTitleCase("this is   a tEST   StRiNg."));
+    }
 }
