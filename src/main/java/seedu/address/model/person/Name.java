@@ -26,8 +26,8 @@ public class Name {
      * @param name A valid name.
      */
     public Name(String name) {
+        requireNonNull(name);
         String collapsedName = name.replaceAll("\\s+", " ").trim().toLowerCase();
-        requireNonNull(collapsedName);
         checkArgument(isValidName(collapsedName), MESSAGE_CONSTRAINTS);
         fullName = toTitleCase(collapsedName);
     }
