@@ -7,6 +7,7 @@ import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.homeworkcommands.MarkDoneHwCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.logic.parser.homeworkparsers.MarkDoneHwParser;
@@ -24,9 +25,9 @@ public class MarkDoneHwParserTest {
 
     @Test
     public void parse_allFieldsPresent_success() throws Exception {
-        String input = " n/Alex Yeoh desc/Math Homework";
+        String input = " n/Alex Yeoh i/1";
         MarkDoneHwCommand expected = new MarkDoneHwCommand(
-                new Name("Alex Yeoh"), "Math Homework");
+                new Name("Alex Yeoh"), Index.fromOneBased(1));
 
         MarkDoneHwCommand actual = parser.parse(input);
         assertEquals(expected, actual);
@@ -34,50 +35,65 @@ public class MarkDoneHwParserTest {
 
     @Test
     public void parse_orderIrrelevant_success() throws Exception {
-        String input = " desc/Science WS n/Bernice Yu";
+        String input = " i/1 n/Bernice Yu";
         MarkDoneHwCommand expected = new MarkDoneHwCommand(
-                new Name("Bernice Yu"), "Science WS");
+                new Name("Bernice Yu"), Index.fromOneBased(1));
 
         assertEquals(expected, parser.parse(input));
     }
-
-    @Test
-    public void parse_descriptionWhitespaceCollapsed_success() throws Exception {
-        String input = " n/Alex Yeoh desc/  Math\t   Homework   2  ";
-        MarkDoneHwCommand expected = new MarkDoneHwCommand(
-                new Name("Alex Yeoh"), "Math Homework 2");
-
-        assertEquals(expected, parser.parse(input));
-    }
-
 
 
     @Test
     public void parse_duplicateNamePrefix_throwsParseException() {
-        String input = " n/Alex Yeoh desc/Math n/Bernice Yu";
+        String input = " n/Alex Yeoh i/1 n/Bernice Yu";
         assertThrows(ParseException.class, () -> parser.parse(input));
     }
 
     @Test
-    public void parse_duplicateDescPrefix_throwsParseException() {
-        String input = " n/Alex Yeoh desc/Math desc/Science";
+    public void parse_duplicateIndexPrefix_throwsParseException() {
+        String input = " n/Alex Yeoh i/1 i/1";
         assertThrows(ParseException.class, () -> parser.parse(input));
     }
 
 
     @Test
     public void parse_missingNamePrefix_failure() {
-        assertInvalidFormat(" desc/Math Homework");
+        assertInvalidFormat(" i/1");
     }
 
     @Test
-    public void parse_missingDescPrefix_failure() {
+    public void parse_missingIndexPrefix_failure() {
         assertInvalidFormat(" n/Alex Yeoh");
     }
 
     @Test
     public void parse_nonEmptyPreamble_failure() {
-        assertInvalidFormat(" randomText n/Alex Yeoh desc/Math Homework");
+        assertInvalidFormat(" randomText n/Alex Yeoh i/1");
+    }
+
+    @Test
+    public void parse_indexNonNumeric_failure() {
+        assertThrows(ParseException.class, () -> parser.parse(" n/Alex Yeoh i/abc"));
+    }
+
+    @Test
+    public void parse_indexDecimal_failure() {
+        assertThrows(ParseException.class, () -> parser.parse(" n/Alex Yeoh i/1.5"));
+    }
+
+    @Test
+    public void parse_indexMissingValue_failure() {
+        assertThrows(ParseException.class, () -> parser.parse(" n/Alex Yeoh i/"));
+    }
+
+    @Test
+    public void parse_indexWhitespaceOnly_failure() {
+        assertThrows(ParseException.class, () -> parser.parse(" n/Alex Yeoh i/ "));
+    }
+
+    @Test
+    public void parse_indexZero_failure() {
+        assertThrows(ParseException.class, () -> parser.parse(" n/Alex Yeoh i/0"));
     }
 
 
