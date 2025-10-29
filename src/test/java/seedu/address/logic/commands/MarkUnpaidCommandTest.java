@@ -1,18 +1,24 @@
 package seedu.address.logic.commands;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
+import static seedu.address.model.util.SampleDataUtil.getMonthName;
 import static seedu.address.testutil.TypicalAddressBook.getTypicalAddressBook;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
+
+import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.index.Index;
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Person;
+import seedu.address.model.reminder.UnmodifiablePaymentReminder;
 import seedu.address.testutil.PersonBuilder;
 
 public class MarkUnpaidCommandTest {
@@ -39,6 +45,7 @@ public class MarkUnpaidCommandTest {
         markUnpaidCommand.execute(model);
 
         assertFalse(model.getFilteredPersonList().get(0).isPaidForMonth(5));
+        assertEquals(0, model.getFilteredReminderList().size());
     }
 
     @Test
@@ -85,9 +92,43 @@ public class MarkUnpaidCommandTest {
 
             MarkUnpaidCommand markUnpaidCommand = new MarkUnpaidCommand(INDEX_FIRST_PERSON, month);
 
-            CommandResult result = markUnpaidCommand.execute(testModel);
+            markUnpaidCommand.execute(testModel);
             assertFalse(personToMark.isPaidForMonth(month));
+            assertEquals(11, testModel.getFilteredReminderList().size());
         }
+    }
+
+    @Test
+    public void execute_addsReminder() throws CommandException {
+        Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        Person personToMark = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+
+        int currentMonth = LocalDate.now().getMonth().getValue();
+        personToMark.setPaymentStatus(currentMonth, true);
+
+        UnmodifiablePaymentReminder reminder =
+                UnmodifiablePaymentReminder.of(currentMonth, personToMark, getMonthName(currentMonth));
+        model.deleteReminder(reminder);
+
+        MarkUnpaidCommand command = new MarkUnpaidCommand(INDEX_FIRST_PERSON, currentMonth);
+        command.execute(model);
+
+        assertTrue(model.hasReminder(reminder));
+        assertTrue(model.getFilteredReminderList().contains(reminder));
+    }
+
+    @Test
+    public void execute_doesntAddDuplicateReminder() throws CommandException {
+        Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        Person personToMark = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+
+        int currentMonth = LocalDate.now().getMonth().getValue();
+        personToMark.setPaymentStatus(currentMonth, true);
+
+        int initialSize = model.getFilteredReminderList().size();
+        MarkUnpaidCommand command = new MarkUnpaidCommand(INDEX_FIRST_PERSON, currentMonth);
+        command.execute(model);
+        assertEquals(initialSize, model.getFilteredReminderList().size());
     }
 
     @Test

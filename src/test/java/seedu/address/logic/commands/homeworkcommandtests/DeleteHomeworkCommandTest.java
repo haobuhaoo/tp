@@ -36,7 +36,7 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.reminder.Reminder;
-
+import seedu.address.model.reminder.UnmodifiableHwReminder;
 
 public class DeleteHomeworkCommandTest {
     private Name marcusName;
@@ -68,15 +68,16 @@ public class DeleteHomeworkCommandTest {
         john = new Person(johnName, johnPhone, johnLessonTime);
     }
 
-
     /**
      * Minimal {@link Model} stub for {@link DeleteHomeworkCommandTest} tests.
      */
     private static class ModelStubFilteredOnly implements Model {
         private final ObservableList<Person> filtered;
+        private final ObservableList<Reminder> filteredReminders;
 
         ModelStubFilteredOnly(Collection<Person> showedPeople) {
             this.filtered = FXCollections.observableArrayList(showedPeople);
+            this.filteredReminders = FXCollections.observableArrayList();
         }
 
         //This is the method used by DeleteHomeworkCommand
@@ -84,6 +85,21 @@ public class DeleteHomeworkCommandTest {
         @Override
         public ObservableList<Person> getFilteredPersonList() {
             return filtered;
+        }
+
+        @Override
+        public void addReminder(Reminder reminder) {
+            filteredReminders.add(reminder);
+        }
+
+        @Override
+        public void deleteReminder(Reminder target) {
+            filteredReminders.remove(target);
+        }
+
+        @Override
+        public ObservableList<Reminder> getFilteredReminderList() {
+            return filteredReminders;
         }
 
         //These are methods not used by DeleteHomeworkCommand
@@ -204,27 +220,12 @@ public class DeleteHomeworkCommandTest {
         }
 
         @Override
-        public void addReminder(Reminder reminder) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
         public boolean hasReminder(Reminder reminder) {
             throw new AssertionError("This method should not be called.");
         }
 
         @Override
-        public void deleteReminder(Reminder target) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
         public void setReminder(Reminder target, Reminder editedReminder) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public ObservableList<Reminder> getFilteredReminderList() {
             throw new AssertionError("This method should not be called.");
         }
 
@@ -244,7 +245,8 @@ public class DeleteHomeworkCommandTest {
         marcus.addHomework(homework);
 
         Model model = new ModelStubFilteredOnly(List.of(marcus));
-        DeleteHomeworkCommand cmd = new DeleteHomeworkCommand(marcusName, Index.fromOneBased(1));
+        model.addReminder(UnmodifiableHwReminder.of(marcus, homework));
+        DeleteHomeworkCommand cmd = new DeleteHomeworkCommand(marcusName, "mAtH wS 3");
         CommandResult result = cmd.execute(model);
 
         String expected = String.format(DeleteHomeworkCommand.MESSAGE_SUCCESS,
@@ -252,6 +254,7 @@ public class DeleteHomeworkCommandTest {
         assertEquals(expected, result.getFeedbackToUser());
         assertFalse(marcus.getHomeworkList().contains(homework), "Homework should be removed");
         assertEquals(0, marcus.getHomeworkList().size());
+        assertEquals(0, model.getFilteredReminderList().size());
     }
 
     /**
@@ -266,6 +269,9 @@ public class DeleteHomeworkCommandTest {
 
         Model model = new ModelStubFilteredOnly(List.of(john, marcus));
         DeleteHomeworkCommand command = new DeleteHomeworkCommand(marcusName, Index.fromOneBased(1));
+        model.addReminder(UnmodifiableHwReminder.of(marcus, hwMarcus));
+        model.addReminder(UnmodifiableHwReminder.of(john, hwJohn));
+        DeleteHomeworkCommand command = new DeleteHomeworkCommand(marcusName, "Physics WS");
         CommandResult result = command.execute(model);
 
         String expected = String.format(DeleteHomeworkCommand.MESSAGE_SUCCESS,
@@ -274,6 +280,7 @@ public class DeleteHomeworkCommandTest {
 
         assertFalse(marcus.getHomeworkList().contains(hwMarcus));
         assertTrue(john.getHomeworkList().contains(hwJohn));
+        assertEquals(1, model.getFilteredReminderList().size());
     }
 
     /**
@@ -328,6 +335,4 @@ public class DeleteHomeworkCommandTest {
         assertNotEquals(a1, a2);
         assertNotEquals(a1, b1);
     }
-
-
 }

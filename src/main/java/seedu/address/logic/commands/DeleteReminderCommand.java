@@ -15,6 +15,7 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.reminder.Reminder;
 import seedu.address.model.reminder.ReminderFieldsContainsKeywordsPredicate;
+import seedu.address.model.reminder.UnmodifiableReminder;
 
 /**
  * Deletes a reminder identified using it's displayed index from the reminder list.
@@ -72,21 +73,7 @@ public class DeleteReminderCommand extends Command {
 
         // deleting by index
         if (targetIndex.isPresent()) {
-            List<Reminder> lastShownList = model.getFilteredReminderList();
-
-            if (lastShownList.isEmpty()) {
-                throw new CommandException(MESSAGE_INVALID_REMINDER_DISPLAYED_INDEX);
-            }
-
-            Index index = targetIndex.get();
-            if (index.getZeroBased() >= lastShownList.size()) {
-                throw new CommandException(String.format(
-                        Messages.MESSAGE_OUT_OF_BOUNDS_DELETE_INDEX,
-                        index.getOneBased(), lastShownList.size())
-                );
-            }
-
-            Reminder reminderToDelete = lastShownList.get(index.getZeroBased());
+            Reminder reminderToDelete = getReminder(model);
             model.deleteReminder(reminderToDelete);
             return new CommandResult(String.format(MESSAGE_DELETE_REMINDER_SUCCESS, Messages.format(reminderToDelete)));
         }
@@ -109,7 +96,7 @@ public class DeleteReminderCommand extends Command {
 
         // delete if match
         if (exactDueDateMatches.size() == 1) {
-            Reminder reminderToDelete = exactDueDateMatches.get(0);
+            Reminder reminderToDelete = isModifiableReminder(exactDueDateMatches.get(0));
             model.deleteReminder(reminderToDelete);
             return new CommandResult(String.format(MESSAGE_DELETE_REMINDER_SUCCESS, Messages.format(reminderToDelete)));
         }
@@ -123,7 +110,7 @@ public class DeleteReminderCommand extends Command {
                     .toList();
 
             if (exactDescriptionMatches.size() == 1) {
-                Reminder reminderToDelete = exactDescriptionMatches.get(0);
+                Reminder reminderToDelete = isModifiableReminder(exactDescriptionMatches.get(0));
                 model.deleteReminder(reminderToDelete);
                 return new CommandResult(String.format(MESSAGE_DELETE_REMINDER_SUCCESS,
                         Messages.format(reminderToDelete)));
@@ -142,6 +129,46 @@ public class DeleteReminderCommand extends Command {
         }
         sb.append("\nTry typing the exact date time or description.");
         return new CommandResult(sb.toString());
+    }
+
+    /**
+     * Retrieves the reminder to delete from the model based on the provided index.
+     *
+     * @throws CommandException if the index is invalid or the reminder is unmodifiable.
+     */
+    private Reminder getReminder(Model model) throws CommandException {
+        List<Reminder> lastShownList = model.getFilteredReminderList();
+
+        if (lastShownList.isEmpty()) {
+            throw new CommandException(MESSAGE_INVALID_REMINDER_DISPLAYED_INDEX);
+        }
+
+        Index index = targetIndex.get();
+        if (index.getZeroBased() >= lastShownList.size()) {
+            throw new CommandException(String.format(
+                    Messages.MESSAGE_OUT_OF_BOUNDS_DELETE_INDEX,
+                    index.getOneBased(), lastShownList.size())
+            );
+        }
+
+        Reminder reminderToDelete = lastShownList.get(index.getZeroBased());
+        return isModifiableReminder(reminderToDelete);
+    }
+
+    /**
+     * Returns {@code reminderToDelete} if it is not an instance of UnmodifiableReminder. Otherwise,
+     * throw CommandException.
+     */
+    private Reminder isModifiableReminder(Reminder reminderToDelete) throws CommandException {
+        if (!reminderToDelete.isModifiable()) {
+            assert reminderToDelete instanceof UnmodifiableReminder
+                    : "Reminder should be UnmodifiableReminder if it is not modifiable.";
+
+            UnmodifiableReminder unmodifiableReminder = (UnmodifiableReminder) reminderToDelete;
+            throw new CommandException(Messages.MESSAGE_UNMODIFIABLE_REMINDER
+                    + unmodifiableReminder.getModifyMessage());
+        }
+        return reminderToDelete;
     }
 
     @Override

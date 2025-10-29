@@ -15,6 +15,8 @@ import seedu.address.model.Model;
 import seedu.address.model.homework.Homework;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
+import seedu.address.model.reminder.UnmodifiableHwReminder;
+import seedu.address.model.reminder.exceptions.ReminderNotFoundException;
 
 /**
  * Marks homework task as done
@@ -79,6 +81,14 @@ public class MarkDoneHwCommand extends Command {
 
         if (!toMark.isDone()) {
             toMark.markDone();
+        if (!matched.isDone()) {
+            matched.markDone();
+            UnmodifiableHwReminder undoneReminder = UnmodifiableHwReminder.of(target, matched);
+            try {
+                model.deleteReminder(undoneReminder);
+            } catch (ReminderNotFoundException e) {
+                // should not happen
+            }
         }
 
         return new CommandResult(String.format(

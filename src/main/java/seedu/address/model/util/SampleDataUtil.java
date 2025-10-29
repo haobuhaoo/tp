@@ -1,5 +1,7 @@
 package seedu.address.model.util;
 
+import static seedu.address.model.reminder.UniqueReminderList.createHomeworkReminder;
+
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Random;
@@ -16,21 +18,24 @@ import seedu.address.model.person.Phone;
 import seedu.address.model.reminder.Description;
 import seedu.address.model.reminder.DueDate;
 import seedu.address.model.reminder.Reminder;
+import seedu.address.model.reminder.UnmodifiablePaymentReminder;
 
 /**
  * Contains utility methods for populating {@code AddressBook} with sample data.
  */
 public class SampleDataUtil {
-    public static final Homework[] HOMEWORK = new Homework[]{
-        new Homework("Math: Complete chapter 5 exercises", LocalDate.parse("2025-11-03")),
-        new Homework("English: Write a short story", LocalDate.parse("2025-11-04")),
-        new Homework("Science: Prepare lab report", LocalDate.parse("2025-11-06")),
-        new Homework("History: Read chapter 8 and 9", LocalDate.parse("2025-11-07")),
-        new Homework("Math: Solve past year paper", LocalDate.parse("2025-11-10")),
-        new Homework("English: Revise grammar notes", LocalDate.parse("2025-11-11")),
-        new Homework("Science: Group project submission", LocalDate.parse("2025-11-13")),
-        new Homework("History: Create timeline for WW2", LocalDate.parse("2025-11-14"))
-    };
+    public static Homework[] getSampleHomework() {
+        return new Homework[]{
+            new Homework("Math: Complete chapter 5 exercises", LocalDate.parse("2025-11-03")),
+            new Homework("English: Write a short story", LocalDate.parse("2025-11-04")),
+            new Homework("Science: Prepare lab report", LocalDate.parse("2025-11-06")),
+            new Homework("History: Read chapter 8 and 9", LocalDate.parse("2025-11-07")),
+            new Homework("Math: Solve past year paper", LocalDate.parse("2025-11-10")),
+            new Homework("English: Revise grammar notes", LocalDate.parse("2025-11-11")),
+            new Homework("Science: Group project submission", LocalDate.parse("2025-11-13")),
+            new Homework("History: Create timeline for WW2", LocalDate.parse("2025-11-14"))
+        };
+    }
 
     public static Person[] getSamplePersons() {
         return new Person[]{
@@ -64,16 +69,30 @@ public class SampleDataUtil {
         AddressBook sampleAb = new AddressBook();
         for (Person samplePerson : getSamplePersons()) {
             Random random = new Random();
-            int first = random.nextInt(HOMEWORK.length);
+            int first = random.nextInt(getSampleHomework().length);
             int second;
             do {
-                second = random.nextInt(HOMEWORK.length);
+                second = random.nextInt(getSampleHomework().length);
             } while (second == first);
-            samplePerson.addHomework(HOMEWORK[first]);
-            samplePerson.addHomework(HOMEWORK[second]);
+
+            samplePerson.addHomework(getSampleHomework()[first]);
+            samplePerson.addHomework(getSampleHomework()[second]);
+            samplePerson.getHomeworkList().get(1).markDone();
+
             samplePerson.setPaymentStatus(first + 1, true);
             samplePerson.setPaymentStatus(second + 1, true);
+
             sampleAb.addPerson(samplePerson);
+
+            int currentMonth = LocalDate.now().getMonth().getValue();
+            if (!samplePerson.isPaidForMonth(currentMonth)) {
+                sampleAb.addReminder(
+                        UnmodifiablePaymentReminder.of(currentMonth, samplePerson, getMonthName(currentMonth)));
+            }
+
+            for (Reminder r : createHomeworkReminder(samplePerson)) {
+                sampleAb.addReminder(r);
+            }
         }
         for (Reminder sampleReminder : getSampleReminders()) {
             sampleAb.addReminder(sampleReminder);
@@ -88,5 +107,14 @@ public class SampleDataUtil {
         return Arrays.stream(strings)
                 .map(LessonTime::new)
                 .collect(Collectors.toSet());
+    }
+
+    /**
+     * Returns the month name corresponding to the given month number.
+     */
+    public static String getMonthName(int month) {
+        String[] monthNames = { "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December" };
+        return monthNames[month - 1];
     }
 }
