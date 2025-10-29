@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.commands.homeworkcommands.DeleteHomeworkCommand;
@@ -257,7 +258,7 @@ public class DeleteHomeworkCommandTest {
         marcus.addHomework(homework);
 
         Model model = new ModelStubFilteredOnly(List.of(marcus));
-        DeleteHomeworkCommand cmd = new DeleteHomeworkCommand(marcusName, "mAtH wS 3");
+        DeleteHomeworkCommand cmd = new DeleteHomeworkCommand(marcusName, Index.fromOneBased(1));
         CommandResult result = cmd.execute(model);
 
         String expected = String.format(DeleteHomeworkCommand.MESSAGE_SUCCESS,
@@ -279,7 +280,7 @@ public class DeleteHomeworkCommandTest {
         john.addHomework(hwJohn);
 
         Model model = new ModelStubFilteredOnly(List.of(john, marcus));
-        DeleteHomeworkCommand command = new DeleteHomeworkCommand(marcusName, "Physics WS");
+        DeleteHomeworkCommand command = new DeleteHomeworkCommand(marcusName, Index.fromOneBased(1));
         CommandResult result = command.execute(model);
 
         String expected = String.format(DeleteHomeworkCommand.MESSAGE_SUCCESS,
@@ -300,8 +301,8 @@ public class DeleteHomeworkCommandTest {
         Homework homework = new Homework("Math WS 3", LocalDate.parse("2025-10-23"));
         marcus.addHomework(homework);
 
-        Model model = new ModelStubFilteredOnly(List.of(john)); // Marcus not shown
-        DeleteHomeworkCommand command = new DeleteHomeworkCommand(marcusName, "Math WS 3");
+        Model model = new ModelStubFilteredOnly(List.of(john));
+        DeleteHomeworkCommand command = new DeleteHomeworkCommand(marcusName, Index.fromOneBased(1));
 
         CommandException exception = assertThrows(CommandException.class, () -> command.execute(model));
         assertEquals(DeleteHomeworkCommand.MESSAGE_NO_PERSON_FOUND, exception.getMessage());
@@ -309,8 +310,8 @@ public class DeleteHomeworkCommandTest {
     }
 
     /**
-     * Verifies that when the student is present but the homework description does not
-     * match any entry, the command throws with {@link DeleteHomeworkCommand#MESSAGE_NO_HW_FOUND}.
+     * Verifies that when the student is present but the homework index is out of bounds
+     * , the command throws with {@link DeleteHomeworkCommand#MESSAGE_INVALID_HW_INDEX}.
      */
     @Test
     public void execute_hwNotFound_throwsNoHwFound() {
@@ -318,10 +319,11 @@ public class DeleteHomeworkCommandTest {
         marcus.addHomework(homework);
 
         Model model = new ModelStubFilteredOnly(List.of(marcus));
-        DeleteHomeworkCommand command = new DeleteHomeworkCommand(marcusName, "Physics WS"); // not present
+        DeleteHomeworkCommand command = new DeleteHomeworkCommand(marcusName, Index.fromOneBased(2));
 
         CommandException ex = assertThrows(CommandException.class, () -> command.execute(model));
-        assertEquals(DeleteHomeworkCommand.MESSAGE_NO_HW_FOUND, ex.getMessage());
+        String expectedMsg = String.format(DeleteHomeworkCommand.MESSAGE_INVALID_HW_INDEX, 2, 1);
+        assertEquals(expectedMsg, ex.getMessage());
         assertTrue(marcus.getHomeworkList().contains(homework), "Non-matching homework should remain");
     }
 
@@ -330,10 +332,10 @@ public class DeleteHomeworkCommandTest {
      */
     @Test
     public void equals_various() {
-        DeleteHomeworkCommand a1 = new DeleteHomeworkCommand(marcusName, "A");
-        DeleteHomeworkCommand a1copy = new DeleteHomeworkCommand(new Name("Marcus"), "A");
-        DeleteHomeworkCommand a2 = new DeleteHomeworkCommand(marcusName, "B");
-        DeleteHomeworkCommand b1 = new DeleteHomeworkCommand(johnName, "A");
+        DeleteHomeworkCommand a1 = new DeleteHomeworkCommand(marcusName, Index.fromOneBased(1));
+        DeleteHomeworkCommand a1copy = new DeleteHomeworkCommand(new Name("Marcus"), Index.fromOneBased(1));
+        DeleteHomeworkCommand a2 = new DeleteHomeworkCommand(marcusName, Index.fromOneBased(2));
+        DeleteHomeworkCommand b1 = new DeleteHomeworkCommand(johnName, Index.fromOneBased(1));
 
         assertEquals(a1, a1);
         assertEquals(a1, a1copy);
