@@ -38,10 +38,14 @@ public class DueDateTest {
         assertFalse(DueDate.isValidDueDate("dateTime")); // non-numeric
         assertFalse(DueDate.isValidDueDate("2025/10/10 1010")); // wrong date time format
         assertFalse(DueDate.isValidDueDate("2025-20-50")); // invalid date
+        assertFalse(DueDate.isValidDueDate("2025-06-31")); // invalid date
+        assertFalse(DueDate.isValidDueDate("2025-02-29")); // not leap year
+        assertFalse(DueDate.isValidDueDate("2025-10-10 2400")); // not between 0000 and 2359
 
         // valid due date
         assertTrue(DueDate.isValidDueDate("2025-10-10")); // date only
         assertTrue(DueDate.isValidDueDate("2025-10-10 1010")); // date time
+        assertTrue(DueDate.isValidDueDate("2024-02-29 1010")); // leap year
     }
 
     @Test

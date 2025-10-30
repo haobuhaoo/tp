@@ -35,7 +35,7 @@ public class UnmodifiablePaymentReminderTest {
 
     @Test
     public void equalsMethod() {
-        DueDate dueDate = new DueDate("2025-06-31");
+        DueDate dueDate = new DueDate("2025-06-30");
         Description description = new Description("Payment due in June");
         UnmodifiablePaymentReminder reminder1 = UnmodifiablePaymentReminder.of(dueDate, description);
 
@@ -65,13 +65,13 @@ public class UnmodifiablePaymentReminderTest {
 
     @Test
     public void hashCodeMethod() {
-        DueDate dueDate = new DueDate("2025-06-31");
+        DueDate dueDate = new DueDate("2025-06-30");
         Description description = new Description("Payment due in June");
         UnmodifiablePaymentReminder reminder = UnmodifiablePaymentReminder.of(dueDate, description);
 
         assertEquals(UnmodifiablePaymentReminder.of(dueDate, description).hashCode(), reminder.hashCode());
 
-        DueDate due = new DueDate("2025-09-31");
+        DueDate due = new DueDate("2025-09-30");
         assertNotEquals(UnmodifiablePaymentReminder.of(due, description).hashCode(), reminder.hashCode());
 
         Description desc = new Description("Payment due in July");
