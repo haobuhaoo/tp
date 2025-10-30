@@ -121,7 +121,6 @@ public class ParticipationCommandPersistenceTest {
         @Override public ObservableList<Reminder> getFilteredReminderList() {
             return FXCollections.observableArrayList();
         }
-        @Override public void refreshReminders() { }
         @Override public void updateFilteredReminderList(Predicate<Reminder> predicate) { }
         @Override public boolean hasGroup(GroupName name) {
             return false;
