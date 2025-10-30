@@ -6,7 +6,23 @@
 
 # ClassConnect User Guide
 
-ClassConnect is a **desktop app for managing students' profile, optimized for use via a Command Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, ClassConnect can get your student management tasks done faster than traditional GUI apps.
+ClassConnect is a desktop app designed for private tutors to **easily manage their students, lessons, and administrative tasks** — from lesson scheduling and homework tracking to payments and reminders — all in one place.
+
+While ClassConnect is optimized for **fast command-based input (CLI)**, it also offers the convenience of a **clean and intuitive Graphical User Interface (GUI)**. This means you get the speed and precision of typing commands — perfect for tutors who want to make quick updates during or after lessons — without losing the visual clarity that helps you see all your students, schedules, and reminders at a glance.
+
+ClassConnect helps you:
+
+* **Maintain organized student profiles** including names, phone number, and lesson times.
+
+* **Track homework progress, participation and payment status** with visual indicators.
+
+* **Group students** for easier class and schedule management.
+
+* **Set reminders** for important events, upcoming lessons, or follow-ups.
+
+* Automatically **save your data**, ensuring your records are always up to date.
+
+With ClassConnect, you can focus more on teaching and less on administrative work — **making student management simpler, faster, and more reliable**.
 
 <!-- * Table of Contents -->
 <page-nav-print />
@@ -15,31 +31,37 @@ ClassConnect is a **desktop app for managing students' profile, optimized for us
 
 ## Quick start
 
-1. Ensure you have Java `17` or above installed in your Computer.<br>
-   **Mac users:** Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
+Follow the steps below to set up and start using ClassConnect:
 
-1. Download the latest `.jar` file from [here](https://github.com/AY2526S1-CS2103T-F12-2/tp/releases).
+1. **Check your Java version**<br>
+   * Ensure you have Java `17` or above installed in your Computer. You can verify this by running the following command in your terminal or command prompt:`java -version`.
+   * **Mac users:** Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
+   * If you do not have Java installed, download it from the [official Oracle website](https://www.oracle.com/java/technologies/downloads/#java17?er=221886).
 
-1. Copy the file to the folder you want to use as the _home folder_ for your AddressBook.
+1. **Download ClassConnect**<br>
+   * Download the latest `classconnect.jar` file from [the releases page](https://github.com/AY2526S1-CS2103T-F12-2/tp/releases).
 
-1. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar classconnect.jar` command to run the application.<br>
-   A GUI similar to the below should appear in a few seconds. Note how the app contains some sample data.<br>
+1. **Run the application**
+   * Choose a folder on your computer where you want to keep ClassConnect. This can be any folder you are comfortable with, such as `Documents/ClassConnect`.
+   * Copy the `classconnect.jar` file you downloaded into that folder.
+   * Open the terminal / command prompt:
+     * Windows: Press `Win + R`, type `cmd`, and press Enter.
+     * Mac: Open `Terminal` from Applications → Utilities.
+     * Linux: Open your terminal application.
+   * Navigate to the folder where you saved `classconnect.jar`.
+     * For example, if you saved it in Documents/ClassConnect, type `cd Documents/ClassConnect` in the terminal and press `Enter`.
+   * Run the application by typing `java -jar classconnect.jar` into the terminal and press `Enter`.
+
+1. **Familiarize yourself with the interface**<br>
+   * When ClassConnect launches, you will see both the command line panel (for typing commands) and the main display panel (showing your students, lessons, and reminders).
    ![Ui](images/Ui.png)
 
-1. Type the command in the command box and press Enter to execute it. e.g. typing **`help`** and pressing Enter will open the help window.<br>
-   Some example commands you can try:
+1. **Start managing your data**<br>
+   * Try entering your first command to add a student: `add-student n/John Doe p/98765432 t/1000 Wed`.
+   * The student `John Doe` will appear at the bottom of the main panel immediately after the command is executed.
 
-   * `list` : Lists all students.
-
-   * `add-student n/John Doe p/98765432 t/1000 Wed` : Adds a student named `John Doe` to the student list.
-
-   * `delete-student i/3` : Deletes the 3rd student shown in the current list.
-
-   * `clear` : Deletes all students.
-
-   * `exit` : Exits the app.
-
-1. Refer to the [Features](#features) below for details of each command.
+1. **Explore more commands**<br>
+   * Refer to the [Features](#features) section for a full list of commands and usage examples.
 
 --------------------------------------------------------------------------------------------------------------------
 
