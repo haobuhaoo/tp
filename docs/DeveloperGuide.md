@@ -81,6 +81,11 @@ The `UI` component,
 * keeps a reference to the `Logic` component, because the `UI` relies on the `Logic` to execute commands.
 * depends on some classes in the `Model` component, as it displays `Person` object residing in the `Model`.
 
+**Participation panel on Person cards**
+- The 5-slot participation view is computed by `ParticipationViewModel.computeSlots(...)` (pure helper for easy testing) and rendered in `PersonCard`.
+- Dates are shown on the top row (`MM-dd`), scores inside the boxes on the bottom row.
+- When a date appears multiple times in history, only the latest score is displayed.
+
 ### Logic component
 
 **API** : [`Logic.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/logic/Logic.java)
@@ -113,6 +118,12 @@ Here are the other classes in `Logic` (omitted from the class diagram above) tha
 How the parsing works:
 * When called upon to parse a user command, the `AddressBookParser` class creates an `XYZCommandParser` (`XYZ` is a placeholder for the specific command name e.g., `AddCommandParser`) which uses the other classes shown above to parse the user command and create a `XYZCommand` object (e.g., `AddCommand`) which the `AddressBookParser` returns back as a `Command` object.
 * All `XYZCommandParser` classes (e.g., `AddCommandParser`, `DeleteCommandParser`, ...) inherit from the `Parser` interface so that they can be treated similarly where possible e.g, during testing.
+
+**Participation command specifics**
+- `ParticipationCommandParser` ensures `n/`, `d/`, `s/` each appear exactly once (no preamble).
+- `ParticipationCommand` validates values, mutates the target `Person`’s `ParticipationHistory`,
+  calls `model.setPerson(person, person)` to trigger persistence, updates `AttendanceIndex`,
+  and returns a success message.
 
 ### Model component
 **API** : [`Model.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/model/Model.java)
@@ -147,6 +158,11 @@ The `Storage` component,
 * inherits from both `AddressBookStorage` and `UserPrefStorage`, which means it can be treated as either one (if only the functionality of only one is needed).
 * depends on some classes in the `Model` component (because the `Storage` component's job is to save/retrieve objects that belong to the `Model`)
 
+**Participation persistence notes**
+- Each `Person` now serializes a `participation` array (list of `{ date: "YYYY-MM-DD", score: 0..5 }`).
+- Missing `participation` (legacy files) is treated as an empty history.
+- Invalid rows (bad date/score) are ignored during load to keep the rest of the file usable.
+
 ### Common classes
 
 Classes used by multiple components are in the `seedu.address.commons` package.
@@ -173,9 +189,64 @@ Key ideas
 
 ### Participation feature
 
-The participation feature records a per-class score (`s/0..5`) for a student and updates the 5-box history shown on each Person card, with the **class date above** each box and the **score inside**.
+<puml src="diagrams/ParticipationSequence.puml" width="720" />
+
+The Participation feature lets tutors record a per-class participation score for a student and shows the **last 5 classes** (chronological, oldest → newest) on each student card, with the **date above** each box and the **score inside**.
+
+#### Command format & validation
+- Command: `participation n/NAME d/YYYY-MM-DD s/0..5`
+- Validation:
+  - `NAME` must be non-empty, ≤ 50 chars. Matching is case-insensitive after whitespace normalization.
+  - `DATE` must be ISO `YYYY-MM-DD`.
+  - `SCORE` must be an integer in `[0, 5]`.
+
+#### Logic flow
+- `ParticipationCommand`:
+  1. Parses/validates inputs (parser enforces single occurrence of prefixes; command validates values).
+  2. Finds `Person` by normalized name from `Model#getAddressBook().getPersonList()`.
+  3. Appends a new `ParticipationRecord(date, score)` to `person.getParticipation()`.
+  4. Calls `model.setPerson(person, person)` to trigger persistence/autosave.
+  5. Updates the legacy `AttendanceIndex` current UI date and refreshes the filtered list.
+
+#### Model
+- `ParticipationRecord` — immutable `(LocalDate date, int score)`, score ∈ `[0,5]`.
+- `ParticipationHistory` — keeps **up to 5 most recent** records by insertion order:
+  - `add(record)` pushes to the tail; drops oldest if size > 5.
+  - `asList()` returns oldest → newest; `mostRecent()` returns last or `null`.
+
+#### UI (Person card)
+- The 5-box panel is produced via a pure helper `ParticipationViewModel.computeSlots(history)`:
+  - Returns exactly 5 slots (oldest → newest), padded at the front when fewer than 5 exist.
+  - If multiple records share the **same date**, only the **latest** score is shown.
+- Styling comes from `participation.css` (e.g., `.participation-box`, `.date-mini`).
+
+#### Storage
+- `JsonAdaptedPerson` persists a `participation` array:
+
+```json
+  "participation": [
+    { "date": "2025-09-19", "score": 4 },
+    { "date": "2025-09-21", "score": 2 }
+  ]
+````
+
+* Older files without this field load as empty histories.
+* Invalid rows (e.g., score out of range) are **skipped** during load so one bad row doesn’t corrupt the file.
 
 <puml src="diagrams/ParticipationCommand.puml" alt="Participation Command Diagram"/>
+#### Error messages
+
+* `Invalid student name: name cannot be empty.`
+* `Invalid student name: no matching student found.`
+* `Invalid date. The format must be YYYY-MM-DD.`
+* `Invalid participation score. Use an integer 0 to 5.`
+* `Invalid participation score. Must be between 0 and 5 inclusive.`
+
+#### Design notes
+
+* **5 entries** keeps the UI legible and makes updates O(1) amortized.
+* **Same-date replacement** is handled in the view-model so tutors can overwrite a day’s score cleanly.
+* Calling `model.setPerson(person, person)` ensures storage hooks run without changing other APIs.
 
 ### Reminder feature
 
@@ -300,7 +371,7 @@ Similar to add reminder command as above, except the following:
 
 <puml src="diagrams/DeleteReminderReferenceSequenceDiagram.puml"/>
 
-### \[Proposed\] Undo/redo feature
+### [Proposed] Undo/redo feature
 
 #### Proposed Implementation
 
@@ -335,7 +406,6 @@ Step 3. The user executes `add n/David …​` to add a new person. The `add` co
 Step 4. The user now decides that adding the person was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoAddressBook()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous address book state, and restores the address book to that state.
 
 <puml src="diagrams/UndoRedoState3.puml" alt="UndoRedoState3" />
-
 
 <box type="info" seamless>
 
@@ -383,22 +453,23 @@ The following activity diagram summarizes what happens when a user executes a ne
 **Aspect: How undo & redo executes:**
 
 * **Alternative 1 (current choice):** Saves the entire address book.
+
   * Pros: Easy to implement.
   * Cons: May have performance issues in terms of memory usage.
 
 * **Alternative 2:** Individual command knows how to undo/redo by
   itself.
+
   * Pros: Will use less memory (e.g. for `delete`, just save the person being deleted).
   * Cons: We must ensure that the implementation of each individual command are correct.
 
-_{more aspects and alternatives to be added}_
+*{more aspects and alternatives to be added}*
 
-### \[Proposed\] Data archiving
+### [Proposed] Data archiving
 
-_{Explain here how the data archiving feature will be implemented}_
+*{Explain here how the data archiving feature will be implemented}*
 
-
---------------------------------------------------------------------------------------------------------------------
+---
 
 ## **Documentation, logging, testing, configuration, dev-ops**
 
@@ -408,17 +479,21 @@ _{Explain here how the data archiving feature will be implemented}_
 * [Configuration guide](Configuration.md)
 * [DevOps guide](DevOps.md)
 
---------------------------------------------------------------------------------------------------------------------
+The Participation feature includes unit tests for command validation, model capping/mostRecent, UI view-model
+(chronological + same-date dedup + padding), and storage round-trip (including invalid-row skipping).
+
+---
 
 ## Appendix: Requirements
 
 ### Product scope
 
 **Target user profile**:
-- Private tutors managing ~20–40 students individually.
-- Need to keep track of **student + parent contact details, lesson times, homework, payments, and performance notes**.
-- Prefer **fast, keyboard-driven CLI apps** over complex GUIs.
-- Comfortable with basic computer operations, but want **lightweight, no-frills software**.
+
+* Private tutors managing ~20–40 students individually.
+* Need to keep track of **student + parent contact details, lesson times, homework, payments, and performance notes**.
+* Prefer **fast, keyboard-driven CLI apps** over complex GUIs.
+* Comfortable with basic computer operations, but want **lightweight, no-frills software**.
 
 **Value proposition**: ClassConnect allows tutors to manage lessons, admin tasks, and student progress **faster and more accurately** than traditional notebooks or bloated management systems.
 
@@ -428,17 +503,17 @@ _{Explain here how the data archiving feature will be implemented}_
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …​  | I want to …​                                | So that I can…​                                   |
-|----------|----------|----------------------------------------------|---------------------------------------------------|
-| `* * *`  | tutor    | add a student                               | start tracking their details and progress         |
-| `* * *`  | tutor    | delete a student                            | remove those who have stopped lessons             |
-| `* * *`  | tutor    | record homework with deadlines              | remind students and follow up on time             |
-| `* * *`  | tutor    | record tuition payments                     | know which students have overdue fees             |
-| `* * *`  | tutor    | store parent contacts                       | reach guardians quickly                           |
-| `* *`    | tutor    | archive old students                        | keep my active list uncluttered                   |
-| `* *`    | tutor    | filter/search students by subject/level     | quickly find relevant students                    |
-| `*`      | tutor    | export data into a report                   | share with parents or keep records offline        |
-| `*`      | tutor    | set exam reminders                          | notify me ahead of students’ important dates      |
+| Priority | As a …​  | I want to …​                            | So that I can…​                                   |
+|----------|----------|-----------------------------------------|---------------------------------------------------|
+| `* * *`  | tutor    | add a student                           | start tracking their details and progress         |
+| `* * *`  | tutor    | delete a student                        | remove those who have stopped lessons             |
+| `* * *`  | tutor    | record homework with deadlines          | remind students and follow up on time             |
+| `* * *`  | tutor    | mark homework as done                   | keep track of students homework status           
+| `* * *`  | tutor    | record tuition payments                 | know which students have overdue fees             |
+| `* *`    | tutor    | archive old students                    | keep my active list uncluttered                   |
+| `* *`    | tutor    | filter/search students by subject/level | quickly find relevant students                    |
+| `*`      | tutor    | export data into a report               | share with parents or keep records offline        |
+| `*`      | tutor    | set exam reminders                      | notify me ahead of students’ important dates      |
 
 ---
 
@@ -449,13 +524,15 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Use case 1: Add Student**
 
 **MSS**
+
 1. Tutor enters `add-student n/Marcus p/98765432 t/Mon 1900 lvl/Sec3 sub/Math`.
 2. System validates the input.
 3. System stores the student record.
 4. System confirms addition.
 
 **Extensions**
-- 2a. Input is invalid (e.g., wrong phone format).
+
+* 2a. Input is invalid (e.g., wrong phone format).
   → System shows error and requests re-entry.
 
 ---
@@ -463,12 +540,14 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Use case 2: Record Homework**
 
 **MSS**
+
 1. Tutor enters `add-homework sid/1 d/Finish Ch.3 problems due/2025-10-05`.
 2. System validates and links homework to student.
 3. System confirms creation.
 
 **Extensions**
-- 2a. Student ID not found.
+
+* 2a. Student ID not found.
   → System shows error and suggests checking student list.
 
 ---
@@ -476,41 +555,105 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Use case 3: Track Payments**
 
 **MSS**
+
 1. Tutor enters `record-payment sid/1 amt/240 notes/Sep tuition`.
 2. System stores payment as **UNPAID**.
 3. Tutor later enters `pay 3`.
 4. System updates status and confirms.
 
 **Extensions**
-- 1a. Invalid amount format entered.
+
+* 1a. Invalid amount format entered.
   → System rejects input and shows correct format.
 
 ---
 
+**Use case 4: Add Homework**
+
+**MSS**
+1. Tutor enters `add-homework n/Marcus desc/Math Assignment 3 by/2025-11-15`.
+2. System validates the input.
+3. System adds the homework to the specified student.
+4. System displays success message:  Added homework for Marcus: Math Assignment 3 (due 2025-11-15)
+
+**Extensions**
+- 2a. Input is invalid (e.g., missing or wrong prefixes).  
+  → System shows an error message with the corresponding correct input format
+- 2b. Student name not found.  
+  → System displays "No student with given name" and aborts the operation.
+- 2c. Due date format is invalid.  
+  → System displays “Invalid date format!” with corresponding correct date format
+- 2d. Homework already in list
+  → System displays “This student has already been assigned this homework” and aborts operation
+
+**Use case 5: Mark Homework as Done**
+
+**MSS**
+1. Tutor enters `mark-done n/Marcus Yeoh i/1`.
+2. System validates the input.
+3. System marks the specified homework as done.
+4. System displays success message: Marked homework as done for Marcus: <description>
+
+**Extensions**
+- 2a. Input is invalid (e.g., missing or wrong prefixes).  
+  → System shows an error message with the correct input format.
+- 2b. Student name not found.  
+  → System displays "No student with given name" and aborts the operation.
+- 2c. Homework index out of range.  
+  → System displays “Invalid homework index: -1 (valid range: 1 to ?)” and aborts the operation.
+- 2d. Homework is already marked as done.  
+  → System displays same success message 
+
+**Use case 6: Mark Homework as Undone**
+
+**MSS**
+1. Tutor enters `mark-undone n/Marcus Yeoh i/1`.
+2. System validates the input.
+3. System marks the specified homework as undone.
+4. System displays success message: Marked homework as undone for Marcus: <description>
+
+**Extensions**
+- 2a. Input is invalid (e.g., missing or wrong prefixes).  
+  → System shows an error message with the correct input format.
+- 2b. Student name not found.  
+  → System displays "No student with given name" and aborts the operation.
+- 2c. Homework index out of range.  
+  → System displays “Invalid homework index: -1 (valid range: 1 to ?)” and aborts the operation.
+- 2d. Homework is already marked as undone.  
+  → System displays same success message.
+
+
+
 ### Non-Functional Requirements
+
 1. **Setup**
-- Should work on any mainstream OS as long as it has Java 17 or above installed.
+
+* Should work on any mainstream OS as long as it has Java 17 or above installed.
 
 2. **Performance**
-- The application should launch and load stored data within 2 seconds of starting up
-- The search method should return results within 300ms per 10000 student records
-- All valid commands should complete execution and display feedback in less than 300ms
+
+* The application should launch and load stored data within 2 seconds of starting up
+* The search method should return results within 300ms per 10000 student records
+* All valid commands should complete execution and display feedback in less than 300ms
 
 3. **Scalability**
-- Able to scale up to 10000 students without any significant decrease in performance
-- Data structures should be implemented in a way such that adding more students minimally affects search and
-delete methods
+
+* Able to scale up to 10000 students without any significant decrease in performance
+* Data structures should be implemented in a way such that adding more students minimally affects search and
+  delete methods
 
 4. **Usability**
-- Every command entered will print out either a success message or a specific error message
-- Help command will print out clear list of commands with their respective usage examples
-- A user with above average typing speed for regular English text should be able to accomplish most of the tasks faster
-using commands than using the mouse.
+
+* Every command entered will print out either a success message or a specific error message
+* Help command will print out clear list of commands with their respective usage examples
+* A user with above average typing speed for regular English text should be able to accomplish most of the tasks faster
+  using commands than using the mouse.
 
 5. **Maintainability**
-- The codebase should follow OOP principles
-- Test coverage should cover most if not all of the methods and classes
-- Error messages and command validation logic should be centralized to avoid inconsistency across commands.
+
+* The codebase should follow OOP principles
+* Test coverage should cover most if not all of the methods and classes
+* Error messages and command validation logic should be centralized to avoid inconsistency across commands.
 
 ---
 
@@ -527,7 +670,102 @@ using commands than using the mouse.
 ## Appendix: Instructions
 
 
+### Homework Feature
+
+#### Adding a homework
+
+1. Adding a homework to an existing student
+
+  1. Prerequisites:
+    - Ensure at least one student (e.g., Marcus) is in the list using `list`.
+    - The student has no existing homework with the same description and due date.
+
+  1. Test case:  
+     `add-homework n/Marcus desc/Math Assignment 3 by/2025-11-15`  
+     Expected: Homework added to Marcus. Success message shown:  
+     `Added homework for Marcus: Math Assignment 3 (Due: 15 Nov 2025)`
+
+  1. Test case:  
+     `add-homework n/Marcus desc/Math Assignment 3 by/2025/11/15`  
+     Expected: Error message displayed:  
+     `Invalid date format! Please use YYYY-MM-DD.`
+
+  1. Test case:  
+     `add-homework n/Unknown Student desc/Math Assignment 3 by/2025-11-15`  
+     Expected: Error message displayed:  
+     `No student with given name.`
+
+  1. Test case:  
+     Add the same homework again with identical details.  
+     Expected: Error message displayed:  
+     `This student has already been assigned this homework.`
+
+---
+
+#### Marking homework as done
+
+1. Marking an existing homework as done
+
+  1. Prerequisites:
+    - At least one student (e.g., Marcus) has at least one homework entry.
+    - Homework is currently *undone* (not marked as done).
+
+  1. Test case:  
+     `mark-done n/Marcus i/1`  
+     Expected: Homework is marked as done. Success message shown:  
+     `Marked homework as done for Marcus: Math Assignment 3`
+
+  1. Test case:  
+     `mark-done n/Marcus i/99`  
+     Expected: Error message displayed:  
+     `Invalid homework index: 99 (valid range: 1 to [number of homeworks])`
+
+  1. Test case:  
+     Run `mark-done` again for the same homework.  
+     Expected: System displays same success message (no state change).
+
+---
+
+#### Marking homework as undone
+
+1. Marking a completed homework as undone
+
+  1. Prerequisites:
+    - At least one student (e.g., Marcus) has at least one **done** homework entry.
+
+  1. Test case:  
+     `mark-undone n/Marcus Yeoh i/1`  
+     Expected: Homework is marked as undone. Success message shown:  
+     `Marked homework as undone for Marcus: Math Assignment 3`
+
+  1. Test case:  
+     `mark-undone n/Marcus Yeoh i/99`  
+     Expected: Error message displayed:  
+     `Invalid homework index: 99 (valid range: 1 to [number of homeworks])`
+
+  1. Test case:  
+     Run `mark-undone` again for the same undone homework.  
+     Expected: System displays same success message (no state change).
+
+---
+
 ## Appendix: Effort
+
+### Marcus Ng (PeanutButter1212)
+
+I was primarily responsible for implementing and testing the **Search feature** and the entire **Homework management system**, which includes:
+
+- **Search Feature**
+  - Implemented the `search-student` command that allows tutors to search for students by name, subject, or level.
+  - Designed a flexible parser to handle multiple prefixes and partial keyword matching.
 
 
 ## Appendix: Planned Enhancements
+- **Homework Feature Set**
+  - Designed and implemented all homework-related commands:
+    - `add-homework` — to assign new homework to a student.
+    - `mark-done` and `mark-undone` — to update homework completion status.
+    - `delete-homework` — to remove homework entries.
+  - Extended the `Person` and `AddressBook` models to include homework lists and handled data persistence through JSON storage.
+  - Updated the UI (`PersonCard`) to display homework details with due dates and status badges.
+  - Created `JsonAdaptedHomework` for saving of homework data
