@@ -603,10 +603,23 @@ Dec: ✓ Paid`
 
 ## Appendix: Effort
 
+### Marcus Ng (PeanutButter1212)
+
+I was primarily responsible for implementing and testing the **Search feature** and the entire **Homework management system**, which includes:
+
+- **Search Feature**
+    - Implemented the `search-student` command that allows tutors to search for students by name, subject, or level.
+    - Designed a flexible parser to handle multiple prefixes and partial keyword matching.
 
 
-
-
+- **Homework Feature Set**
+    - Designed and implemented all homework-related commands:
+        - `add-homework` — to assign new homework to a student.
+        - `mark-done` and `mark-undone` — to update homework completion status.
+        - `delete-homework` — to remove homework entries.
+    - Extended the `Person` and `AddressBook` models to include homework lists and handled data persistence through JSON storage.
+    - Updated the UI (`PersonCard`) to display homework details with due dates and status badges.
+    - Created `JsonAdaptedHomework` for saving of homework data
 
 ### Min-Ren Seah (miinren)
 I was primarily responsible for updating the delete feature and implementing the payment tracking system.
