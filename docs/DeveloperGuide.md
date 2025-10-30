@@ -406,3 +406,4 @@ using commands than using the mouse.
 - **Mainstream OS**: Windows, Linux, MacOS with Java 17+.
 - **Feedback**:  Either an error message or command successfully executed message
 - **Centralised** : Defined in one single place within the codebase
+
