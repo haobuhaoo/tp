@@ -45,6 +45,7 @@ public class DeleteCommandTest {
 
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.deletePerson(personToDelete);
+        expectedModel.refreshReminders();
 
         assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
     }
@@ -73,6 +74,7 @@ public class DeleteCommandTest {
 
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.deletePerson(personToDelete);
+        expectedModel.refreshReminders();
         showNoPerson(expectedModel);
 
         assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
@@ -149,6 +151,7 @@ public class DeleteCommandTest {
 
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.deletePerson(personToDelete);
+        expectedModel.refreshReminders();
 
         assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
     }
@@ -188,6 +191,8 @@ public class DeleteCommandTest {
         Model model = new ModelManager();
         Person person = new PersonBuilder().build();
         model.addPerson(person);
+        model.refreshReminders();
+        assertEquals(1, model.getFilteredReminderList().size());
 
         DeleteCommand command = new DeleteCommand(
                 new StudentFieldsContainsKeywordsPredicate(List.of(DEFAULT_NAME)));
@@ -196,6 +201,7 @@ public class DeleteCommandTest {
         assertEquals(String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(person)),
                 result.getFeedbackToUser());
         assertFalse(model.getFilteredPersonList().contains(person));
+        assertEquals(0, model.getFilteredReminderList().size());
     }
 
     @Test
@@ -203,6 +209,8 @@ public class DeleteCommandTest {
         Model model = new ModelManager();
         Person person = new PersonBuilder().build();
         model.addPerson(person);
+        model.refreshReminders();
+        assertEquals(1, model.getFilteredReminderList().size());
 
         DeleteCommand command = new DeleteCommand(
                 new StudentFieldsContainsKeywordsPredicate(List.of(DEFAULT_PHONE)));
@@ -211,6 +219,7 @@ public class DeleteCommandTest {
         assertEquals(String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(person)),
                 result.getFeedbackToUser());
         assertFalse(model.getFilteredPersonList().contains(person));
+        assertEquals(0, model.getFilteredReminderList().size());
     }
 
     @Test
@@ -218,6 +227,8 @@ public class DeleteCommandTest {
         Model model = new ModelManager();
         Person person = new PersonBuilder().build();
         model.addPerson(person);
+        model.refreshReminders();
+        assertEquals(1, model.getFilteredReminderList().size());
 
         DeleteCommand command = new DeleteCommand(
                 new StudentFieldsContainsKeywordsPredicate(List.of("10:00 am")));
@@ -226,6 +237,7 @@ public class DeleteCommandTest {
         assertEquals(String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(person)),
                 result.getFeedbackToUser());
         assertFalse(model.getFilteredPersonList().contains(person));
+        assertEquals(0, model.getFilteredReminderList().size());
     }
 
     @Test
@@ -233,6 +245,8 @@ public class DeleteCommandTest {
         Model model = new ModelManager();
         Person person = new PersonBuilder().build();
         model.addPerson(person);
+        model.refreshReminders();
+        assertEquals(1, model.getFilteredReminderList().size());
 
         DeleteCommand command = new DeleteCommand(
                 new StudentFieldsContainsKeywordsPredicate(List.of("hello")));
@@ -240,6 +254,7 @@ public class DeleteCommandTest {
 
         assertEquals(DeleteCommand.MESSAGE_NO_MATCH, result.getFeedbackToUser());
         assertTrue(model.getAddressBook().getPersonList().contains(person));
+        assertEquals(1, model.getFilteredReminderList().size());
     }
 
     @Test
@@ -253,6 +268,8 @@ public class DeleteCommandTest {
                 .build();
         model.addPerson(person1);
         model.addPerson(person2);
+        model.refreshReminders();
+        assertEquals(2, model.getFilteredReminderList().size());
 
         DeleteCommand command = new DeleteCommand(
                 new StudentFieldsContainsKeywordsPredicate(List.of("amy")));
@@ -264,8 +281,8 @@ public class DeleteCommandTest {
         assertTrue(result.getFeedbackToUser().contains(Messages.format(person2)));
         assertTrue(model.getFilteredPersonList().contains(person1));
         assertTrue(model.getFilteredPersonList().contains(person2));
+        assertEquals(2, model.getFilteredReminderList().size());
     }
-
 
     /**
      * Updates {@code model}'s filtered list to show no one.

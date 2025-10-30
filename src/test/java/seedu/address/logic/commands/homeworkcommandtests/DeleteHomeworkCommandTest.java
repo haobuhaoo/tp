@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.model.util.SampleDataUtil.getMonthName;
 
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -36,7 +37,7 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.reminder.Reminder;
-import seedu.address.model.reminder.UnmodifiableHwReminder;
+import seedu.address.model.reminder.UnmodifiablePaymentReminder;
 
 public class DeleteHomeworkCommandTest {
     private Name marcusName;
@@ -88,18 +89,20 @@ public class DeleteHomeworkCommandTest {
         }
 
         @Override
-        public void addReminder(Reminder reminder) {
-            filteredReminders.add(reminder);
-        }
-
-        @Override
-        public void deleteReminder(Reminder target) {
-            filteredReminders.remove(target);
-        }
-
-        @Override
         public ObservableList<Reminder> getFilteredReminderList() {
             return filteredReminders;
+        }
+
+        @Override
+        public void refreshReminders() {
+            for (Person p : filtered) {
+                int currentMonth = LocalDate.now().getMonth().getValue();
+                UnmodifiablePaymentReminder paymentReminder =
+                        UnmodifiablePaymentReminder.of(currentMonth, p, getMonthName(currentMonth));
+                if (!filteredReminders.contains(paymentReminder)) {
+                    filteredReminders.add(paymentReminder);
+                }
+            }
         }
 
         //These are methods not used by DeleteHomeworkCommand
@@ -230,6 +233,16 @@ public class DeleteHomeworkCommandTest {
         }
 
         @Override
+        public void addReminder(Reminder reminder) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void deleteReminder(Reminder target) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void updateFilteredReminderList(Predicate<Reminder> predicate) {
             throw new AssertionError("This method should not be called.");
         }
@@ -245,7 +258,6 @@ public class DeleteHomeworkCommandTest {
         marcus.addHomework(homework);
 
         Model model = new ModelStubFilteredOnly(List.of(marcus));
-        model.addReminder(UnmodifiableHwReminder.of(marcus, homework));
         DeleteHomeworkCommand cmd = new DeleteHomeworkCommand(marcusName, Index.fromOneBased(1));
         CommandResult result = cmd.execute(model);
 
@@ -254,7 +266,7 @@ public class DeleteHomeworkCommandTest {
         assertEquals(expected, result.getFeedbackToUser());
         assertFalse(marcus.getHomeworkList().contains(homework), "Homework should be removed");
         assertEquals(0, marcus.getHomeworkList().size());
-        assertEquals(0, model.getFilteredReminderList().size());
+        assertEquals(1, model.getFilteredReminderList().size()); // payment reminder
     }
 
     /**
@@ -269,8 +281,6 @@ public class DeleteHomeworkCommandTest {
 
         Model model = new ModelStubFilteredOnly(List.of(john, marcus));
         DeleteHomeworkCommand command = new DeleteHomeworkCommand(marcusName, Index.fromOneBased(1));
-        model.addReminder(UnmodifiableHwReminder.of(marcus, hwMarcus));
-        model.addReminder(UnmodifiableHwReminder.of(john, hwJohn));
         CommandResult result = command.execute(model);
 
         String expected = String.format(DeleteHomeworkCommand.MESSAGE_SUCCESS,
@@ -279,7 +289,7 @@ public class DeleteHomeworkCommandTest {
 
         assertFalse(marcus.getHomeworkList().contains(hwMarcus));
         assertTrue(john.getHomeworkList().contains(hwJohn));
-        assertEquals(1, model.getFilteredReminderList().size());
+        assertEquals(2, model.getFilteredReminderList().size()); // 2 payment reminder
     }
 
     /**

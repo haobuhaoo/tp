@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static seedu.address.model.util.SampleDataUtil.getMonthName;
 
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -37,6 +38,7 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.reminder.Reminder;
+import seedu.address.model.reminder.UnmodifiablePaymentReminder;
 
 public class MarkUndoneHwCommandTest {
     private Name marcusName;
@@ -88,13 +90,15 @@ public class MarkUndoneHwCommandTest {
         }
 
         @Override
-        public void addReminder(Reminder reminder) {
-            filteredReminders.add(reminder);
-        }
-
-        @Override
-        public void deleteReminder(Reminder target) {
-            filteredReminders.remove(target);
+        public void refreshReminders() {
+            for (Person p : filtered) {
+                int currentMonth = LocalDate.now().getMonth().getValue();
+                UnmodifiablePaymentReminder paymentReminder =
+                        UnmodifiablePaymentReminder.of(currentMonth, p, getMonthName(currentMonth));
+                if (!filteredReminders.contains(paymentReminder)) {
+                    filteredReminders.add(paymentReminder);
+                }
+            }
         }
 
         @Override
@@ -230,6 +234,16 @@ public class MarkUndoneHwCommandTest {
         }
 
         @Override
+        public void addReminder(Reminder reminder) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void deleteReminder(Reminder target) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void updateFilteredReminderList(Predicate<Reminder> predicate) {
             throw new AssertionError("This method should not be called.");
         }
@@ -273,6 +287,7 @@ public class MarkUndoneHwCommandTest {
                 marcus.getName().fullName, hw.getDescription());
         assertEquals(expected, res.getFeedbackToUser());
         assertFalse(hw.isDone(), "Homework remains undone");
+        // execute method did not modify student list
         assertEquals(0, model.getFilteredReminderList().size());
     }
 

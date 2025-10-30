@@ -38,6 +38,7 @@ public class MarkUnpaidCommandTest {
 
         Model model = new ModelManager();
         model.addPerson(paidAlice);
+        model.refreshReminders();
 
         Index index = Index.fromOneBased(1);
         int month = 5;
@@ -45,7 +46,7 @@ public class MarkUnpaidCommandTest {
         markUnpaidCommand.execute(model);
 
         assertFalse(model.getFilteredPersonList().get(0).isPaidForMonth(5));
-        assertEquals(0, model.getFilteredReminderList().size());
+        assertEquals(1, model.getFilteredReminderList().size());
     }
 
     @Test
@@ -89,6 +90,7 @@ public class MarkUnpaidCommandTest {
             Person personToMark = testModel.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
 
             personToMark.setPaymentStatus(month, true);
+            testModel.refreshReminders();
 
             MarkUnpaidCommand markUnpaidCommand = new MarkUnpaidCommand(INDEX_FIRST_PERSON, month);
 
@@ -105,30 +107,16 @@ public class MarkUnpaidCommandTest {
 
         int currentMonth = LocalDate.now().getMonth().getValue();
         personToMark.setPaymentStatus(currentMonth, true);
+        model.refreshReminders();
+
+        MarkUnpaidCommand command = new MarkUnpaidCommand(INDEX_FIRST_PERSON, currentMonth);
+        command.execute(model);
 
         UnmodifiablePaymentReminder reminder =
                 UnmodifiablePaymentReminder.of(currentMonth, personToMark, getMonthName(currentMonth));
-        model.deleteReminder(reminder);
-
-        MarkUnpaidCommand command = new MarkUnpaidCommand(INDEX_FIRST_PERSON, currentMonth);
-        command.execute(model);
 
         assertTrue(model.hasReminder(reminder));
         assertTrue(model.getFilteredReminderList().contains(reminder));
-    }
-
-    @Test
-    public void execute_doesntAddDuplicateReminder() throws CommandException {
-        Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
-        Person personToMark = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
-
-        int currentMonth = LocalDate.now().getMonth().getValue();
-        personToMark.setPaymentStatus(currentMonth, true);
-
-        int initialSize = model.getFilteredReminderList().size();
-        MarkUnpaidCommand command = new MarkUnpaidCommand(INDEX_FIRST_PERSON, currentMonth);
-        command.execute(model);
-        assertEquals(initialSize, model.getFilteredReminderList().size());
     }
 
     @Test

@@ -192,7 +192,7 @@ public class ParticipationCommandTest {
     }
 
     /**
-     *  Minimal model stub supporting hasPersonName() and AttendanceIndex.
+     * Minimal model stub supporting hasPersonName() and AttendanceIndex.
      * Model stub that:
      * - says a single person name exists via hasPersonName(...)
      * - exposes a tiny ReadOnlyAddressBook containing that Person
@@ -337,6 +337,11 @@ public class ParticipationCommandTest {
         @Override
         public ObservableList<Reminder> getFilteredReminderList() {
             return FXCollections.observableArrayList();
+        }
+
+        @Override
+        public void refreshReminders() {
+            throw new AssertionError("This method should not be called.");
         }
 
         // ===== Groups (no-op implementations for tests) =====

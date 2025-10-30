@@ -156,6 +156,11 @@ public interface Model {
      */
     void updateFilteredReminderList(Predicate<Reminder> predicate);
 
+    /**
+     * Refreshes the auto-generated UnmodifiableReminders to match the current state of student list.
+     */
+    void refreshReminders();
+
     // ============ Groups ==========================================================
     boolean hasGroup(GroupName name);
 
