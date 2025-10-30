@@ -131,25 +131,6 @@ public class DeleteCommand extends Command {
             } else if (exactPhoneMatches.size() > 1) {
                 refinementCandidates = exactPhoneMatches;
             }
-
-            // lesson time match
-            if (exactPhoneMatches.isEmpty()) {
-                List<Person> exactLessonMatches = matches.stream()
-                        .filter(p -> p.getLessonTime() != null
-                                && p.getLessonTime().stream()
-                                .map(lt -> lt.toString().trim().toLowerCase())
-                                .anyMatch(t -> t.equals(keyword)))
-                        .toList();
-
-                if (exactLessonMatches.size() == 1) {
-                    Person personToDelete = exactLessonMatches.get(0);
-                    model.deletePerson(personToDelete);
-                    return new CommandResult(String.format(
-                            MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(personToDelete)));
-                } else if (exactLessonMatches.size() > 1) {
-                    refinementCandidates = exactLessonMatches;
-                }
-            }
         }
 
         if (refinementCandidates.isEmpty()) {
@@ -161,7 +142,7 @@ public class DeleteCommand extends Command {
             for (int i = 0; i < refinementCandidates.size(); i++) {
                 sb.append(String.format("%d. %s%n", i + 1, Messages.format(refinementCandidates.get(i))));
             }
-            sb.append("\nTry typing the exact name, phone number, or lesson time.");
+            sb.append("\nTry typing the exact name, phone number.");
             return new CommandResult(sb.toString());
         }
 

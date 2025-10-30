@@ -604,7 +604,9 @@ Dec: ✓ Paid`
 ## Appendix: Effort
 
 
-## Appendix: Planned Enhancements
+
+
+
 
 ### Min-Ren Seah (miinren)
 I was primarily responsible for updating the delete feature and implementing the payment tracking system.
@@ -619,5 +621,7 @@ I was primarily responsible for updating the delete feature and implementing the
     - Extended the `Person` and `AddressBook` models to include the payment system using a `bitset` and handled data persistence through JSON storage.
     - Updated the UI (`PersonCard`) to display payment details with the month using colour coded boxes.
     - Created `JsonAdaptedPerson` for saving of payment data 
+
+## Appendix: Planned Enhancements
 
 
