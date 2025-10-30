@@ -81,6 +81,11 @@ The `UI` component,
 * keeps a reference to the `Logic` component, because the `UI` relies on the `Logic` to execute commands.
 * depends on some classes in the `Model` component, as it displays `Person` object residing in the `Model`.
 
+**Participation panel on Person cards**
+- The 5-slot participation view is computed by `ParticipationViewModel.computeSlots(...)` (pure helper for easy testing) and rendered in `PersonCard`.
+- Dates are shown on the top row (`MM-dd`), scores inside the boxes on the bottom row.
+- When a date appears multiple times in history, only the latest score is displayed.
+
 ### Logic component
 
 **API** : [`Logic.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/logic/Logic.java)
@@ -113,6 +118,12 @@ Here are the other classes in `Logic` (omitted from the class diagram above) tha
 How the parsing works:
 * When called upon to parse a user command, the `AddressBookParser` class creates an `XYZCommandParser` (`XYZ` is a placeholder for the specific command name e.g., `AddCommandParser`) which uses the other classes shown above to parse the user command and create a `XYZCommand` object (e.g., `AddCommand`) which the `AddressBookParser` returns back as a `Command` object.
 * All `XYZCommandParser` classes (e.g., `AddCommandParser`, `DeleteCommandParser`, ...) inherit from the `Parser` interface so that they can be treated similarly where possible e.g, during testing.
+
+**Participation command specifics**
+- `ParticipationCommandParser` ensures `n/`, `d/`, `s/` each appear exactly once (no preamble).
+- `ParticipationCommand` validates values, mutates the target `Person`’s `ParticipationHistory`,
+  calls `model.setPerson(person, person)` to trigger persistence, updates `AttendanceIndex`,
+  and returns a success message.
 
 ### Model component
 **API** : [`Model.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/model/Model.java)
@@ -147,6 +158,11 @@ The `Storage` component,
 * inherits from both `AddressBookStorage` and `UserPrefStorage`, which means it can be treated as either one (if only the functionality of only one is needed).
 * depends on some classes in the `Model` component (because the `Storage` component's job is to save/retrieve objects that belong to the `Model`)
 
+**Participation persistence notes**
+- Each `Person` now serializes a `participation` array (list of `{ date: "YYYY-MM-DD", score: 0..5 }`).
+- Missing `participation` (legacy files) is treated as an empty history.
+- Invalid rows (bad date/score) are ignored during load to keep the rest of the file usable.
+
 ### Common classes
 
 Classes used by multiple components are in the `seedu.address.commons` package.
@@ -171,38 +187,65 @@ Key ideas
 
 <img src="diagrams/Grouping.png" alt="Class Diagram for Grouping" />
 
-### Attendance / Participation Command (overview)
+### Participation feature
 
-The participation feature records a per-class score (`s/0..5`) for a student and updates the 5-box history shown on each Person card, with the **class date above** each box and the **score inside**.
+<puml src="diagrams/ParticipationSequence.puml" width="720" />
 
-<img src="diagrams/tracing/AttendanceCommand.png" alt="Attendance / Participation Command Diagram" width="720"/>
+The Participation feature lets tutors record a per-class participation score for a student and shows the **last 5 classes** (chronological, oldest → newest) on each student card, with the **date above** each box and the **score inside**.
 
+#### Command format & validation
+- Command: `participation n/NAME d/YYYY-MM-DD s/0..5`
+- Validation:
+  - `NAME` must be non-empty, ≤ 50 chars. Matching is case-insensitive after whitespace normalization.
+  - `DATE` must be ISO `YYYY-MM-DD`.
+  - `SCORE` must be an integer in `[0, 5]`.
 
-### Add Homework 
+#### Logic flow
+- `ParticipationCommand`:
+  1. Parses/validates inputs (parser enforces single occurrence of prefixes; command validates values).
+  2. Finds `Person` by normalized name from `Model#getAddressBook().getPersonList()`.
+  3. Appends a new `ParticipationRecord(date, score)` to `person.getParticipation()`.
+  4. Calls `model.setPerson(person, person)` to trigger persistence/autosave.
+  5. Updates the legacy `AttendanceIndex` current UI date and refreshes the filtered list.
 
-The add-homework feature lets tutors record homework tasks for individual students. Each homework entry contains a **description**, **due date**, and completion status (default: not done).
+#### Model
+- `ParticipationRecord` — immutable `(LocalDate date, int score)`, score ∈ `[0,5]`.
+- `ParticipationHistory` — keeps **up to 5 most recent** records by insertion order:
+  - `add(record)` pushes to the tail; drops oldest if size > 5.
+  - `asList()` returns oldest → newest; `mostRecent()` returns last or `null`.
 
-**Key ideas**
-- A `Homework` stores its description, due date, and done status.
-- Each `Person` maintains a list of `Homework` objects.
-- The command operates through the `Model` interface and updates storage via the `AddressBook`.
-- The UI displays homework items under each student card, showing description, due date, and status badges.
-- Duplicate entries (same description and date) are prevented.
+#### UI (Person card)
+- The 5-box panel is produced via a pure helper `ParticipationViewModel.computeSlots(history)`:
+  - Returns exactly 5 slots (oldest → newest), padded at the front when fewer than 5 exist.
+  - If multiple records share the **same date**, only the **latest** score is shown.
+- Styling comes from `participation.css` (e.g., `.participation-box`, `.date-mini`).
 
-<img src="diagrams/HomeworkUseCase.png"/>
+#### Storage
+- `JsonAdaptedPerson` persists a `participation` array:
 
-The diagram above illustrates the **Homework Management** use cases in ClassConnect.  
-Tutors can **add**, **view**, **delete**, and **mark homework as done or undone** for each student.
+```json
+  "participation": [
+    { "date": "2025-09-19", "score": 4 },
+    { "date": "2025-09-21", "score": 2 }
+  ]
+````
 
-- **Add Homework**: Creates a new homework entry with a description and due date for a selected student.
-- **Delete Homework**: Removes a homework entry from the student’s list when it is no longer needed.
-- **Mark Homework as Done / Undone**: Updates the completion status of an existing homework task, helping tutors keep track of student progress.
-- **View Homework List**: Displays all homework items for each student, including their deadlines and status badges.
+* Older files without this field load as empty histories.
+* Invalid rows (e.g., score out of range) are **skipped** during load so one bad row doesn’t corrupt the file.
 
-Each of these features interacts with the same underlying `Homework` model and `HomeworkList` stored within every `Person` object.  
+#### Error messages
 
+* `Invalid student name: name cannot be empty.`
+* `Invalid student name: no matching student found.`
+* `Invalid date. The format must be YYYY-MM-DD.`
+* `Invalid participation score. Use an integer 0 to 5.`
+* `Invalid participation score. Must be between 0 and 5 inclusive.`
 
+#### Design notes
 
+* **5 entries** keeps the UI legible and makes updates O(1) amortized.
+* **Same-date replacement** is handled in the view-model so tutors can overwrite a day’s score cleanly.
+* Calling `model.setPerson(person, person)` ensures storage hooks run without changing other APIs.
 
 ### Add student feature
 
@@ -210,7 +253,7 @@ This feature adds a student into the students list. This feature is facilitated 
 
 <img src="diagrams/AddSequenceDiagram.png" width="550" />
 
-### \[Proposed\] Undo/redo feature
+### [Proposed] Undo/redo feature
 
 #### Proposed Implementation
 
@@ -245,7 +288,6 @@ Step 3. The user executes `add n/David …​` to add a new person. The `add` co
 Step 4. The user now decides that adding the person was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoAddressBook()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous address book state, and restores the address book to that state.
 
 <img src="diagrams/UndoRedoState3.png" alt="UndoRedoState3" />
-
 
 <box type="info" seamless>
 
@@ -293,22 +335,23 @@ The following activity diagram summarizes what happens when a user executes a ne
 **Aspect: How undo & redo executes:**
 
 * **Alternative 1 (current choice):** Saves the entire address book.
+
   * Pros: Easy to implement.
   * Cons: May have performance issues in terms of memory usage.
 
 * **Alternative 2:** Individual command knows how to undo/redo by
   itself.
+
   * Pros: Will use less memory (e.g. for `delete`, just save the person being deleted).
   * Cons: We must ensure that the implementation of each individual command are correct.
 
-_{more aspects and alternatives to be added}_
+*{more aspects and alternatives to be added}*
 
-### \[Proposed\] Data archiving
+### [Proposed] Data archiving
 
-_{Explain here how the data archiving feature will be implemented}_
+*{Explain here how the data archiving feature will be implemented}*
 
-
---------------------------------------------------------------------------------------------------------------------
+---
 
 ## **Documentation, logging, testing, configuration, dev-ops**
 
@@ -318,17 +361,21 @@ _{Explain here how the data archiving feature will be implemented}_
 * [Configuration guide](Configuration.md)
 * [DevOps guide](DevOps.md)
 
---------------------------------------------------------------------------------------------------------------------
+The Participation feature includes unit tests for command validation, model capping/mostRecent, UI view-model
+(chronological + same-date dedup + padding), and storage round-trip (including invalid-row skipping).
+
+---
 
 ## Appendix: Requirements
 
 ### Product scope
 
 **Target user profile**:
-- Private tutors managing ~20–40 students individually.
-- Need to keep track of **student + parent contact details, lesson times, homework, payments, and performance notes**.
-- Prefer **fast, keyboard-driven CLI apps** over complex GUIs.
-- Comfortable with basic computer operations, but want **lightweight, no-frills software**.
+
+* Private tutors managing ~20–40 students individually.
+* Need to keep track of **student + parent contact details, lesson times, homework, payments, and performance notes**.
+* Prefer **fast, keyboard-driven CLI apps** over complex GUIs.
+* Comfortable with basic computer operations, but want **lightweight, no-frills software**.
 
 **Value proposition**: ClassConnect allows tutors to manage lessons, admin tasks, and student progress **faster and more accurately** than traditional notebooks or bloated management systems.
 
@@ -359,13 +406,15 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Use case 1: Add Student**
 
 **MSS**
+
 1. Tutor enters `add-student n/Marcus p/98765432 t/Mon 1900 lvl/Sec3 sub/Math`.
 2. System validates the input.
 3. System stores the student record.
 4. System confirms addition.
 
 **Extensions**
-- 2a. Input is invalid (e.g., wrong phone format).
+
+* 2a. Input is invalid (e.g., wrong phone format).
   → System shows error and requests re-entry.
 
 ---
@@ -373,12 +422,14 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Use case 2: Record Homework**
 
 **MSS**
+
 1. Tutor enters `add-homework sid/1 d/Finish Ch.3 problems due/2025-10-05`.
 2. System validates and links homework to student.
 3. System confirms creation.
 
 **Extensions**
-- 2a. Student ID not found.
+
+* 2a. Student ID not found.
   → System shows error and suggests checking student list.
 
 ---
@@ -386,13 +437,15 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Use case 3: Track Payments**
 
 **MSS**
+
 1. Tutor enters `record-payment sid/1 amt/240 notes/Sep tuition`.
 2. System stores payment as **UNPAID**.
 3. Tutor later enters `pay 3`.
 4. System updates status and confirms.
 
 **Extensions**
-- 1a. Invalid amount format entered.
+
+* 1a. Invalid amount format entered.
   → System rejects input and shows correct format.
 
 ---
@@ -454,29 +507,35 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 
 ### Non-Functional Requirements
+
 1. **Setup**
-- Should work on any mainstream OS as long as it has Java 17 or above installed.
+
+* Should work on any mainstream OS as long as it has Java 17 or above installed.
 
 2. **Performance**
-- The application should launch and load stored data within 2 seconds of starting up
-- The search method should return results within 300ms per 10000 student records
-- All valid commands should complete execution and display feedback in less than 300ms
+
+* The application should launch and load stored data within 2 seconds of starting up
+* The search method should return results within 300ms per 10000 student records
+* All valid commands should complete execution and display feedback in less than 300ms
 
 3. **Scalability**
-- Able to scale up to 10000 students without any significant decrease in performance
-- Data structures should be implemented in a way such that adding more students minimally affects search and
-delete methods
+
+* Able to scale up to 10000 students without any significant decrease in performance
+* Data structures should be implemented in a way such that adding more students minimally affects search and
+  delete methods
 
 4. **Usability**
-- Every command entered will print out either a success message or a specific error message
-- Help command will print out clear list of commands with their respective usage examples
-- A user with above average typing speed for regular English text should be able to accomplish most of the tasks faster
-using commands than using the mouse.
+
+* Every command entered will print out either a success message or a specific error message
+* Help command will print out clear list of commands with their respective usage examples
+* A user with above average typing speed for regular English text should be able to accomplish most of the tasks faster
+  using commands than using the mouse.
 
 5. **Maintainability**
-- The codebase should follow OOP principles
-- Test coverage should cover most if not all of the methods and classes
-- Error messages and command validation logic should be centralized to avoid inconsistency across commands.
+
+* The codebase should follow OOP principles
+* Test coverage should cover most if not all of the methods and classes
+* Error messages and command validation logic should be centralized to avoid inconsistency across commands.
 
 ---
 
@@ -572,9 +631,6 @@ using commands than using the mouse.
 
 ---
 
-
-
-
 ## Appendix: Effort
 
 ### Marcus Ng (PeanutButter1212)
@@ -593,7 +649,4 @@ I was primarily responsible for implementing and testing the **Search feature** 
     - `delete-homework` — to remove homework entries.
   - Extended the `Person` and `AddressBook` models to include homework lists and handled data persistence through JSON storage.
   - Updated the UI (`PersonCard`) to display homework details with due dates and status badges.
-  - Created `JsonAdaptedHomework` for saving of homework data 
-
-
-## Appendix: Planned Enhancements
+  - Created `JsonAdaptedHomework` for saving of homework data
