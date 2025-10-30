@@ -103,10 +103,21 @@ public class PersonCard extends UiPart<Region> {
         boxes.getChildren().clear();
         dateRow.getChildren().clear();
 
-        // Oldest -> newest, padded to 5 (nulls for missing oldest entries)
-        List<ParticipationRecord> five = history.asListPaddedToFive();
+        // Build chronological (oldest -> newest), then take the last up to 5,
+        // and pad the *front* with nulls so we always render 5 slots.
+        List<ParticipationRecord> all = new java.util.ArrayList<>(history.asList());
+        all.sort(java.util.Comparator.comparing(ParticipationRecord::getDate)); // oldest -> newest
 
-        for (ParticipationRecord r : five) {
+        int take = Math.min(5, all.size());
+        List<ParticipationRecord> lastFive = all.subList(all.size() - take, all.size());
+
+        java.util.List<ParticipationRecord> padded = new java.util.ArrayList<>(5);
+        for (int i = 0; i < 5 - take; i++) {
+            padded.add(null);
+        }
+        padded.addAll(lastFive);
+
+        for (ParticipationRecord r : padded) {
             // ----- date label (top row) -----
             Label d = new Label(r == null ? "" : r.getDate().format(MM_DD));
             d.getStyleClass().add("date-mini");
@@ -127,6 +138,7 @@ public class PersonCard extends UiPart<Region> {
             rect.getStyleClass().add("participation-box");
 
             Text t = new Text(r == null ? "" : Integer.toString(r.getScore()));
+            t.getStyleClass().add("participation-score"); // make it readable
 
             cell.getChildren().addAll(rect, t);
             boxes.getChildren().add(cell);

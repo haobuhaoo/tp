@@ -6,14 +6,23 @@
 .participation-box {
     -fx-arc-height: 6;
     -fx-arc-width: 6;
-    -fx-stroke: -fx-text-base-color;
+    -fx-stroke: derive(-fx-text-base-color, 60%);
     -fx-stroke-width: 1;
-    -fx-fill: transparent;
+    -fx-fill: rgba(255, 255, 255, 0.07);
     -fx-min-width: 22;
     -fx-min-height: 22;
 }
 
-.date-mini {
-    -fx-font-size: 10px;
-    -fx-opacity: 0.9;
+.participation-score {
+    /* Clear, readable score on dark backgrounds */
+    -fx-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-snap-to-pixel: true;
 }
+
+.date-mini {
+    -fx-font-size: 11px;
+    -fx-opacity: 0.95;
+}
+
