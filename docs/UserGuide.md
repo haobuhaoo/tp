@@ -6,7 +6,23 @@
 
 # ClassConnect User Guide
 
-ClassConnect is a **desktop app for managing students' profile, optimized for use via a Command Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, ClassConnect can get your student management tasks done faster than traditional GUI apps.
+ClassConnect is a desktop app designed for private tutors to **easily manage their students, lessons, and administrative tasks** — from lesson scheduling and homework tracking to payments and reminders — all in one place.
+
+While ClassConnect is optimized for **fast command-based input (CLI)**, it also offers the convenience of a **clean and intuitive Graphical User Interface (GUI)**. This means you get the speed and precision of typing commands — perfect for tutors who want to make quick updates during or after lessons — without losing the visual clarity that helps you see all your students, schedules, and reminders at a glance.
+
+ClassConnect helps you:
+
+* **Maintain organized student profiles** including names, phone number, and lesson times.
+
+* **Track homework progress, participation and payment status** with visual indicators.
+
+* **Group students** for easier class and schedule management.
+
+* **Set reminders** for important events, upcoming lessons, or follow-ups.
+
+* Automatically **save your data**, ensuring your records are always up to date.
+
+With ClassConnect, you can focus more on teaching and less on administrative work — **making student management simpler, faster, and more reliable**.
 
 <!-- * Table of Contents -->
 <page-nav-print />
@@ -15,31 +31,37 @@ ClassConnect is a **desktop app for managing students' profile, optimized for us
 
 ## Quick start
 
-1. Ensure you have Java `17` or above installed in your Computer.<br>
-   **Mac users:** Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
+Follow the steps below to set up and start using ClassConnect:
 
-1. Download the latest `.jar` file from [here](https://github.com/AY2526S1-CS2103T-F12-2/tp/releases).
+1. **Check your Java version**<br>
+   * Ensure you have Java `17` or above installed in your Computer. You can verify this by running the following command in your terminal or command prompt:`java -version`.
+   * **Mac users:** Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
+   * If you do not have Java installed, download it from the [official Oracle website](https://www.oracle.com/java/technologies/downloads/#java17?er=221886).
 
-1. Copy the file to the folder you want to use as the _home folder_ for ClassConnect.
+1. **Download ClassConnect**<br>
+   * Download the latest `classconnect.jar` file from [the releases page](https://github.com/AY2526S1-CS2103T-F12-2/tp/releases).
 
-1. Navigate to the folder you put the file in, open the terminal and use the `java -jar classconnect.jar` command to run the application.<br>
-   A GUI similar to the below should appear in a few seconds. Note how the app contains some sample data.<br>
+1. **Run the application**
+   * Choose a folder on your computer where you want to keep ClassConnect. This can be any folder you are comfortable with, such as `Documents/ClassConnect`.
+   * Copy the `classconnect.jar` file you downloaded into that folder.
+   * Open the terminal / command prompt:
+     * Windows: Press `Win + R`, type `cmd`, and press Enter.
+     * Mac: Open `Terminal` from Applications → Utilities.
+     * Linux: Open your terminal application.
+   * Navigate to the folder where you saved `classconnect.jar`.
+     * For example, if you saved it in Documents/ClassConnect, type `cd Documents/ClassConnect` in the terminal and press `Enter`.
+   * Run the application by typing `java -jar classconnect.jar` into the terminal and press `Enter`.
+
+1. **Familiarize yourself with the interface**
+   * When ClassConnect launches, you will see both the command line panel (for typing commands) and the main display panel (showing your students, lessons, and reminders).
    ![Ui](images/Ui.png)
 
-1. Type the command in the command box and press Enter to execute it. e.g. typing **`help`** and pressing Enter will open the help window.<br>
-   Some example commands you can try:
+1. **Start managing your data**
+   * Try entering your first command to add a student: `add-student n/John Doe p/98765432 t/1000 Wed`.
+   * The student `John Doe` will appear at the bottom of the main panel immediately after the command is executed.
 
-   * `list` : Lists all students.
-
-   * `add-student n/John Doe p/98765432 t/1000 Wed` : Adds a student named `John Doe` to the student list.
-
-   * `delete-student i/3` : Deletes the 3rd student shown in the current list.
-
-   * `clear` : Deletes all students.
-
-   * `exit` : Exits the app.
-
-1. Refer to the [Features](#features) below for details of each command.
+1. **Explore more commands**
+   * Refer to the [Features](#features) section for a full list of commands and usage examples.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -119,7 +141,12 @@ Format: `edit-student i/INDEX [n/NAME] [p/PHONE] [t/LESSON_TIME...]` or `edit-st
 * `INDEX` refers to the index number shown in the displayed student list.
 * The `INDEX` must be a positive integer 1, 2, 3, ...
 * At least one of the optional fields must be provided.
-* Existing values will be updated with/to the input values depending on the type of prefix used.
+
+<box type="warning" seamless>
+
+**Note:** Existing values will be updated with/to the input values depending on the type of prefix used.
+
+</box>
 
 Examples:
 *  `edit-student i/2 n/Betsy Crower t/0930 Tue` Edits the name of the 2nd student to be `Betsy Crower` and lesson time to be `09:30 am Tue`.
@@ -154,10 +181,10 @@ Examples:
 * `search-student k/9876` Returns all students whose phone number contains `9876`.
 * `search-student k/10:00` Returns all students with lesson time `10:00`.
 * `search-student k/Sun` Returns all students with lessons on `Sun`
-
 ```
 Found 4 students
-  ```
+```
+
 ### Deleting a student : `delete-student`
 
 Deletes the specified student from the student list.
@@ -184,16 +211,13 @@ Examples:
 2. Deleting by `KEYWORD`
    * `delete-student k/marcus` Deletes the student named `marcus` if only one match is found.
    * If multiple matches are found, the app will show possible matches.<br>
-```
-
-Multiple students match the given keyword(s). Please refine your search:
-
-1. marcus tan; Phone: 98765432; Lesson Time: 10:00 am Sat;
-2. marcus ng; Phone: 98765423; Lesson Time: 10:00 am Mon;
-
-```
-* You can then refine your search by including full name, phone number or lesson time. e.g. `delete-student k/98765432`.
-* If no matches are found, the app will display `No students match the given keyword(s).`.
+   ```
+   Multiple students match the given keyword(s). Please refine your search:
+   1. marcus tan; Phone: 98765432; Lesson Time: 10:00 am Sat;
+   2. marcus ng; Phone: 98765423; Lesson Time: 10:00 am Mon;
+   ```
+   * You can then refine your search by including full name, phone number or lesson time. e.g. `delete-student k/98765432`.
+   * If no matches are found, the app will display `No students match the given keyword(s).`.
 
 Notes:
 * You cannot use `i/` and `k/` in the same command.
@@ -207,9 +231,9 @@ Format: `group-create g/GROUP`
 
 * Creates a group with the specified `GROUP` name.
 * Group names are case-insensitive, trimmed, and must follow:
-- 1 to 30 characters.
-- Letters, digits, spaces, and the symbols `-` or `/` only.
-- Multiple spaces are collapsed.
+  - 1 to 30 characters.
+  - Letters, digits, spaces, and the symbols `-` or `/` only.
+  - Multiple spaces are collapsed.
 * Command fails if a group with the same `GROUP` name already exists.
 
 Examples:
@@ -296,7 +320,6 @@ Format: `mark-paid i/INDEX m/MONTH`
 Examples:
 * `mark-paid i/1 m/1` Marks the 1st student in the list as paid for the month January.
 ```
-
 Marked student as paid: marcus ng
 Month: January
 Payment Status: 
@@ -320,7 +343,6 @@ Format: `mark-unpaid i/INDEX m/MONTH`
 Examples:
 * `mark-unpaid i/1 m/1` Marks the 1st student in the list as unpaid for January.
 ```
-
 Marked student as unpaid: marcus ng
 Month: January
 Payment Status: 
@@ -343,7 +365,7 @@ Examples:
 * `add-homework n/Marcus desc/Math Worksheet 1 by/2025-10-27` Assigns the homework `Math Worksheet 1` and its due date `2025-10-27` to the student `Marcus`.
 ```
 Added homework for Marcus: Math Worksheet 1 (due 2025-10-27)
-  ```
+```
 
 ### Deleting homework: `delete-homework`
 
@@ -359,7 +381,7 @@ Examples:
 * `delete-homework n/Marcus i/1` Deletes the homework at index 1 that is assigned to the student `Marcus`.
 ```
 Deleted homework for Marcus: Math Worksheet 3
-  ```
+```
 
 ### Marking homework as done: `mark-done`
 
@@ -376,7 +398,7 @@ Examples:
 * `mark-done n/Marcus i/1` Marks the homework at index 1 that is assigned to the student `Marcus` as done.
 ```
 Marked homework as done for Marcus: Science Worksheet 2
-  ```
+```
 
 ### Marking homework as undone: `mark-undone`
 
@@ -393,7 +415,8 @@ Examples:
 * `mark-undone n/Marcus i/1` Marks the homework at index 1 that is assigned to the student `Marcus` as undone.
 ```
 Marked homework as undone for Marcus: Science Worksheet 2
-  ```
+```
+
 ### Recording participation: `participation`
 
 Records a student's participation score for a specific class date and updates the history shown on the student card.
@@ -427,8 +450,8 @@ Adds a reminder to the reminder list.
 Format: `add-reminder d/DUE_DATE desc/DESCRIPTION`
 
 * Adds a reminder with the given `DUE_DATE` and `DESCRIPTION` to the reminder list.
-* `DUE_DATE` can be `YYYY-MM-DD HHMM` **or** `YYYY-MM-DD`. e.g. `2025-10-27 1400` or `2025-10-27`.
-* `DESCRIPTION` is free text.
+* `DUE_DATE` refers to the due date of the reminder. It could either be in the `YYYY-MM-DD HHMM` format or `YYYY-MM-DD` format. e.g. `2025-10-27 1400` or `2025-10-27`.
+* `DESCRIPTION` refers to the details of the reminder.
 
 Examples:
 * `add-reminder d/2025-10-27 1500 desc/Tuition later at 3pm` Adds a reminder with due date `27 Oct 2025 03:00 pm` and description `Tuition later at 3pm`.
@@ -446,7 +469,12 @@ Format: `edit-reminder i/INDEX [d/DUE_DATE] [desc/DESCRIPTION]`
 * `INDEX` refers to the index number shown in the displayed reminder list.
 * The `INDEX` must be a positive integer 1, 2, 3, ...
 * At least one of the optional fields must be provided.
-* Existing values will be updated to the input values.
+
+<box type="warning" seamless>
+
+**Note:** Existing values will be updated to the input values.
+
+</box>
 
 Examples:
 *  `edit-reminder i/2 d/2025-11-01 1500` Edits the due date of the 2nd reminder to be `01 Nov 2025 03:00 pm`.
@@ -493,16 +521,13 @@ Examples:
 2. Deleting by `KEYWORD`
    * `delete-reminder k/feedback` Deletes the reminder with description containing `feedback` if only one match is found.
    * If multiple matches are found, the app will show possible matches.<br>
-```
-
-Multiple reminders match the given keyword(s). Please refine your search:
-
-1. Due: 01 Nov 2025; Description: Feedback session for Alice;
-2. Due: 03 Nov 2025 02:00 pm; Description: Feedback session for Benson;
-
-```
-* You can then refine your search by including the full description. e.g. `delete-reminder k/Feedback session for Alice`.
-* If no matches are found, the app will display `No reminders match the given keyword(s).`.
+   ```
+   Multiple reminders match the given keyword(s). Please refine your search:
+   1. Due: 01 Nov 2025; Description: Feedback session for Alice;
+   2. Due: 03 Nov 2025 02:00 pm; Description: Feedback session for Benson;
+    ```
+    * You can then refine your search by including the full description. e.g. `delete-reminder k/Feedback session for Alice`.
+    * If no matches are found, the app will display `No reminders match the given keyword(s).`.
 
 Notes:
 * You cannot use `i/` and `k/` in the same command.
@@ -572,7 +597,7 @@ Action     | Format, Examples
 -----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 **Add Homework**    | `add-homework n/NAME desc/DESCRIPTION by/DEADLINE` <br> e.g., `add-homework n/Marcus desc/Math Worksheet 1 by/2025-10-27`
 **Add Reminder**    | `add-reminder d/DATETIME desc/DESCRIPTION` <br> e.g., `add-reminder d/2025-10-27 1400 desc/Submit assignment`
-**Add Student**    | `add-student n/NAME p/PHONE_NUMBER t/LESSON_TIME...` <br> e.g., `add-student n/James Ho p/98765432 t/1000 Mon t/1400 Wed`
+**Add Student**    | `add-student n/NAME p/PHONE t/LESSON_TIME...` <br> e.g., `add-student n/James Ho p/98765432 t/1000 Mon t/1400 Wed`
 **Add Student to Group**   | `group-add g/GROUP i/INDEX...` <br> e.g., `group-add g/Group A i/1 i/3`
 **Clear**  | `clear`
 **Create Group**   | `group-create g/GROUP` <br> e.g., `group-create g/Group A`
@@ -581,7 +606,7 @@ Action     | Format, Examples
 **Delete Reminder** | `delete-reminder i/INDEX` **or** `delete-reminder k/KEYWORD [MORE_KEYWORDS...]`<br> e.g., `delete-reminder i/3` **or** `delete-reminder k/assignment`
 **Delete Student** | `delete-student i/INDEX` **or** `delete-student k/KEYWORD [MORE_KEYWORDS...]`<br> e.g., `delete-student i/3` **or** `delete-student k/marcus lee`
 **Edit Reminder**   | `edit-reminder i/INDEX [d/DATETIME] [desc/DESCRIPTION]`<br> e.g.,`edit-reminder i/2 d/2025-11-01 1500 desc/Pay tuition fees`
-**Edit Student**   | `edit-student i/INDEX [n/NAME] [p/PHONE_NUMBER] [t/LESSON_TIME...]` **or** `edit-student i/INDEX [n/NAME] [p/PHONE] [t+/LESSON_TIME...] [t-/LESSON_TIME...]`<br> e.g.,`edit-student i/2 n/James Lee t/1830 Fri t/1000 Sun` **or** `edit-student i/INDEX t+/1530 Fri t-/1830 Fri`
+**Edit Student**   | `edit-student i/INDEX [n/NAME] [p/PHONE] [t/LESSON_TIME...]` **or** `edit-student i/INDEX [n/NAME] [p/PHONE] [t+/LESSON_TIME...] [t-/LESSON_TIME...]`<br> e.g.,`edit-student i/2 n/James Lee t/1830 Fri t/1000 Sun` **or** `edit-student i/INDEX t+/1530 Fri t-/1830 Fri`
 **Exit**   | `exit`
 **Help**   | `help`
 **List**   | `list`
