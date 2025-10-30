@@ -19,8 +19,10 @@ import org.junit.jupiter.api.Test;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.logic.commands.homeworkcommands.DeleteHomeworkCommand;
 import seedu.address.logic.commands.homeworkcommands.MarkDoneHwCommand;
 import seedu.address.logic.commands.homeworkcommands.MarkUndoneHwCommand;
 import seedu.address.model.Model;
@@ -35,7 +37,6 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.reminder.Reminder;
-import seedu.address.model.reminder.UnmodifiableHwReminder;
 
 public class MarkUndoneHwCommandTest {
     private Name marcusName;
@@ -244,9 +245,8 @@ public class MarkUndoneHwCommandTest {
         marcus.addHomework(hw);
 
         Model model = new ModelStubFilteredOnly(List.of(marcus));
-        model.addReminder(UnmodifiableHwReminder.of(marcus, hw));
-        MarkDoneHwCommand command1 = new MarkDoneHwCommand(marcusName, "mAtH wS 3");
-        MarkUndoneHwCommand command2 = new MarkUndoneHwCommand(marcusName, "mAtH wS 3");
+        MarkDoneHwCommand command1 = new MarkDoneHwCommand(marcusName, Index.fromOneBased(1));
+        MarkUndoneHwCommand command2 = new MarkUndoneHwCommand(marcusName, Index.fromOneBased(1));
         command1.execute(model);
         CommandResult result2 = command2.execute(model);
 
@@ -266,15 +266,14 @@ public class MarkUndoneHwCommandTest {
         marcus.addHomework(hw);
 
         Model model = new ModelStubFilteredOnly(List.of(marcus));
-        model.addReminder(UnmodifiableHwReminder.of(marcus, hw));
-        MarkUndoneHwCommand command = new MarkUndoneHwCommand(marcusName, "Reading");
+        MarkUndoneHwCommand command = new MarkUndoneHwCommand(marcusName, Index.fromOneBased(1));
         CommandResult res = command.execute(model);
 
         String expected = String.format(MarkUndoneHwCommand.MESSAGE_SUCCESS,
                 marcus.getName().fullName, hw.getDescription());
         assertEquals(expected, res.getFeedbackToUser());
         assertFalse(hw.isDone(), "Homework remains undone");
-        assertEquals(1, model.getFilteredReminderList().size());
+        assertEquals(0, model.getFilteredReminderList().size());
     }
 
     /**
@@ -288,7 +287,7 @@ public class MarkUndoneHwCommandTest {
         marcus.addHomework(hw);
 
         Model model = new ModelStubFilteredOnly(List.of(john));
-        MarkUndoneHwCommand cmd = new MarkUndoneHwCommand(marcusName, "Math WS 3");
+        MarkUndoneHwCommand cmd = new MarkUndoneHwCommand(marcusName, Index.fromOneBased(1));
 
         CommandException ex = assertThrows(CommandException.class, () -> cmd.execute(model));
         assertEquals(MarkDoneHwCommand.MESSAGE_NO_PERSON_FOUND, ex.getMessage());
@@ -296,9 +295,8 @@ public class MarkUndoneHwCommandTest {
     }
 
     /**
-     * Verifies that when the student is present but the homework description does not
-     * match any entry, a {@link CommandException} with
-     * {@link MarkUndoneHwCommand#MESSAGE_NO_HW_FOUND} is thrown.
+     * Verifies that when the student is present but the homework index is out of bounds,
+     * a {@link CommandException} with {@link MarkUndoneHwCommand#MESSAGE_INVALID_HW_INDEX} is thrown.
      */
     @Test
     public void execute_hwNotFound_throwsNoHwFound() {
@@ -306,10 +304,11 @@ public class MarkUndoneHwCommandTest {
         marcus.addHomework(hw);
 
         Model model = new ModelStubFilteredOnly(List.of(marcus));
-        MarkUndoneHwCommand cmd = new MarkUndoneHwCommand(marcusName, "Physics WS");
+        MarkUndoneHwCommand cmd = new MarkUndoneHwCommand(marcusName, Index.fromOneBased(2));
 
         CommandException ex = assertThrows(CommandException.class, () -> cmd.execute(model));
-        assertEquals(MarkDoneHwCommand.MESSAGE_NO_HW_FOUND, ex.getMessage());
+        String expectedMsg = String.format(DeleteHomeworkCommand.MESSAGE_INVALID_HW_INDEX, 2, 1);
+        assertEquals(expectedMsg, ex.getMessage());
         assertFalse(hw.isDone(), "Non-matching homework should remain unchanged");
     }
 
@@ -318,10 +317,10 @@ public class MarkUndoneHwCommandTest {
      */
     @Test
     public void equals_various() {
-        MarkUndoneHwCommand a1 = new MarkUndoneHwCommand(marcusName, "A");
-        MarkUndoneHwCommand a1copy = new MarkUndoneHwCommand(new Name("Marcus"), "A");
-        MarkUndoneHwCommand a2 = new MarkUndoneHwCommand(marcusName, "B");
-        MarkUndoneHwCommand b1 = new MarkUndoneHwCommand(johnName, "A");
+        MarkUndoneHwCommand a1 = new MarkUndoneHwCommand(marcusName, Index.fromOneBased(1));
+        MarkUndoneHwCommand a1copy = new MarkUndoneHwCommand(new Name("Marcus"), Index.fromOneBased(1));
+        MarkUndoneHwCommand a2 = new MarkUndoneHwCommand(marcusName, Index.fromOneBased(2));
+        MarkUndoneHwCommand b1 = new MarkUndoneHwCommand(johnName, Index.fromOneBased(1));
 
         assertEquals(a1, a1);
         assertEquals(a1, a1copy);
