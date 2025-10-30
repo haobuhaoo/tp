@@ -385,17 +385,17 @@ The Participation feature includes unit tests for command validation, model capp
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a … | I want to …                             | So that I can…                               |
-| -------- | ------ | --------------------------------------- | -------------------------------------------- |
-| `* * *`  | tutor  | add a student                           | start tracking their details and progress    |
-| `* * *`  | tutor  | delete a student                        | remove those who have stopped lessons        |
-| `* * *`  | tutor  | record homework with deadlines          | remind students and follow up on time        |
-| `* * *`  | tutor  | record tuition payments                 | know which students have overdue fees        |
-| `* * *`  | tutor  | store parent contacts                   | reach guardians quickly                      |
-| `* *`    | tutor  | archive old students                    | keep my active list uncluttered              |
-| `* *`    | tutor  | filter/search students by subject/level | quickly find relevant students               |
-| `*`      | tutor  | export data into a report               | share with parents or keep records offline   |
-| `*`      | tutor  | set exam reminders                      | notify me ahead of students’ important dates |
+| Priority | As a …​  | I want to …​                            | So that I can…​                                   |
+|----------|----------|-----------------------------------------|---------------------------------------------------|
+| `* * *`  | tutor    | add a student                           | start tracking their details and progress         |
+| `* * *`  | tutor    | delete a student                        | remove those who have stopped lessons             |
+| `* * *`  | tutor    | record homework with deadlines          | remind students and follow up on time             |
+| `* * *`  | tutor    | mark homework as done                   | keep track of students homework status           
+| `* * *`  | tutor    | record tuition payments                 | know which students have overdue fees             |
+| `* *`    | tutor    | archive old students                    | keep my active list uncluttered                   |
+| `* *`    | tutor    | filter/search students by subject/level | quickly find relevant students                    |
+| `*`      | tutor    | export data into a report               | share with parents or keep records offline        |
+| `*`      | tutor    | set exam reminders                      | notify me ahead of students’ important dates      |
 
 ---
 
@@ -450,6 +450,62 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ---
 
+**Use case 4: Add Homework**
+
+**MSS**
+1. Tutor enters `add-homework n/Marcus desc/Math Assignment 3 by/2025-11-15`.
+2. System validates the input.
+3. System adds the homework to the specified student.
+4. System displays success message:  Added homework for Marcus: Math Assignment 3 (due 2025-11-15)
+
+**Extensions**
+- 2a. Input is invalid (e.g., missing or wrong prefixes).  
+  → System shows an error message with the corresponding correct input format
+- 2b. Student name not found.  
+  → System displays "No student with given name" and aborts the operation.
+- 2c. Due date format is invalid.  
+  → System displays “Invalid date format!” with corresponding correct date format
+- 2d. Homework already in list
+  → System displays “This student has already been assigned this homework” and aborts operation
+
+**Use case 5: Mark Homework as Done**
+
+**MSS**
+1. Tutor enters `mark-done n/Marcus Yeoh i/1`.
+2. System validates the input.
+3. System marks the specified homework as done.
+4. System displays success message: Marked homework as done for Marcus: <description>
+
+**Extensions**
+- 2a. Input is invalid (e.g., missing or wrong prefixes).  
+  → System shows an error message with the correct input format.
+- 2b. Student name not found.  
+  → System displays "No student with given name" and aborts the operation.
+- 2c. Homework index out of range.  
+  → System displays “Invalid homework index: -1 (valid range: 1 to ?)” and aborts the operation.
+- 2d. Homework is already marked as done.  
+  → System displays same success message 
+
+**Use case 6: Mark Homework as Undone**
+
+**MSS**
+1. Tutor enters `mark-undone n/Marcus Yeoh i/1`.
+2. System validates the input.
+3. System marks the specified homework as undone.
+4. System displays success message: Marked homework as undone for Marcus: <description>
+
+**Extensions**
+- 2a. Input is invalid (e.g., missing or wrong prefixes).  
+  → System shows an error message with the correct input format.
+- 2b. Student name not found.  
+  → System displays "No student with given name" and aborts the operation.
+- 2c. Homework index out of range.  
+  → System displays “Invalid homework index: -1 (valid range: 1 to ?)” and aborts the operation.
+- 2d. Homework is already marked as undone.  
+  → System displays same success message.
+
+
+
 ### Non-Functional Requirements
 
 1. **Setup**
@@ -496,7 +552,107 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 ## Appendix: Instructions
 
 
+### Homework Feature
+
+#### Adding a homework
+
+1. Adding a homework to an existing student
+
+  1. Prerequisites:
+    - Ensure at least one student (e.g., Marcus) is in the list using `list`.
+    - The student has no existing homework with the same description and due date.
+
+  1. Test case:  
+     `add-homework n/Marcus desc/Math Assignment 3 by/2025-11-15`  
+     Expected: Homework added to Marcus. Success message shown:  
+     `Added homework for Marcus: Math Assignment 3 (Due: 15 Nov 2025)`
+
+  1. Test case:  
+     `add-homework n/Marcus desc/Math Assignment 3 by/2025/11/15`  
+     Expected: Error message displayed:  
+     `Invalid date format! Please use YYYY-MM-DD.`
+
+  1. Test case:  
+     `add-homework n/Unknown Student desc/Math Assignment 3 by/2025-11-15`  
+     Expected: Error message displayed:  
+     `No student with given name.`
+
+  1. Test case:  
+     Add the same homework again with identical details.  
+     Expected: Error message displayed:  
+     `This student has already been assigned this homework.`
+
+---
+
+#### Marking homework as done
+
+1. Marking an existing homework as done
+
+  1. Prerequisites:
+    - At least one student (e.g., Marcus) has at least one homework entry.
+    - Homework is currently *undone* (not marked as done).
+
+  1. Test case:  
+     `mark-done n/Marcus i/1`  
+     Expected: Homework is marked as done. Success message shown:  
+     `Marked homework as done for Marcus: Math Assignment 3`
+
+  1. Test case:  
+     `mark-done n/Marcus i/99`  
+     Expected: Error message displayed:  
+     `Invalid homework index: 99 (valid range: 1 to [number of homeworks])`
+
+  1. Test case:  
+     Run `mark-done` again for the same homework.  
+     Expected: System displays same success message (no state change).
+
+---
+
+#### Marking homework as undone
+
+1. Marking a completed homework as undone
+
+  1. Prerequisites:
+    - At least one student (e.g., Marcus) has at least one **done** homework entry.
+
+  1. Test case:  
+     `mark-undone n/Marcus Yeoh i/1`  
+     Expected: Homework is marked as undone. Success message shown:  
+     `Marked homework as undone for Marcus: Math Assignment 3`
+
+  1. Test case:  
+     `mark-undone n/Marcus Yeoh i/99`  
+     Expected: Error message displayed:  
+     `Invalid homework index: 99 (valid range: 1 to [number of homeworks])`
+
+  1. Test case:  
+     Run `mark-undone` again for the same undone homework.  
+     Expected: System displays same success message (no state change).
+
+---
+
+
+
+
 ## Appendix: Effort
+
+### Marcus Ng (PeanutButter1212)
+
+I was primarily responsible for implementing and testing the **Search feature** and the entire **Homework management system**, which includes:
+
+- **Search Feature**
+  - Implemented the `search-student` command that allows tutors to search for students by name, subject, or level.
+  - Designed a flexible parser to handle multiple prefixes and partial keyword matching.
+
+
+- **Homework Feature Set**
+  - Designed and implemented all homework-related commands:
+    - `add-homework` — to assign new homework to a student.
+    - `mark-done` and `mark-undone` — to update homework completion status.
+    - `delete-homework` — to remove homework entries.
+  - Extended the `Person` and `AddressBook` models to include homework lists and handled data persistence through JSON storage.
+  - Updated the UI (`PersonCard`) to display homework details with due dates and status badges.
+  - Created `JsonAdaptedHomework` for saving of homework data 
 
 
 ## Appendix: Planned Enhancements
