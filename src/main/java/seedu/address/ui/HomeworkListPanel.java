@@ -57,20 +57,12 @@ public class HomeworkListPanel extends UiPart<Region> {
                 return;
             }
 
-            //set label to show description and deadline
-            label.setText(hw.getDescription() + " (due " + hw.getDeadline() + ")");
+            //set label to show index + description + deadline
+            int displayIndex = getIndex() + 1;
+            label.setText(displayIndex + ". " + hw.getDescription() + " (due " + hw.getDeadline() + ")");
 
             //set checkbox status based on isDone boolean
             doneCheckBox.setSelected(hw.isDone());
-
-            // Update model when the checkbox clicked and update isDone in Homework
-            doneCheckBox.setOnAction(e -> {
-                if (doneCheckBox.isSelected()) {
-                    hw.markDone();
-                } else {
-                    hw.markUndone();
-                }
-            });
 
             setGraphic(content);
         }

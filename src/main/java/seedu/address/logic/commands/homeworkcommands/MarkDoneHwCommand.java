@@ -1,11 +1,13 @@
 package seedu.address.logic.commands.homeworkcommands;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_DESC;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_INDEX;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 
 import java.util.List;
 
+import javafx.collections.ObservableList;
+import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
@@ -25,26 +27,26 @@ public class MarkDoneHwCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Marks homework as done for student.\n"
             + "Command format: " + COMMAND_WORD + " "
             + PREFIX_NAME + "NAME "
-            + PREFIX_DESC + "DESCRIPTION\n"
+            + PREFIX_INDEX + "INDEX\n"
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_NAME + "Marcus "
-            + PREFIX_DESC + "Math Worksheet 1";
+            + PREFIX_INDEX + "1";
 
     public static final String MESSAGE_SUCCESS = "Marked homework for %1$s: %2$s";
     public static final String MESSAGE_NO_PERSON_FOUND = "No student with given name";
-    public static final String MESSAGE_NO_HW_FOUND = "No such homework in list";
+    public static final String MESSAGE_INVALID_HW_INDEX = "Invalid homework index: %d (valid range: 1 to %d)";
 
     private final Name studentName;
-    private final String description;
+    private final Index index;
 
     /**
      * Creates a MarkDoneHW to mark a homework as done in homework list
      */
-    public MarkDoneHwCommand(Name studentName, String description) {
+    public MarkDoneHwCommand(Name studentName, Index index) {
         requireNonNull(studentName);
-        requireNonNull(description);
+        requireNonNull(index);
         this.studentName = studentName;
-        this.description = description;
+        this.index = index;
     }
 
     @Override
@@ -64,21 +66,22 @@ public class MarkDoneHwCommand extends Command {
             throw new CommandException(MESSAGE_NO_PERSON_FOUND);
         }
 
-        Homework matched = null;
-        for (Homework hw: target.getHomeworkList()) {
-            if (hw.getDescription().equalsIgnoreCase(description)) {
-                matched = hw;
-                break;
-            }
+        ObservableList<Homework> homeworkList = target.getHomeworkList();
+        int size = homeworkList.size();
+        int zeroBased = index.getZeroBased();
+
+        if (size == 0) {
+            throw new CommandException(String.format(MESSAGE_INVALID_HW_INDEX, index.getOneBased(), 0));
+        }
+        if (zeroBased < 0 || zeroBased >= size) {
+            throw new CommandException(String.format(MESSAGE_INVALID_HW_INDEX, index.getOneBased(), size));
         }
 
-        if (matched == null) {
-            throw new CommandException(MESSAGE_NO_HW_FOUND);
-        }
+        Homework toMark = homeworkList.get(zeroBased);
 
-        if (!matched.isDone()) {
-            matched.markDone();
-            UnmodifiableHwReminder undoneReminder = UnmodifiableHwReminder.of(target, matched);
+        if (!toMark.isDone()) {
+            toMark.markDone();
+            UnmodifiableHwReminder undoneReminder = UnmodifiableHwReminder.of(target, toMark);
             try {
                 model.deleteReminder(undoneReminder);
             } catch (ReminderNotFoundException e) {
@@ -89,7 +92,7 @@ public class MarkDoneHwCommand extends Command {
         return new CommandResult(String.format(
                 MESSAGE_SUCCESS,
                 target.getName().fullName,
-                matched.getDescription()));
+                toMark.getDescription()));
     }
 
     @Override
@@ -105,6 +108,6 @@ public class MarkDoneHwCommand extends Command {
 
         MarkDoneHwCommand otherCommand = (MarkDoneHwCommand) other;
         return studentName.equals(otherCommand.studentName)
-                && description.equals(otherCommand.description);
+                && index.equals(otherCommand.index);
     }
 }
