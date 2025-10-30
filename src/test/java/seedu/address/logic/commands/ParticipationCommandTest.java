@@ -54,20 +54,18 @@ public class ParticipationCommandTest {
 
     @Test
     public void execute_sameDate_replacesScore() throws Exception {
+        ParticipationCommand first = new ParticipationCommand("Alex Yeoh", "2025-09-19", "3");
+        ParticipationCommand second = new ParticipationCommand("Alex Yeoh", "2025-09-19", "4");
         ModelStubWithPerson model = new ModelStubWithPerson("Alex Yeoh");
 
-        // First entry
-        new ParticipationCommand("Alex Yeoh", "2025-09-19", "3").execute(model);
-        // Same date, different score -> should replace the previous score
-        CommandResult result = new ParticipationCommand("Alex Yeoh", "2025-09-19", "4").execute(model);
+        first.execute(model);
+        CommandResult result = second.execute(model);
 
         assertEquals("Success: Participation recorded: Alex Yeoh, 2025-09-19, score=4.",
                 result.getFeedbackToUser());
-
-        // Verify only one record exists and it has the updated score
         assertEquals(1, model.person.getParticipation().size());
         ParticipationRecord recent = model.person.getParticipation().mostRecent();
-        assertEquals(LocalDate.parse("2025-09-19"), recent.getDate());
+        assertEquals(java.time.LocalDate.parse("2025-09-19"), recent.getDate());
         assertEquals(4, recent.getScore());
     }
 
@@ -183,6 +181,14 @@ public class ParticipationCommandTest {
         ParticipationCommand cmd = new ParticipationCommand(over50, "2025-09-19", "3");
         CommandException ex = assertThrows(CommandException.class, () -> cmd.execute(model));
         assertEquals("Invalid student name: A name that is longer than 50 characters.", ex.getMessage());
+    }
+
+    @Test
+    public void execute_emptyName_throws() {
+        Model model = new ModelStubWithPerson("Alex Yeoh");
+        ParticipationCommand cmd = new ParticipationCommand("   \t  ", "2025-09-19", "3");
+        CommandException ex = assertThrows(CommandException.class, () -> cmd.execute(model));
+        assertEquals("Invalid student name: name cannot be empty.", ex.getMessage());
     }
 
     /**
