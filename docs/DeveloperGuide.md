@@ -425,13 +425,13 @@ Similar to add reminder command as above, except the following:
 
 </box>
 
-<puml src="diagrams/AddSequenceDiagram.puml" width="550" />
+<puml src="diagrams/DeleteReminderReferenceSequenceDiagram.puml"/>
 
 ### Delete student feature
 
 This features deletes a student form the students list. This feature is facilitated by the `LogicManger`, `AddressBookParser`, `DeleteCommandParser`, `DeleteCommand`, `CommandResult` and `Model` classes. Given below is a high level overview of how a student is being deleted from the students list.
 
-<puml src="diagrams/DeleteSequenceDiagram.puml" width="550" />
+<puml src="diagrams/DeleteSequenceDiagram.puml" />
 
 ### Mark payment feature
 
@@ -453,8 +453,6 @@ The diagram above illustrates the **Payment Management** use cases in ClassConne
 - **View Payment Status**: Displays a 12-month payment grid for each student with visual indicators.
 
 Each of these features interacts with the `paymentStatus` field stored within every `Person` object.
-
-<puml src="diagrams/DeleteReminderReferenceSequenceDiagram.puml"/>
 
 ### Add Homework
 
@@ -841,86 +839,7 @@ Jul: ✓ Paid Aug: ✓ Paid Sep: ✓ Paid Oct: ✓ Paid Nov: ✓ Paid Dec: ✓ P
 - **Feedback**:  Either an error message or command successfully executed message
 - **Centralised** : Defined in one single place within the codebase
 
-## Appendix: Instructions
-
-### Homework Feature
-
-#### Adding a homework
-
-1. Adding a homework to an existing student
-
-1. Prerequisites:
-   - Ensure at least one student (e.g., Marcus) is in the list using `list`.
-   - The student has no existing homework with the same description and due date.
-
-1. Test case:  
-   `add-homework n/Marcus desc/Math Assignment 3 by/2025-11-15`  
-   Expected: Homework added to Marcus. Success message shown:  
-   `Added homework for Marcus: Math Assignment 3 (Due: 15 Nov 2025)`
-
-1. Test case:  
-   `add-homework n/Marcus desc/Math Assignment 3 by/2025/11/15`  
-   Expected: Error message displayed:  
-   `Invalid date format! Please use YYYY-MM-DD.`
-
-1. Test case:  
-   `add-homework n/Unknown Student desc/Math Assignment 3 by/2025-11-15`  
-   Expected: Error message displayed:  
-   `No student with given name.`
-
-1. Test case:  
-   Add the same homework again with identical details.  
-   Expected: Error message displayed:  
-   `This student has already been assigned this homework.`
-
----
-
-#### Marking homework as done
-
-1. Marking an existing homework as done
-
-1. Prerequisites:
-   - At least one student (e.g., Marcus) has at least one homework entry.
-   - Homework is currently *undone* (not marked as done).
-
-1. Test case:  
-   `mark-done n/Marcus i/1`  
-   Expected: Homework is marked as done. Success message shown:  
-   `Marked homework as done for Marcus: Math Assignment 3`
-
-1. Test case:  
-   `mark-done n/Marcus i/99`  
-   Expected: Error message displayed:  
-   `Invalid homework index: 99 (valid range: 1 to [number of homeworks])`
-
-1. Test case:  
-   Run `mark-done` again for the same homework.  
-   Expected: System displays same success message (no state change).
-
----
-
-#### Marking homework as undone
-
-1. Marking a completed homework as undone
-
-1. Prerequisites:
-   - At least one student (e.g., Marcus) has at least one **done** homework entry.
-
-1. Test case:  
-   `mark-undone n/Marcus Yeoh i/1`  
-   Expected: Homework is marked as undone. Success message shown:  
-   `Marked homework as undone for Marcus: Math Assignment 3`
-
-1. Test case:  
-   `mark-undone n/Marcus Yeoh i/99`  
-   Expected: Error message displayed:  
-   `Invalid homework index: 99 (valid range: 1 to [number of homeworks])`
-
-1. Test case:  
-   Run `mark-undone` again for the same undone homework.  
-   Expected: System displays same success message (no state change).
-
----
+## Appendix: Instructions for manual testing
 
 ### Payment Feature
 
@@ -1113,6 +1032,7 @@ I was primarily responsible for implementing and testing the **Search feature** 
       git pull origin
     - 
 ### Min-Ren Seah (miinren)
+
 I was primarily responsible for updating the delete feature and implementing the payment tracking system.
 
 - **Delete Feature**
@@ -1124,8 +1044,22 @@ I was primarily responsible for updating the delete feature and implementing the
         - `mark-unpaid` and `mark-undone` — to mark a month as unpaid for a student.
     - Extended the `Person` and `AddressBook` models to include the payment system using a `bitset` and handled data persistence through JSON storage.
     - Updated the UI (`PersonCard`) to display payment details with the month using colour coded boxes.
-    - Created `JsonAdaptedPerson` for saving of payment data 
+    - Created `JsonAdaptedPerson` for saving of payment data
+
+### Teoh Hao Yi (haobuhaoo)
+
+I was primarily responsible for updating the add, edit feature and implementing the entire reminders feature.
+
+- Add, Edit Feature
+  - Modified the `add-student` and `edit-student` command to allow of adding and editing of students.
+
+- Reminders Feature
+  - Implemented all the reminder related commands and logic integration:
+    - `add-reminder` adds a reminder to the list.
+    - `edit-reminder` edits an existing reminder from the list.
+    - `delete-reminder` deletes an existing reminder from the list.
+  - Extended `AddressBook` models to manage and include the list of reminders.
+  - Created `JsonAdaptedReminders` for saving of reminders data.
+  - Modified the UI to show the list of reminders.
 
 ## Appendix: Planned Enhancements
-
-
