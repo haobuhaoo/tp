@@ -510,9 +510,114 @@ using commands than using the mouse.
 - **Centralised** : Defined in one single place within the codebase
 
 ## Appendix: Instructions
+### Payment Feature
 
+#### Marking as paid
+
+1. Marks a student has paid for a month
+
+1. Prerequisites:
+   - Ensure at least one student (e.g., Marcus) is in the list using `list`.
+   - The student has not paid for the intended month.
+
+1. Test case:  
+   `mark-paid i/1 m/1`  
+   Expected: Payment has been marked for Marcus in the month of January. Success message shown:  
+   `Marked student as paid: marcus ng
+Month: January
+Payment Status:
+Jan: ✓ Paid
+Feb: ✓ Paid
+Mar: ✓ Paid
+Apr: ✓ Paid
+May: ✓ Paid
+Jun: ✓ Paid
+Jul: ✓ Paid
+Aug: ✓ Paid
+Sep: ✓ Paid
+Oct: ✓ Paid
+Nov: ✓ Paid
+Dec: ✓ Paid`
+
+1. Test case:
+   `mark-paid i/999 m/1` (invalid id)
+   Expected: Error message displayed:  
+   `Invalid student index provided.`
+
+1. Test case:  
+   `mark-paid i/1 m/13` (invalid month)
+   Expected: Error message displayed:  
+   `Month must be a valid number between 1 and 12`
+
+1. Test case:  
+   `mark-paid i/1 m/1` (student has paid for January)  
+   Expected: Error message displayed:  
+   `Student marcus ng is already marked as paid for January.`
+
+---
+
+#### Marking as unpaid
+
+1. Marks a student has not paid for a month
+
+1. Prerequisites:
+   - At least one student (e.g., Marcus) is in the list using `list`.
+   - The student has been marked as paid for the intended month.
+   - The tutor intends to change the status to unpaid for the intended month.
+
+1. Test case:  
+   `mark-unpaid i/1 m/1`  
+   Expected: Payment has been unmarked for Marcus in the month of January. Success message shown:  
+   `Marked student as unpaid: marcus ng
+Month: January
+Payment Status:
+Jan: ✗ Unpaid
+Feb: ✓ Paid
+Mar: ✓ Paid
+Apr: ✓ Paid
+May: ✓ Paid
+Jun: ✓ Paid
+Jul: ✓ Paid
+Aug: ✓ Paid
+Sep: ✓ Paid
+Oct: ✓ Paid
+Nov: ✓ Paid
+Dec: ✓ Paid`
+
+1. Test case:
+   `mark-paid i/999 m/1` (invalid id)
+   Expected: Error message displayed:  
+   `Invalid student index provided.`
+
+1. Test case:  
+   `mark-paid i/1 m/13` (invalid month)
+   Expected: Error message displayed:  
+   `Month must be a valid number between 1 and 12`
+
+1. Test case:  
+   `mark-paid i/1 m/1` (student has paid for January)  
+   Expected: Error message displayed:  
+   `Student marcus ng is already marked as unpaid for January.`
+
+---
 
 ## Appendix: Effort
 
 
 ## Appendix: Planned Enhancements
+
+### Min-Ren Seah (miinren)
+I was primarily responsible for updating the delete feature and implementing the payment tracking system.
+
+- **Delete Feature**
+    - Implemented the `delete-student` command that allows tutors to delete students by name, subject, or level.
+
+- **Payment Tracker**
+    - Designed and implemented all payment related commands:
+        - `mark-paid` — to mark a month as paid for a student.
+        - `mark-unpaid` and `mark-undone` — to mark a month as unpaid for a student.
+    - Extended the `Person` and `AddressBook` models to include the payment system using a `bitset` and handled data persistence through JSON storage.
+    - Updated the UI (`PersonCard`) to display payment details with the month using colour coded boxes.
+    - Created `JsonAdaptedPerson` for saving of payment data 
+
+
