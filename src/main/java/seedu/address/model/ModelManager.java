@@ -167,7 +167,6 @@ public class ModelManager implements Model {
     @Override
     public void setPerson(Person target, Person editedPerson) {
         requireAllNonNull(target, editedPerson);
-
         addressBook.setPerson(target, editedPerson);
     }
 
@@ -256,5 +255,11 @@ public class ModelManager implements Model {
     public void updateFilteredReminderList(Predicate<Reminder> predicate) {
         requireNonNull(predicate);
         filteredReminders.setPredicate(predicate);
+    }
+
+    @Override
+    public void refreshReminders() {
+        addressBook.refreshUnmodifiableReminders();
+        updateFilteredReminderList(PREDICATE_SHOW_ALL_REMINDERS);
     }
 }

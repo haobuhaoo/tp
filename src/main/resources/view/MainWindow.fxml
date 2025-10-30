@@ -50,13 +50,13 @@
                 </StackPane>
 
                 <!-- Group filter row -->
-                <HBox spacing="10">
+                <HBox spacing="10" styleClass="filter-bar">
                     <padding>
                         <Insets top="10" right="10" bottom="10" left="10"/>
                     </padding>
                     <Label text="Filter by group:"/>
-                    <ComboBox fx:id="groupFilterBox" prefWidth="220"/>
-                    <Label text="Choose “(All students)” to clear" styleClass="cell_small_label"/>
+                    <ComboBox fx:id="groupFilterBox" prefWidth="250"/>
+                    <Label text="Choose “(All students)” to clear filter" styleClass="cell_small_label"/>
                 </HBox>
 
                 <VBox fx:id="personList" styleClass="pane-with-border" minWidth="340" prefWidth="340"
