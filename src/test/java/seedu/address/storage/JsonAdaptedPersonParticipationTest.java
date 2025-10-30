@@ -74,4 +74,26 @@ public class JsonAdaptedPersonParticipationTest {
         assertEquals(LocalDate.parse("2025-09-11"),
                 restored.getParticipation().asList().get(1).getDate());
     }
+
+    @Test
+    public void jsonCreator_withInvalidParticipation_skipsInvalidRow() throws Exception {
+        // Valid lesson times from a real person
+        var lessonTimes = new java.util.ArrayList<JsonAdaptedLessonTime>();
+        var base = new seedu.address.testutil.PersonBuilder().build();
+        base.getLessonTime().forEach(lt -> lessonTimes.add(new JsonAdaptedLessonTime(lt)));
+        var homeworks = new java.util.ArrayList<JsonAdaptedHomework>();
+
+        var partList = new java.util.ArrayList<JsonAdaptedParticipationRecord>();
+        partList.add(new JsonAdaptedParticipationRecord("2025-09-19", 4)); // valid
+        partList.add(new JsonAdaptedParticipationRecord("2025-09-20", 9)); // invalid score -> will be skipped
+
+        JsonAdaptedPerson adapter = new JsonAdaptedPerson(
+                "Alex Yeoh", "98765432", lessonTimes, homeworks, "000000000000", partList);
+
+        var restored = adapter.toModelType();
+        assertEquals(1, restored.getParticipation().size());
+        assertEquals(LocalDate.parse("2025-09-19"),
+                restored.getParticipation().asList().get(0).getDate());
+    }
+
 }

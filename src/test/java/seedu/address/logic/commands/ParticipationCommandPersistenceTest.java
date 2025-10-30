@@ -29,75 +29,63 @@ import seedu.address.model.person.Person;
 import seedu.address.model.reminder.Reminder;
 import seedu.address.testutil.PersonBuilder;
 
-public class ParticipationCommandPersistenceTest
-{
+public class ParticipationCommandPersistenceTest {
+
     /**
      * Model stub that records whether setPerson(...) was invoked.
      */
-    static class ModelStubTrackingSetPerson implements Model
-    {
+    static class ModelStubTrackingSetPerson implements Model {
         private final Person person;
         private final AttendanceIndex index = new AttendanceIndex();
         private boolean setPersonCalled = false;
 
-        ModelStubTrackingSetPerson(String name)
-        {
+        ModelStubTrackingSetPerson(String name) {
             this.person = new PersonBuilder().withName(name).build();
         }
 
-        boolean isSetPersonCalled()
-        {
+        boolean isSetPersonCalled() {
             return setPersonCalled;
         }
 
-        private static String norm(String s)
-        {
+        private static String norm(String s) {
             return s.trim().replaceAll("\\s+", " ").toLowerCase();
         }
 
         @Override
-        public ReadOnlyAddressBook getAddressBook()
-        {
-            return new ReadOnlyAddressBook()
-            {
+        public ReadOnlyAddressBook getAddressBook() {
+            return new ReadOnlyAddressBook() {
                 private final ObservableList<Person> list =
                         FXCollections.observableArrayList(person);
 
                 @Override
-                public ObservableList<Person> getPersonList()
-                {
+                public ObservableList<Person> getPersonList() {
                     return list;
                 }
 
                 @Override
-                public ObservableList<Reminder> getReminderList()
-                {
+                public ObservableList<Reminder> getReminderList() {
                     return FXCollections.observableArrayList();
                 }
             };
         }
 
         @Override
-        public void updateFilteredPersonList(Predicate<Person> predicate)
-        {
+        public void updateFilteredPersonList(Predicate<Person> predicate) {
             // no-op for test
         }
 
         @Override
-        public AttendanceIndex getAttendanceIndex()
-        {
+        public AttendanceIndex getAttendanceIndex() {
             return index;
         }
 
         @Override
-        public boolean hasPersonName(String name)
-        {
+        public boolean hasPersonName(String name) {
             return norm(name).equals(norm(person.getName().fullName));
         }
 
         @Override
-        public void setPerson(Person target, Person editedPerson)
-        {
+        public void setPerson(Person target, Person editedPerson) {
             setPersonCalled = true;
         }
 
@@ -112,16 +100,14 @@ public class ParticipationCommandPersistenceTest
         @Override public boolean hasPerson(Person person) { return false; }
         @Override public void deletePerson(Person target) { }
         @Override public void addPerson(Person person) { }
-        @Override public ObservableList<Person> getFilteredPersonList()
-        {
+        @Override public ObservableList<Person> getFilteredPersonList() {
             return FXCollections.observableArrayList();
         }
         @Override public boolean hasReminder(Reminder reminder) { return false; }
         @Override public void deleteReminder(Reminder target) { }
         @Override public void addReminder(Reminder reminder) { }
         @Override public void setReminder(Reminder target, Reminder editedReminder) { }
-        @Override public ObservableList<Reminder> getFilteredReminderList()
-        {
+        @Override public ObservableList<Reminder> getFilteredReminderList() {
             return FXCollections.observableArrayList();
         }
         @Override public void updateFilteredReminderList(Predicate<Reminder> predicate) { }
@@ -130,19 +116,16 @@ public class ParticipationCommandPersistenceTest
         @Override public void deleteGroup(GroupName name) { }
         @Override public void addToGroup(GroupName name, List<Person> members) { }
         @Override public void removeFromGroup(GroupName name, List<Person> members) { }
-        @Override public ObservableList<Group> getGroupList()
-        {
+        @Override public ObservableList<Group> getGroupList() {
             return FXCollections.observableArrayList();
         }
-        @Override public Set<GroupName> getGroupsOf(Person person)
-        {
+        @Override public Set<GroupName> getGroupsOf(Person person) {
             return Collections.emptySet();
         }
     }
 
     @Test
-    public void execute_triggersSetPerson_andAddsRecord() throws Exception
-    {
+    public void execute_triggersSetPerson_andAddsRecord() throws Exception {
         ModelStubTrackingSetPerson model = new ModelStubTrackingSetPerson("Alex Yeoh");
         ParticipationCommand cmd = new ParticipationCommand("Alex Yeoh", "2025-09-19", "4");
 
@@ -167,16 +150,12 @@ public class ParticipationCommandPersistenceTest
     }
 
     @Test
-    public void execute_emptyName_throws()
-    {
+    public void execute_emptyName_throws() {
         ModelStubTrackingSetPerson model = new ModelStubTrackingSetPerson("Alex Yeoh");
         ParticipationCommand cmd = new ParticipationCommand("   ", "2025-09-19", "3");
-        try
-        {
+        try {
             cmd.execute(model);
-        }
-        catch (CommandException e)
-        {
+        } catch (CommandException e) {
             assertEquals("Invalid student name: name cannot be empty.", e.getMessage());
         }
     }
