@@ -36,6 +36,8 @@ public class MarkPaidCommandTest {
 
         Model model = new ModelManager();
         model.addPerson(unpaidAlice);
+        model.refreshReminders();
+        assertEquals(1, model.getFilteredReminderList().size());
 
         Index index = Index.fromOneBased(1);
         int month = 5;
@@ -43,7 +45,7 @@ public class MarkPaidCommandTest {
         markPaidCommand.execute(model);
 
         assertTrue(model.getFilteredPersonList().get(0).isPaidForMonth(5));
-        assertEquals(0, model.getFilteredReminderList().size());
+        assertEquals(1, model.getFilteredReminderList().size()); // payment not for current month
     }
 
     @Test
@@ -106,7 +108,6 @@ public class MarkPaidCommandTest {
         int currentMonth = LocalDate.now().getMonth().getValue();
         UnmodifiablePaymentReminder reminder =
                 UnmodifiablePaymentReminder.of(currentMonth, personToMark, getMonthName(currentMonth));
-        testModel.deleteReminder(reminder);
 
         MarkPaidCommand markPaidCommand = new MarkPaidCommand(INDEX_FIRST_PERSON, currentMonth);
         markPaidCommand.execute(testModel);
@@ -122,7 +123,7 @@ public class MarkPaidCommandTest {
         int currentMonth = LocalDate.now().getMonth().getValue();
         UnmodifiablePaymentReminder reminder =
                 UnmodifiablePaymentReminder.of(currentMonth, personToMark, getMonthName(currentMonth));
-        assertTrue(testModel.hasReminder(reminder));
+        testModel.addReminder(reminder);
 
         MarkPaidCommand markPaidCommand = new MarkPaidCommand(INDEX_FIRST_PERSON, currentMonth);
         markPaidCommand.execute(testModel);

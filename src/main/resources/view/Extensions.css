@@ -1,4 +1,3 @@
-
 .error {
     -fx-text-fill: #d06651 !important; /* The error class should always override the default text-fill style */
 }
@@ -31,3 +30,81 @@
     -fx-text-fill: white;              /* readable on dark theme */
 }
 
+/* ===== Group Filter (dark inverted look) ===== */
+.combo-box.group-filter {
+    -fx-background-color: #2e2e2e;
+    -fx-background-radius: 6;
+    -fx-border-color: #4a4a4a;
+    -fx-border-radius: 6;
+    -fx-border-width: 1;
+    -fx-padding: 0.1em 0.4em;
+}
+
+.combo-box.group-filter:focused {
+    -fx-border-color: #7aa2f7;
+    -fx-effect: dropshadow(gaussian, rgba(122,162,247,0.25), 6, 0, 0, 0);
+}
+
+.combo-box.group-filter .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.combo-box.group-filter .arrow {
+    -fx-background-color: #dcdcdc;
+}
+
+.combo-box.group-filter .list-cell {
+    -fx-text-fill: #e8e8e8;
+    -fx-background-color: transparent;
+    -fx-padding: 0.35em 0.5em;
+}
+
+.combo-box.group-filter .text-input {
+    -fx-background-color: #2e2e2e;
+    -fx-text-fill: #e8e8e8;
+    -fx-prompt-text-fill: #9a9a9a;
+    -fx-background-insets: 0;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: #2e2e2e;
+    -fx-control-inner-background: #2e2e2e;
+    -fx-background-radius: 6;
+    -fx-padding: 4;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 12, 0, 0, 4);
+    -fx-border-color: #3a3a3a;
+    -fx-border-radius: 6;
+}
+
+.combo-box-popup .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e8e8e8;
+    -fx-padding: 0.45em 0.6em;
+}
+
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: rgba(122,162,247,0.16);
+}
+
+.combo-box-popup .list-cell:filled:selected,
+.combo-box-popup .list-cell:filled:selected:hover {
+    -fx-background-color: rgba(122,162,247,0.28);
+    -fx-text-fill: #ffffff;
+}
+
+.combo-box.group-filter:disabled {
+    -fx-opacity: 0.55;
+}
+
+/* Black background strip for the filter row */
+.filter-bar {
+    -fx-background-color: #4c4b4e;   /* solid black-ish */
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-padding: 6 12;               /* a little breathing room */
+}
+
+/* Text on the bar should be light */
+.filter-bar .label {
+    -fx-text-fill: #e8e8e8;
+}

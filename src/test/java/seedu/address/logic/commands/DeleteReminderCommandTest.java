@@ -17,6 +17,7 @@ import static seedu.address.testutil.TypicalReminders.REMINDER_2;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
 
@@ -238,12 +239,13 @@ public class DeleteReminderCommandTest {
 
     @Test
     public void execute_deleteUnmodifiableReminderByIndex() {
+        Model model = new ModelManager();
         Person person = new PersonBuilder().build();
         UnmodifiablePaymentReminder reminder = UnmodifiablePaymentReminder.of(6, person, "June");
         model.addReminder(reminder);
 
         DeleteReminderCommand command = new DeleteReminderCommand(INDEX_FIRST_REMINDER);
-        String expectedMessage = Messages.MESSAGE_UNMODIFIABLE_REMINDER + reminder.getModifyMessage();
+        String expectedMessage = Messages.MESSAGE_UNMODIFIABLE_REMINDER + "\n" + reminder.getModifyMessage();
 
         assertCommandFailure(command, model, expectedMessage);
     }
@@ -255,11 +257,16 @@ public class DeleteReminderCommandTest {
         UnmodifiablePaymentReminder reminder = UnmodifiablePaymentReminder.of(6, person, "June");
         model.addReminder(reminder);
 
-        DeleteReminderCommand command = new DeleteReminderCommand(
-                new ReminderFieldsContainsKeywordsPredicate(List.of(person.getName().toString())));
-        String expectedMessage = Messages.MESSAGE_UNMODIFIABLE_REMINDER + reminder.getModifyMessage();
+        ReminderFieldsContainsKeywordsPredicate pred =
+                new ReminderFieldsContainsKeywordsPredicate(List.of(person.getName().toString()));
+        DeleteReminderCommand command = new DeleteReminderCommand(pred);
+        String expectedMessage = DeleteReminderCommand.MESSAGE_NO_MATCH;
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        Predicate<Reminder> modifiableFilter = Reminder::isModifiable;
+        Predicate<Reminder> combined = pred.and(modifiableFilter);
+        expectedModel.updateFilteredReminderList(combined);
 
-        assertCommandFailure(command, model, expectedMessage);
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
     }
 
     /**

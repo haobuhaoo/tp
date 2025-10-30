@@ -14,7 +14,6 @@ import seedu.address.model.Model;
 import seedu.address.model.homework.Homework;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
-import seedu.address.model.reminder.UnmodifiableHwReminder;
 
 
 /**
@@ -56,6 +55,26 @@ public class AddHomeworkCommand extends Command {
         requireNonNull(model);
 
         //Able to add homework after search command
+        Person target = getPerson(model);
+
+        target.addHomework(homework);
+        model.refreshReminders();
+
+        return new CommandResult(String.format(
+                MESSAGE_SUCCESS,
+                target.getName().fullName,
+                homework.getDescription(),
+                homework.getDeadline()
+        ));
+    }
+
+    /**
+     * Retrieves the person to add homework to from the model based on the provided student name.
+     *
+     * @throws CommandException if the student is not found or homework list of the student already
+     *                          contains the homework.
+     */
+    private Person getPerson(Model model) throws CommandException {
         List<Person> lastShownList = model.getFilteredPersonList();
         Person target = null;
         for (Person p : lastShownList) {
@@ -72,18 +91,7 @@ public class AddHomeworkCommand extends Command {
         if (target.getHomeworkList().contains(homework)) {
             throw new CommandException(MESSAGE_DUPLICATE_HOMEWORK);
         }
-
-        target.addHomework(homework);
-
-        UnmodifiableHwReminder undoneReminder = UnmodifiableHwReminder.of(target, homework);
-        model.addReminder(undoneReminder);
-
-        return new CommandResult(String.format(
-                MESSAGE_SUCCESS,
-                target.getName().fullName,
-                homework.getDescription(),
-                homework.getDeadline()
-        ));
+        return target;
     }
 
     @Override

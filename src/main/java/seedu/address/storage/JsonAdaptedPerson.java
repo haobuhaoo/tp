@@ -27,6 +27,7 @@ class JsonAdaptedPerson {
     private final String paymentStatus;
     private final List<JsonAdaptedHomework> homeworks = new ArrayList<>();
     private final List<JsonAdaptedLessonTime> lessonTime = new ArrayList<>();
+    private final List<JsonAdaptedParticipationRecord> participation = new ArrayList<>();
 
 
     /**
@@ -34,10 +35,11 @@ class JsonAdaptedPerson {
      */
     @JsonCreator
     public JsonAdaptedPerson(@JsonProperty("name") String name,
-                         @JsonProperty("phone") String phone,
-                         @JsonProperty("lessonTime") List<JsonAdaptedLessonTime> lessonTime,
-                         @JsonProperty("homeworks") List<JsonAdaptedHomework> homeworks,
-                         @JsonProperty("paymentStatus") String paymentStatus) {
+                            @JsonProperty("phone") String phone,
+                            @JsonProperty("lessonTime") List<JsonAdaptedLessonTime> lessonTime,
+                            @JsonProperty("homeworks") List<JsonAdaptedHomework> homeworks,
+                            @JsonProperty("paymentStatus") String paymentStatus,
+                            @JsonProperty("participation") List<JsonAdaptedParticipationRecord> participation) {
         this.name = name;
         this.phone = phone;
         this.paymentStatus = paymentStatus;
@@ -47,7 +49,20 @@ class JsonAdaptedPerson {
         if (lessonTime != null) {
             this.lessonTime.addAll(lessonTime);
         }
+        if (participation != null) {
+            this.participation.addAll(participation);
+        }
     }
+
+    // Back-compat convenience ctor used by existing tests (no participation provided)
+    public JsonAdaptedPerson(String name,
+                            String phone,
+                            List<JsonAdaptedLessonTime> lessonTime,
+                            List<JsonAdaptedHomework> homeworks,
+                            String paymentStatus) {
+        this(name, phone, lessonTime, homeworks, paymentStatus, null);
+    }
+
 
     /**
      * Converts a given {@code Person} into this class for Jackson use.
@@ -66,6 +81,9 @@ class JsonAdaptedPerson {
                 .map(JsonAdaptedLessonTime::new)
                 .toList());
         source.getHomeworkList().forEach(hw -> homeworks.add(new JsonAdaptedHomework(hw)));
+        source.getParticipation().asList()
+                .forEach(rec -> participation.add(new JsonAdaptedParticipationRecord(rec)));
+
     }
 
     /**
@@ -119,6 +137,15 @@ class JsonAdaptedPerson {
             hwList.add(jhw.toModelType());
         }
         person.setHomeworkList(hwList);
+
+        // Reconstruct participation history (tolerate bad legacy rows)
+        for (JsonAdaptedParticipationRecord r : participation) {
+            try {
+                person.getParticipation().add(r.toModelType());
+            } catch (Exception ignored) {
+                // skip invalid rows instead of failing whole file
+            }
+        }
 
         return person;
     }
