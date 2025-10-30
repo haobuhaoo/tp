@@ -32,7 +32,7 @@ public class MarkDoneHwCommand extends Command {
             + PREFIX_NAME + "Marcus "
             + PREFIX_INDEX + "1";
 
-    public static final String MESSAGE_SUCCESS = "Marked homework for %1$s: %2$s";
+    public static final String MESSAGE_SUCCESS = "Marked homework as done for %1$s: %2$s";
     public static final String MESSAGE_NO_PERSON_FOUND = "No student with given name";
     public static final String MESSAGE_INVALID_HW_INDEX = "Invalid homework index: %d (valid range: 1 to %d)";
 
