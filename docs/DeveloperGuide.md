@@ -479,6 +479,15 @@ Tutors can **add**, **view**, **delete**, and **mark homework as done or undone*
 
 Each of these features interacts with the same underlying `Homework` model and `HomeworkList` stored within every `Person` object.
 
+### Search
+<puml src="diagrams/SearchSequence.puml"/>
+
+* The activity diagram above illustrates the flow of the search-student command.  
+* When the tutor enters a search query (e.g., `search-student k/10:00`), the command parser extracts the keyword and creates a predicate that checks whether any student’s fields (such as name, phone number, lesson time, or subject) contain the keyword.  
+* The model then updates its filtered student list based on this predicate.  
+* If one or more matches are found, the system displays a success message showing the number of students found; otherwise, it shows a message indicating that no students match the search keyword.
+ this the text
+
 ### \[Proposed\] Undo/redo feature
 
 #### Proposed Implementation
