@@ -20,7 +20,7 @@ ClassConnect is a **desktop app for managing students' profile, optimized for us
 
 1. Download the latest `.jar` file from [here](https://github.com/AY2526S1-CS2103T-F12-2/tp/releases).
 
-1. Copy the file to the folder you want to use as the _home folder_ for your AddressBook.
+1. Copy the file to the folder you want to use as the _home folder_ for ClassConnect.
 
 1. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar classconnect.jar` command to run the application.<br>
    A GUI similar to the below should appear in a few seconds. Note how the app contains some sample data.<br>
@@ -184,13 +184,16 @@ Examples:
 2. Deleting by `KEYWORD`
    * `delete-student k/marcus` Deletes the student named `marcus` if only one match is found.
    * If multiple matches are found, the app will show possible matches.<br>
-   ```
-   Multiple students match the given keyword(s). Please refine your search:
-   1. marcus tan; Phone: 98765432; Lesson Time: 10:00 am Sat;
-   2. marcus ng; Phone: 98765423; Lesson Time: 10:00 am Mon;
-   ```
-   * You can then refine your search by including full name, phone number or lesson time. e.g. `delete-student k/98765432`.
-   * If no matches are found, the app will display `No students match the given keyword(s).`.
+```
+
+Multiple students match the given keyword(s). Please refine your search:
+
+1. marcus tan; Phone: 98765432; Lesson Time: 10:00 am Sat;
+2. marcus ng; Phone: 98765423; Lesson Time: 10:00 am Mon;
+
+```
+* You can then refine your search by including full name, phone number or lesson time. e.g. `delete-student k/98765432`.
+* If no matches are found, the app will display `No students match the given keyword(s).`.
 
 Notes:
 * You cannot use `i/` and `k/` in the same command.
@@ -204,9 +207,9 @@ Format: `group-create g/GROUP`
 
 * Creates a group with the specified `GROUP` name.
 * Group names are case-insensitive, trimmed, and must follow:
-  - 1 to 30 characters.
-  - Letters, digits, spaces, and the symbols `-` or `/` only.
-  - Multiple spaces are collapsed.
+- 1 to 30 characters.
+- Letters, digits, spaces, and the symbols `-` or `/` only.
+- Multiple spaces are collapsed.
 * Command fails if a group with the same `GROUP` name already exists.
 
 Examples:
@@ -293,31 +296,35 @@ Format: `mark-paid i/INDEX m/MONTH`
 Examples:
 * `mark-paid i/1 m/1` Marks the 1st student in the list as paid for the month January.
 ```
+
 Marked student as paid: marcus ng
 Month: January
 Payment Status: 🟩 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥
-  ```
+
+```
 
 ### Marking unpaid status : `mark-unpaid`
 
 Marks a student's payment status for a specific month as unpaid.
 
-Format: `mark-upaid i/INDEX m/MONTH`
+Format: `mark-unpaid i/INDEX m/MONTH`
 
 * Marks the student at the specified `INDEX` as unpaid for the specified `MONTH`.
 * `INDEX` refers to the position of the student in the displayed student list.
 * The `INDEX` must be a positive integer 1, 2, 3, ...
 * `MONTH` must be an integer from 1 to 12, representing each month from January to December.
-* If the given student has already paid for the given month, the command is rejected and displays:<br>
+* If the given student has already been marked as unpaid for the given month, the command is rejected and displays:<br>
   `Student marcus ng is already marked as unpaid for January.`.
 * Payment status is displayed as 12 colored boxes (🟩 for paid, 🟥 for unpaid) representing the 12 months January to December.
 
 Examples:
-* `mark-upaid i/1 m/1` Marks the 1st student in the list as unpaid for January.
+* `mark-unpaid i/1 m/1` Marks the 1st student in the list as unpaid for January.
 ```
+
 Marked student as unpaid: marcus ng
 Month: January
 Payment Status: 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥
+
 ```
 
 ### Adding homework: `add-homework`
@@ -388,29 +395,29 @@ Marked homework as undone for Marcus: Science Worksheet 2
   ```
 ### Recording participation: `participation`
 
-Records a student's participation score for a specific class date.
+Records a student's participation score for a specific class date and updates the history shown on the student card.
 
 Format: `participation n/NAME d/DATE s/SCORE`
 
-* Records the participation score `SCORE` for the student with the specified `NAME` on the given class date `DATE`.
-* `NAME` refers to the student’s full name. It is case-insensitive.
-* `DATE` refers to the class date in `YYYY-MM-DD` format. e.g. `2025-09-19`.
-* `SCORE` refers to the participation score for the student. It is an integer from 0 to 5.
+* `NAME` is case-insensitive and matched even if you have extra spaces. e.g. `alex  yeoh` matches `Alex Yeoh`.
+* `DATE` must be in `YYYY-MM-DD` format. e.g. `2025-09-19`.
+* `SCORE` must be an integer from **0** to **5**.
 
 Examples:
 * `participation n/Alex Yeoh d/2025-09-19 s/3` Records a participation score of `3` for `Alex Yeoh` on `2025-09-19`.
 
 Notes:
-* `NAME` are matched ignoring extra spaces and letter case. e.g., `alex  yeoh` matches `Alex Yeoh`.
-* If the `SCORE` is not a number, you’ll see: `Invalid participation score. Use an integer 0 to 5.`.
-* If the `SCORE` is outside the range, you’ll see: `Invalid participation score. Must be between 0 and 5 inclusive.`
-* The history shows up to five most recent entries.
+* If `SCORE` is not a number, you’ll see: `Invalid participation score. Use an integer 0 to 5.`
+* If `SCORE` is outside the range, you’ll see: `Invalid participation score. Must be between 0 and 5 inclusive.`
+* The history shows **up to five most recent** classes. The newest is on the **right**.
+* If you record participation **multiple times for the same date**, the **latest score** for that date is shown (older one is effectively replaced in the view).
+* Your data is saved automatically; the history will still be there after restarting the app.
 
-What you’ll see in the UI:
-- The score is shown on the right side of each person card which has two rows:
-    - Top row: Dates (formatted `MM-dd`) for up to the last five classes, oldest → newest.
-    - Bottom row: Five boxes showing the corresponding participation scores.
-- When you record a new score, the date and score shift left as the history grows; the newest class is the rightmost box.
+**What you’ll see in the UI:**
+- On each person card (right side), there are **two rows**:
+  - **Top row:** Dates (`MM-dd`) for up to the last five classes, oldest → newest.
+  - **Bottom row:** Five boxes showing the corresponding participation scores.
+- When you add a new score, the timeline shifts **left** and the newest score appears at the **rightmost** box.
 
 ### Adding reminder: `add-reminder`
 
@@ -419,8 +426,8 @@ Adds a reminder to the reminder list.
 Format: `add-reminder d/DUE_DATE desc/DESCRIPTION`
 
 * Adds a reminder with the given `DUE_DATE` and `DESCRIPTION` to the reminder list.
-* `DUE_DATE` refers to the due date of the reminder. It could either be in the `YYYY-MM-DD HHMM` format or `YYYY-MM-DD` format. e.g. `2025-10-27 1400` or `2025-10-27`.
-* `DESCRIPTION` refers to the details of the reminder.
+* `DUE_DATE` can be `YYYY-MM-DD HHMM` **or** `YYYY-MM-DD`. e.g. `2025-10-27 1400` or `2025-10-27`.
+* `DESCRIPTION` is free text.
 
 Examples:
 * `add-reminder d/2025-10-27 1500 desc/Tuition later at 3pm` Adds a reminder with due date `27 Oct 2025 03:00 pm` and description `Tuition later at 3pm`.
@@ -485,13 +492,16 @@ Examples:
 2. Deleting by `KEYWORD`
    * `delete-reminder k/feedback` Deletes the reminder with description containing `feedback` if only one match is found.
    * If multiple matches are found, the app will show possible matches.<br>
-   ```
-   Multiple reminders match the given keyword(s). Please refine your search:
-   1. Due: 01 Nov 2025; Description: Feedback session for Alice;
-   2. Due: 03 Nov 2025 02:00 pm; Description: Feedback session for Benson;
-    ```
-    * You can then refine your search by including the full description. e.g. `delete-reminder k/Feedback session for Alice`.
-    * If no matches are found, the app will display `No reminders match the given keyword(s).`.
+```
+
+Multiple reminders match the given keyword(s). Please refine your search:
+
+1. Due: 01 Nov 2025; Description: Feedback session for Alice;
+2. Due: 03 Nov 2025 02:00 pm; Description: Feedback session for Benson;
+
+```
+* You can then refine your search by including the full description. e.g. `delete-reminder k/Feedback session for Alice`.
+* If no matches are found, the app will display `No reminders match the given keyword(s).`.
 
 Notes:
 * You cannot use `i/` and `k/` in the same command.
@@ -560,7 +570,7 @@ _Details coming soon ..._
 Action     | Format, Examples
 -----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 **Add Homework**    | `add-homework n/NAME desc/DESCRIPTION by/DEADLINE` <br> e.g., `add-homework n/Marcus desc/Math Worksheet 1 by/2025-10-27`
-**Add Reminder**    | `add-reminder d/DATETIME desc/DESCRIPTION` <br> e.g., `add-reminder d/2025-10-12 1500 desc/Submit assignment`
+**Add Reminder**    | `add-reminder d/DATETIME desc/DESCRIPTION` <br> e.g., `add-reminder d/2025-10-27 1400 desc/Submit assignment`
 **Add Student**    | `add-student n/NAME p/PHONE_NUMBER t/LESSON_TIME...` <br> e.g., `add-student n/James Ho p/98765432 t/1000 Mon t/1400 Wed`
 **Add Student to Group**   | `group-add g/GROUP i/INDEX...` <br> e.g., `group-add g/Group A i/1 i/3`
 **Clear**  | `clear`
