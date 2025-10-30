@@ -26,7 +26,7 @@ Refer to the guide [_Setting up and getting started_](SettingUp.md).
 
 ### Architecture
 
-<puml src="diagrams/ArchitectureDiagram.puml" width="280" />
+<img src="diagrams/ArchitectureDiagram.png" width="280" />
 
 The ***Architecture Diagram*** given above explains the high-level design of the App.
 
@@ -51,7 +51,7 @@ The bulk of the app's work is done by the following four components:
 
 The *Sequence Diagram* below shows how the components interact with each other for the scenario where the user issues the command `delete 1`.
 
-<puml src="diagrams/ArchitectureSequenceDiagram.puml" width="574" />
+<img src="diagrams/ArchitectureSequenceDiagram.png" width="574" />
 
 Each of the four main components (also shown in the diagram above),
 
@@ -60,7 +60,7 @@ Each of the four main components (also shown in the diagram above),
 
 For example, the `Logic` component defines its API in the `Logic.java` interface and implements its functionality using the `LogicManager.java` class which follows the `Logic` interface. Other components interact with a given component through its interface rather than the concrete class (reason: to prevent outside component's being coupled to the implementation of a component), as illustrated in the (partial) class diagram below.
 
-<puml src="diagrams/ComponentManagers.puml" width="300" />
+<img src="diagrams/ComponentManagers.png" width="300" />
 
 The sections below give more details of each component.
 
@@ -68,7 +68,7 @@ The sections below give more details of each component.
 
 The **API** of this component is specified in [`Ui.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/ui/Ui.java)
 
-<puml src="diagrams/UiClassDiagram.puml" alt="Structure of the UI Component"/>
+<img src="diagrams/UiClassDiagram.png" alt="Structure of the UI Component"/>
 
 The UI consists of a `MainWindow` that is made up of parts e.g.`CommandBox`, `ResultDisplay`, `PersonListPanel`, `StatusBarFooter` etc. All these, including the `MainWindow`, inherit from the abstract `UiPart` class which captures the commonalities between classes that represent parts of the visible GUI.
 
@@ -87,11 +87,11 @@ The `UI` component,
 
 Here's a (partial) class diagram of the `Logic` component:
 
-<puml src="diagrams/LogicClassDiagram.puml" width="550"/>
+<img src="diagrams/LogicClassDiagram.png" width="550"/>
 
 The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("delete 1")` API call as an example.
 
-<puml src="diagrams/DeleteSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the `delete 1` Command" />
+<img src="diagrams/DeleteSequenceDiagram.png" alt="Interactions Inside the Logic Component for the `delete 1` Command" />
 
 <box type="info" seamless>
 
@@ -108,7 +108,7 @@ How the `Logic` component works:
 
 Here are the other classes in `Logic` (omitted from the class diagram above) that are used for parsing a user command:
 
-<puml src="diagrams/ParserClasses.puml" width="600"/>
+<img src="diagrams/ParserClasses.png" width="600"/>
 
 How the parsing works:
 * When called upon to parse a user command, the `AddressBookParser` class creates an `XYZCommandParser` (`XYZ` is a placeholder for the specific command name e.g., `AddCommandParser`) which uses the other classes shown above to parse the user command and create a `XYZCommand` object (e.g., `AddCommand`) which the `AddressBookParser` returns back as a `Command` object.
@@ -117,7 +117,7 @@ How the parsing works:
 ### Model component
 **API** : [`Model.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/model/Model.java)
 
-<puml src="diagrams/ModelClassDiagram.puml" width="450" />
+<img src="diagrams/ModelClassDiagram.png" width="450" />
 
 
 The `Model` component,
@@ -131,7 +131,7 @@ The `Model` component,
 
 **Note:** An alternative (arguably, a more OOP) model is given below. It has a `Tag` list in the `AddressBook`, which `Person` references. This allows `AddressBook` to only require one `Tag` object per unique tag, instead of each `Person` needing their own `Tag` objects.<br>
 
-<puml src="diagrams/BetterModelClassDiagram.puml" width="450" />
+<img src="diagrams/BetterModelClassDiagram.png" width="450" />
 
 </box>
 
@@ -140,7 +140,7 @@ The `Model` component,
 
 **API** : [`Storage.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/storage/Storage.java)
 
-<puml src="diagrams/StorageClassDiagram.puml" width="550" />
+<img src="diagrams/StorageClassDiagram.png" width="550" />
 
 The `Storage` component,
 * can save both address book data and user preference data in JSON format, and read them back into corresponding objects.
@@ -169,19 +169,46 @@ Key ideas
 
 * UI reads memberships via a small bridge (UiGroupAccess) to render badges next to each name.
 
-<puml src="diagrams/Grouping.puml" alt="Class Diagram for Grouping" />
+<img src="diagrams/Grouping.png" alt="Class Diagram for Grouping" />
 
 ### Attendance / Participation Command (overview)
 
 The participation feature records a per-class score (`s/0..5`) for a student and updates the 5-box history shown on each Person card, with the **class date above** each box and the **score inside**.
 
-<img src="diagrams/src/AttendanceCommand.png" alt="Attendance / Participation Command Diagram" width="720"/>
+<img src="diagrams/tracing/AttendanceCommand.png" alt="Attendance / Participation Command Diagram" width="720"/>
+
+
+### Add Homework 
+
+The add-homework feature lets tutors record homework tasks for individual students. Each homework entry contains a **description**, **due date**, and completion status (default: not done).
+
+**Key ideas**
+- A `Homework` stores its description, due date, and done status.
+- Each `Person` maintains a list of `Homework` objects.
+- The command operates through the `Model` interface and updates storage via the `AddressBook`.
+- The UI displays homework items under each student card, showing description, due date, and status badges.
+- Duplicate entries (same description and date) are prevented.
+
+<img src="diagrams/HomeworkUseCase.png"/>
+
+The diagram above illustrates the **Homework Management** use cases in ClassConnect.  
+Tutors can **add**, **view**, **delete**, and **mark homework as done or undone** for each student.
+
+- **Add Homework**: Creates a new homework entry with a description and due date for a selected student.
+- **Delete Homework**: Removes a homework entry from the student’s list when it is no longer needed.
+- **Mark Homework as Done / Undone**: Updates the completion status of an existing homework task, helping tutors keep track of student progress.
+- **View Homework List**: Displays all homework items for each student, including their deadlines and status badges.
+
+Each of these features interacts with the same underlying `Homework` model and `HomeworkList` stored within every `Person` object.  
+
+
+
 
 ### Add student feature
 
 This feature adds a student into the students list. This feature is facilitated by the `LogicManger`, `AddressBookParser`, `AddCommandParser`, `AddCommand`, `CommandResult` and `Model` classes. Given below is a high level overview of how a student is being added into the students list.
 
-<puml src="diagrams/AddSequenceDiagram.puml" width="550" />
+<img src="diagrams/AddSequenceDiagram.png" width="550" />
 
 ### \[Proposed\] Undo/redo feature
 
@@ -199,15 +226,15 @@ Given below is an example usage scenario and how the undo/redo mechanism behaves
 
 Step 1. The user launches the application for the first time. The `VersionedAddressBook` will be initialized with the initial address book state, and the `currentStatePointer` pointing to that single address book state.
 
-<puml src="diagrams/UndoRedoState0.puml" alt="UndoRedoState0" />
+<img src="diagrams/UndoRedoState0.png" alt="UndoRedoState0" />
 
 Step 2. The user executes `delete 5` command to delete the 5th person in the address book. The `delete` command calls `Model#commitAddressBook()`, causing the modified state of the address book after the `delete 5` command executes to be saved in the `addressBookStateList`, and the `currentStatePointer` is shifted to the newly inserted address book state.
 
-<puml src="diagrams/UndoRedoState1.puml" alt="UndoRedoState1" />
+<img src="diagrams/UndoRedoState1.png" alt="UndoRedoState1" />
 
 Step 3. The user executes `add n/David …​` to add a new person. The `add` command also calls `Model#commitAddressBook()`, causing another modified address book state to be saved into the `addressBookStateList`.
 
-<puml src="diagrams/UndoRedoState2.puml" alt="UndoRedoState2" />
+<img src="diagrams/UndoRedoState2.png" alt="UndoRedoState2" />
 
 <box type="info" seamless>
 
@@ -217,7 +244,7 @@ Step 3. The user executes `add n/David …​` to add a new person. The `add` co
 
 Step 4. The user now decides that adding the person was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoAddressBook()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous address book state, and restores the address book to that state.
 
-<puml src="diagrams/UndoRedoState3.puml" alt="UndoRedoState3" />
+<img src="diagrams/UndoRedoState3.png" alt="UndoRedoState3" />
 
 
 <box type="info" seamless>
@@ -229,7 +256,7 @@ than attempting to perform the undo.
 
 The following sequence diagram shows how an undo operation goes through the `Logic` component:
 
-<puml src="diagrams/UndoSequenceDiagram-Logic.puml" alt="UndoSequenceDiagram-Logic" />
+<img src="diagrams/UndoSequenceDiagram-Logic.png" alt="UndoSequenceDiagram-Logic" />
 
 <box type="info" seamless>
 
@@ -239,7 +266,7 @@ The following sequence diagram shows how an undo operation goes through the `Log
 
 Similarly, how an undo operation goes through the `Model` component is shown below:
 
-<puml src="diagrams/UndoSequenceDiagram-Model.puml" alt="UndoSequenceDiagram-Model" />
+<img src="diagrams/UndoSequenceDiagram-Model.png" alt="UndoSequenceDiagram-Model" />
 
 The `redo` command does the opposite — it calls `Model#redoAddressBook()`, which shifts the `currentStatePointer` once to the right, pointing to the previously undone state, and restores the address book to that state.
 
@@ -251,15 +278,15 @@ The `redo` command does the opposite — it calls `Model#redoAddressBook()`,
 
 Step 5. The user then decides to execute the command `list`. Commands that do not modify the address book, such as `list`, will usually not call `Model#commitAddressBook()`, `Model#undoAddressBook()` or `Model#redoAddressBook()`. Thus, the `addressBookStateList` remains unchanged.
 
-<puml src="diagrams/UndoRedoState4.puml" alt="UndoRedoState4" />
+<img src="diagrams/UndoRedoState4.png" alt="UndoRedoState4" />
 
 Step 6. The user executes `clear`, which calls `Model#commitAddressBook()`. Since the `currentStatePointer` is not pointing at the end of the `addressBookStateList`, all address book states after the `currentStatePointer` will be purged. Reason: It no longer makes sense to redo the `add n/David …​` command. This is the behavior that most modern desktop applications follow.
 
-<puml src="diagrams/UndoRedoState5.puml" alt="UndoRedoState5" />
+<img src="diagrams/UndoRedoState5.png" alt="UndoRedoState5" />
 
 The following activity diagram summarizes what happens when a user executes a new command:
 
-<puml src="diagrams/CommitActivityDiagram.puml" width="250" />
+<img src="diagrams/CommitActivityDiagram.png" width="250" />
 
 #### Design considerations:
 
@@ -311,17 +338,17 @@ _{Explain here how the data archiving feature will be implemented}_
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …​  | I want to …​                                | So that I can…​                                   |
-|----------|----------|----------------------------------------------|---------------------------------------------------|
-| `* * *`  | tutor    | add a student                               | start tracking their details and progress         |
-| `* * *`  | tutor    | delete a student                            | remove those who have stopped lessons             |
-| `* * *`  | tutor    | record homework with deadlines              | remind students and follow up on time             |
-| `* * *`  | tutor    | record tuition payments                     | know which students have overdue fees             |
-| `* * *`  | tutor    | store parent contacts                       | reach guardians quickly                           |
-| `* *`    | tutor    | archive old students                        | keep my active list uncluttered                   |
-| `* *`    | tutor    | filter/search students by subject/level     | quickly find relevant students                    |
-| `*`      | tutor    | export data into a report                   | share with parents or keep records offline        |
-| `*`      | tutor    | set exam reminders                          | notify me ahead of students’ important dates      |
+| Priority | As a …​  | I want to …​                            | So that I can…​                                   |
+|----------|----------|-----------------------------------------|---------------------------------------------------|
+| `* * *`  | tutor    | add a student                           | start tracking their details and progress         |
+| `* * *`  | tutor    | delete a student                        | remove those who have stopped lessons             |
+| `* * *`  | tutor    | record homework with deadlines          | remind students and follow up on time             |
+| `* * *`  | tutor    | mark homework as done                   | keep track of students homework status           
+| `* * *`  | tutor    | record tuition payments                 | know which students have overdue fees             |
+| `* *`    | tutor    | archive old students                    | keep my active list uncluttered                   |
+| `* *`    | tutor    | filter/search students by subject/level | quickly find relevant students                    |
+| `*`      | tutor    | export data into a report               | share with parents or keep records offline        |
+| `*`      | tutor    | set exam reminders                      | notify me ahead of students’ important dates      |
 
 ---
 
@@ -370,6 +397,62 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ---
 
+**Use case 4: Add Homework**
+
+**MSS**
+1. Tutor enters `add-homework n/Marcus desc/Math Assignment 3 by/2025-11-15`.
+2. System validates the input.
+3. System adds the homework to the specified student.
+4. System displays success message:  Added homework for Marcus: Math Assignment 3 (due 2025-11-15)
+
+**Extensions**
+- 2a. Input is invalid (e.g., missing or wrong prefixes).  
+  → System shows an error message with the corresponding correct input format
+- 2b. Student name not found.  
+  → System displays "No student with given name" and aborts the operation.
+- 2c. Due date format is invalid.  
+  → System displays “Invalid date format!” with corresponding correct date format
+- 2d. Homework already in list
+  → System displays “This student has already been assigned this homework” and aborts operation
+
+**Use case 5: Mark Homework as Done**
+
+**MSS**
+1. Tutor enters `mark-done n/Marcus Yeoh i/1`.
+2. System validates the input.
+3. System marks the specified homework as done.
+4. System displays success message: Marked homework as done for Marcus: <description>
+
+**Extensions**
+- 2a. Input is invalid (e.g., missing or wrong prefixes).  
+  → System shows an error message with the correct input format.
+- 2b. Student name not found.  
+  → System displays "No student with given name" and aborts the operation.
+- 2c. Homework index out of range.  
+  → System displays “Invalid homework index: -1 (valid range: 1 to ?)” and aborts the operation.
+- 2d. Homework is already marked as done.  
+  → System displays same success message 
+
+**Use case 6: Mark Homework as Undone**
+
+**MSS**
+1. Tutor enters `mark-undone n/Marcus Yeoh i/1`.
+2. System validates the input.
+3. System marks the specified homework as undone.
+4. System displays success message: Marked homework as undone for Marcus: <description>
+
+**Extensions**
+- 2a. Input is invalid (e.g., missing or wrong prefixes).  
+  → System shows an error message with the correct input format.
+- 2b. Student name not found.  
+  → System displays "No student with given name" and aborts the operation.
+- 2c. Homework index out of range.  
+  → System displays “Invalid homework index: -1 (valid range: 1 to ?)” and aborts the operation.
+- 2d. Homework is already marked as undone.  
+  → System displays same success message.
+
+
+
 ### Non-Functional Requirements
 1. **Setup**
 - Should work on any mainstream OS as long as it has Java 17 or above installed.
@@ -407,3 +490,110 @@ using commands than using the mouse.
 - **Feedback**:  Either an error message or command successfully executed message
 - **Centralised** : Defined in one single place within the codebase
 
+## Appendix: Instructions
+
+
+### Homework Feature
+
+#### Adding a homework
+
+1. Adding a homework to an existing student
+
+  1. Prerequisites:
+    - Ensure at least one student (e.g., Marcus) is in the list using `list`.
+    - The student has no existing homework with the same description and due date.
+
+  1. Test case:  
+     `add-homework n/Marcus desc/Math Assignment 3 by/2025-11-15`  
+     Expected: Homework added to Marcus. Success message shown:  
+     `Added homework for Marcus: Math Assignment 3 (Due: 15 Nov 2025)`
+
+  1. Test case:  
+     `add-homework n/Marcus desc/Math Assignment 3 by/2025/11/15`  
+     Expected: Error message displayed:  
+     `Invalid date format! Please use YYYY-MM-DD.`
+
+  1. Test case:  
+     `add-homework n/Unknown Student desc/Math Assignment 3 by/2025-11-15`  
+     Expected: Error message displayed:  
+     `No student with given name.`
+
+  1. Test case:  
+     Add the same homework again with identical details.  
+     Expected: Error message displayed:  
+     `This student has already been assigned this homework.`
+
+---
+
+#### Marking homework as done
+
+1. Marking an existing homework as done
+
+  1. Prerequisites:
+    - At least one student (e.g., Marcus) has at least one homework entry.
+    - Homework is currently *undone* (not marked as done).
+
+  1. Test case:  
+     `mark-done n/Marcus i/1`  
+     Expected: Homework is marked as done. Success message shown:  
+     `Marked homework as done for Marcus: Math Assignment 3`
+
+  1. Test case:  
+     `mark-done n/Marcus i/99`  
+     Expected: Error message displayed:  
+     `Invalid homework index: 99 (valid range: 1 to [number of homeworks])`
+
+  1. Test case:  
+     Run `mark-done` again for the same homework.  
+     Expected: System displays same success message (no state change).
+
+---
+
+#### Marking homework as undone
+
+1. Marking a completed homework as undone
+
+  1. Prerequisites:
+    - At least one student (e.g., Marcus) has at least one **done** homework entry.
+
+  1. Test case:  
+     `mark-undone n/Marcus Yeoh i/1`  
+     Expected: Homework is marked as undone. Success message shown:  
+     `Marked homework as undone for Marcus: Math Assignment 3`
+
+  1. Test case:  
+     `mark-undone n/Marcus Yeoh i/99`  
+     Expected: Error message displayed:  
+     `Invalid homework index: 99 (valid range: 1 to [number of homeworks])`
+
+  1. Test case:  
+     Run `mark-undone` again for the same undone homework.  
+     Expected: System displays same success message (no state change).
+
+---
+
+
+
+
+## Appendix: Effort
+
+### Marcus Ng (PeanutButter1212)
+
+I was primarily responsible for implementing and testing the **Search feature** and the entire **Homework management system**, which includes:
+
+- **Search Feature**
+  - Implemented the `search-student` command that allows tutors to search for students by name, subject, or level.
+  - Designed a flexible parser to handle multiple prefixes and partial keyword matching.
+
+
+- **Homework Feature Set**
+  - Designed and implemented all homework-related commands:
+    - `add-homework` — to assign new homework to a student.
+    - `mark-done` and `mark-undone` — to update homework completion status.
+    - `delete-homework` — to remove homework entries.
+  - Extended the `Person` and `AddressBook` models to include homework lists and handled data persistence through JSON storage.
+  - Updated the UI (`PersonCard`) to display homework details with due dates and status badges.
+  - Created `JsonAdaptedHomework` for saving of homework data 
+
+
+## Appendix: Planned Enhancements
