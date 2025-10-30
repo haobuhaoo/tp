@@ -78,14 +78,16 @@ Adds a student to the student list.
 
 Format: `add-student n/NAME p/PHONE t/LESSON_TIME...`
 
-* `NAME` should not be blank and should only **contain letters, spaces, comma, brackets, hyphens, apostrophes, slash, at sign, full stop, with a maximum length of 50 characters**. It is also case-insensitive. e.g. `john doe` is the same as `John Doe`.
-* `PHONE` should only contain numbers, and should be **8 digits long starting with 8 or 9**, following Singapore's phone number format.
-* `LESSON_TIME` should be in **24-hour format without a colon**, followed by a **3-letter day abbreviation**.
+* `NAME` should not be blank and should only contain letters, spaces, comma, brackets, hyphens, apostrophes, slash, at sign, full stop, with a maximum length of 50 characters. It is also case-insensitive. e.g. `john doe` is the same as `John Doe`.
+* `PHONE` should only contain numbers, and should be 8 digits long starting with 8 or 9, following Singapore's phone number format.
+* `LESSON_TIME` should be in 24-hour format without a colon, followed by a 3-letter day abbreviation.
   e.g. `0900 Sun` for 9am Sunday, `1530 Thu` for 3:30pm Thursday. The time should be between `0000` and `2359`.
 
 Examples:
-* `add-student n/John Doe p/98765432 t/1000 Wed` Adds a student named `John Doe`, with phone number `98765432` and lesson time `10:00 am Wed`.
 * `add-student t/1330 Fri p/81234567 n/Betsy Crowe t/1100 Sat` Adds a student named `Betsy Crowe`, with phone number `81234567` and lesson times `01:30 pm Fri`, `11:00 am Sat`.
+```
+Student added: Betsy Crowe; Phone Number: 81234567; Lesson Time: 01:30 pm Fri, 11:00 am Sat;
+```
 
 ### Listing all students : `list`
 
@@ -97,18 +99,40 @@ Format: `list`
 
 Edits an existing student in the student list.
 
-Format: `edit-student i/INDEX [n/NAME] [p/PHONE] [t/LESSON_TIME]...`
+Format: `edit-student i/INDEX [n/NAME] [p/PHONE] [t/LESSON_TIME...]` or `edit-student i/INDEX [n/NAME] [p/PHONE] [t+/LESSON_TIME...] [t-/LESSON_TIME...]`
+
+<box type="warning" seamless>
+
+**Note:**<br>
+
+* Using the prefix `t/` means the set of input lesson time will replacee all existing set of lesson time for that student.
+
+* Using the prefix `t+/` adds the set of input lesson time onto the existing set of lesson time for that student.
+
+* Using the prefix `t-/` removes the set of input lesson time from the existing set of lesson time for that student.
+
+* Prefix `t/` cannot be used together with prefix `t+/` and/or `t-/`, but prefix `t+/` and `t-/` can be used together in a single command.
+
+</box>
 
 * Edits the student at the specified `INDEX`.
 * `INDEX` refers to the index number shown in the displayed student list.
-* The `INDEX` must be a **positive integer** 1, 2, 3, ...
+* The `INDEX` must be a positive integer 1, 2, 3, ...
 * At least one of the optional fields must be provided.
-* Existing values will be updated to the input values.
-* If one of the lesson times is to be updated, all other unchanged lesson times must also be provided.
+* Existing values will be updated with/to the input values depending on the type of prefix used.
 
 Examples:
-*  `edit-student i/1 p/91234567` Edits the phone number of the 1st student to be `91234567`.
 *  `edit-student i/2 n/Betsy Crower t/0930 Tue` Edits the name of the 2nd student to be `Betsy Crower` and lesson time to be `09:30 am Tue`.
+```
+Edited Student: Betsy Crower; Phone Number: 98234492; Lesson Time: 09:30 am Tue;
+```
+
+Note:
+* If input lesson time to be removed does not exist in the existing set of lesson time, the command ignores that lesson time and removes other lesson time that exists. User will be informed of those unmatched lesson time.
+```
+Could not find lesson time: 12:30 pm Sat;
+Edited Student: Amy Bee; Phone Number: 85355255; Lesson Time: 10:00 am Sat;
+```
 
 ### Locating students: `search-student`
 
@@ -118,16 +142,22 @@ Format: `search-student k/KEYWORD [MORE_KEYWORDS...]`
 
 * The search is case-insensitive. e.g. `marcus` will match `Marcus`
 * The order of the keywords does not matter. e.g. `Marcus Ng` will match `Ng Marcus`.
-* Names, phone numbers and lesson times are searched.
+* Names, phone numbers and lesson times or days can be searched.
 * Partial matches within a word is supported. e.g. `Mar` will match `Marcus`.
 * Students matching at least one keyword will be returned (i.e. `OR` search).
   e.g. `Marcus 9876` will return `Marcus Ng (9876 1111)`, `John Tan (9876 5432)`.
+* If in a group searching will return results in the group itself
+* If no results shown is found, use command `list` to go back to student list
 
 Examples:
 * `search-student k/marcus` Returns `Marcus Ng` and `Marcus Tan`.
 * `search-student k/9876` Returns all students whose phone number contains `9876`.
 * `search-student k/10:00` Returns all students with lesson time `10:00`.
+* `search-student k/Sun` Returns all students with lessons on `Sun`
 
+```
+Found 4 students
+  ```
 ### Deleting a student : `delete-student`
 
 Deletes the specified student from the student list.
@@ -138,7 +168,7 @@ You can delete a student in two ways:
 1. By `INDEX`
    * Deletes the student at the specified `INDEX`.
    * `INDEX` refers to the index number shown in the displayed student list.
-   * The `INDEX` must be a **positive integer** 1, 2, 3, ...
+   * The `INDEX` must be a positive integer 1, 2, 3, ...
    * The list cannot be empty.
 
 2. By `KEYWORD`
@@ -197,7 +227,7 @@ Format: `group-add g/GROUP i/INDEX...`
 
 * Adds the students at the specified indices to `GROUP`.
 * `INDEX` refers to the index number shown in the displayed student list.
-* Each `INDEX` must be a **positive integer** 1, 2, 3, ...
+* Each `INDEX` must be a positive integer 1, 2, 3, ...
 * You must specify at least one `INDEX` field.
 * The list cannot be empty when using indices.
 * Command fails if the `GROUP` does not exist.
@@ -219,7 +249,7 @@ Format: `group-remove g/GROUP i/INDEX...`
 
 * Removes the students at the specified indices from `GROUP`.
 * `INDEX` refers to the index number shown in the displayed student list.
-* Each `INDEX` must be a **positive integer** 1, 2, 3, ...
+* Each `INDEX` must be a positive integer 1, 2, 3, ...
 * You must specify at least one `INDEX` field.
 * The list cannot be empty when using indices.
 * Command fails if the `GROUP` does not exist.
@@ -257,7 +287,7 @@ Format: `mark-paid i/INDEX m/MONTH`
 
 * Marks the student at the specified `INDEX` as paid for the specified `MONTH`.
 * `INDEX` refers to the position of the student in the displayed student list.
-* The `INDEX` must be a **positive integer** 1, 2, 3, ...
+* The `INDEX` must be a positive integer 1, 2, 3, ...
 * `MONTH` must be an integer from 1 to 12, representing each month from January to December.
 * If the given student has already been marked as paid for the given month, the command is rejected and displays:<br>
 `Student marcus ng is already marked as paid for January.`.
@@ -281,7 +311,7 @@ Format: `mark-unpaid i/INDEX m/MONTH`
 
 * Marks the student at the specified `INDEX` as unpaid for the specified `MONTH`.
 * `INDEX` refers to the position of the student in the displayed student list.
-* The `INDEX` must be a **positive integer** 1, 2, 3, ...
+* The `INDEX` must be a positive integer 1, 2, 3, ...
 * `MONTH` must be an integer from 1 to 12, representing each month from January to December.
 * If the given student has already been marked as unpaid for the given month, the command is rejected and displays:<br>
   `Student marcus ng is already marked as unpaid for January.`.
@@ -310,46 +340,59 @@ Format: `add-homework n/NAME desc/DESCRIPTION by/DEADLINE`
 
 Examples:
 * `add-homework n/Marcus desc/Math Worksheet 1 by/2025-10-27` Assigns the homework `Math Worksheet 1` and its due date `2025-10-27` to the student `Marcus`.
+```
+Added homework for Marcus: Math Worksheet 1 (due 2025-10-27)
+  ```
 
 ### Deleting homework: `delete-homework`
 
 Deletes a homework entry of the specified student.
 
-Format: `delete-homework n/NAME desc/DESCRIPTION`
+Format: `delete-homework n/NAME i/INDEX`
 
-* Deletes the homework with the given `DESCRIPTION` from the student with the specified `NAME`.
+* Deletes the homework with the given `INDEX` from the student with the specified `NAME`.
 * `NAME` refers to the name of the student in the displayed student list. It must match the full name of the student in the list.
-* `DESCRIPTION` refers to the details of the homework.
+* `INDEX` refers to the number shown beside the homework.
 
 Examples:
-* `delete-homework n/Marcus desc/Math Worksheet 1` Deletes the homework `Math Worksheet 1` that is assigned to the student `Marcus`.
+* `delete-homework n/Marcus i/1` Deletes the homework at index 1 that is assigned to the student `Marcus`.
+```
+Deleted homework for Marcus: Math Worksheet 3
+  ```
 
 ### Marking homework as done: `mark-done`
 
 Marks a homework entry of the specified student as done.
 
-Format: `mark-done n/NAME desc/DESCRIPTION`
+Format: `mark-done n/NAME i/INDEX`
 
-* Marks the homework with the given `DESCRIPTION` from the student with the specified `NAME` as done.
+* Marks the homework with the given `INDEX` from the student with the specified `NAME` as done.
 * `NAME` refers to the name of the student in the displayed student list. It must match the full name of the student in the list.
-* `DESCRIPTION` refers to the details of the homework.
+* `INDEX` refers to the number shown beside the homework.
+* Marking a homework that is already marked will not result in any error
 
 Examples:
-* `mark-done n/Marcus desc/Math Worksheet 1` Marks the homework `Math Worksheet 1` that is assigned to the student `Marcus` as done.
+* `mark-done n/Marcus i/1` Marks the homework at index 1 that is assigned to the student `Marcus` as done.
+```
+Marked homework as done for Marcus: Science Worksheet 2
+  ```
 
 ### Marking homework as undone: `mark-undone`
 
 Marks a homework entry of the specified student as undone.
 
-Format: `mark-undone n/NAME desc/DESCRIPTION`
+Format: `mark-undone n/NAME i/INDEX`
 
-* Marks the homework with the given `DESCRIPTION` from the student with the specified `NAME` as undone.
+* Marks the homework with the given `INDEX` from the student with the specified `NAME` as undone.
 * `NAME` refers to the name of the student in the displayed student list. It must match the full name of the student in the list.
-* `DESCRIPTION` refers to the details of the homework.
+* `INDEX` refers to the number shown beside the homework.
+* Unmarking a homework that is already unmarked will not result in any error
 
 Examples:
-* `mark-undone n/Marcus desc/Math Worksheet 1` Marks the homework `Math Worksheet 1` that is assigned to the student `Marcus` as undone.
-
+* `mark-undone n/Marcus i/1` Marks the homework at index 1 that is assigned to the student `Marcus` as undone.
+```
+Marked homework as undone for Marcus: Science Worksheet 2
+  ```
 ### Recording participation: `participation`
 
 Records a student's participation score for a specific class date and updates the history shown on the student card.
@@ -387,8 +430,10 @@ Format: `add-reminder d/DUE_DATE desc/DESCRIPTION`
 * `DESCRIPTION` is free text.
 
 Examples:
-* `add-reminder d/2025-10-27 1400 desc/Tuition later at 2pm` Adds a reminder due `27 Oct 2025 02:00 pm` with description `Tuition later at 2pm`.
-* `add-reminder d/2025-10-27 desc/Submit assignment` Adds a reminder due `27 Oct 2025` with description `Submit assignment`.
+* `add-reminder d/2025-10-27 1500 desc/Tuition later at 3pm` Adds a reminder with due date `27 Oct 2025 03:00 pm` and description `Tuition later at 3pm`.
+```
+Reminder added. Due: 27 Oct 2025 03:00 pm; Description: Tuition later at 3pm;
+```
 
 ### Editing reminder: `edit-reminder`
 
@@ -398,13 +443,25 @@ Format: `edit-reminder i/INDEX [d/DUE_DATE] [desc/DESCRIPTION]`
 
 * Edits the reminder at the specified `INDEX`.
 * `INDEX` refers to the index number shown in the displayed reminder list.
-* The `INDEX` must be a **positive integer** 1, 2, 3, ...
+* The `INDEX` must be a positive integer 1, 2, 3, ...
 * At least one of the optional fields must be provided.
 * Existing values will be updated to the input values.
 
 Examples:
-*  `edit-reminder i/1 desc/Pay tuition fees` Edits the description of the 1st reminder to be `Pay tuition fees`.
 *  `edit-reminder i/2 d/2025-11-01 1500` Edits the due date of the 2nd reminder to be `01 Nov 2025 03:00 pm`.
+```
+Edited Reminder: Due: 01 Nov 2025 03:00 pm; Description: Tuition later at 3pm;
+```
+
+<box type="warning" seamless>
+
+**Take Note:**<br>
+
+* Reminders, pertaining to payment status and undone homework that is due the next day, are auto generated by the system which cannot be modified manually via this command.
+
+* They would only be removed if payment is mark as paid or homework is mark as done or homework is past the deadline.
+
+</box>
 
 ### Deleting reminder: `delete-reminder`
 
@@ -416,7 +473,7 @@ You can delete a reminder in two ways:
 1. By `INDEX`
    * Deletes the reminder at the specified `INDEX`.
    * `INDEX` refers to the index number shown in the displayed reminder list.
-   * The `INDEX` must be a **positive integer** 1, 2, 3, ...
+   * The `INDEX` must be a positive integer 1, 2, 3, ...
    * The list cannot be empty.
 
 2. By `KEYWORD`
@@ -428,6 +485,9 @@ Examples:
 1. Deleting by `INDEX`
    * `list` followed by `delete-reminder i/2` deletes the 2nd reminder in the reminder list.
    * `search-reminder k/assignment` followed by `delete-reminder i/1` deletes the 1st reminder in the results of the `search-reminder` command.
+    ```
+    Reminder Deleted: Due: 01 Nov 2025 03:00 pm; Description: Prepare test assignment;
+    ```
 
 2. Deleting by `KEYWORD`
    * `delete-reminder k/feedback` Deletes the reminder with description containing `feedback` if only one match is found.
@@ -446,6 +506,16 @@ Multiple reminders match the given keyword(s). Please refine your search:
 Notes:
 * You cannot use `i/` and `k/` in the same command.
 * The command is case-insensitive.
+
+<box type="warning" seamless>
+
+**Take Note:**<br>
+
+* Reminders, pertaining to payment status and undone homework that is due the next day, are auto generated by the system which cannot be modified manually via this command.
+
+* They would only be removed if payment is mark as paid or homework is mark as done or homework is past the deadline.
+
+</box>
 
 ### Clearing all entries : `clear`
 
@@ -506,16 +576,16 @@ Action     | Format, Examples
 **Clear**  | `clear`
 **Create Group**   | `group-create g/GROUP` <br> e.g., `group-create g/Group A`
 **Delete Group**   | `group-delete g/GROUP` <br> e.g., `group-delete g/Group A`
-**Delete Homework**    | `delete-homework n/NAME desc/DESCRIPTION` <br> e.g., `delete-homework n/Marcus desc/Math Worksheet 1`
+**Delete Homework**    | `delete-homework n/NAME i/INDEX` <br> e.g., `delete-homework n/Marcus i/1`
 **Delete Reminder** | `delete-reminder i/INDEX` **or** `delete-reminder k/KEYWORD [MORE_KEYWORDS...]`<br> e.g., `delete-reminder i/3` **or** `delete-reminder k/assignment`
 **Delete Student** | `delete-student i/INDEX` **or** `delete-student k/KEYWORD [MORE_KEYWORDS...]`<br> e.g., `delete-student i/3` **or** `delete-student k/marcus lee`
 **Edit Reminder**   | `edit-reminder i/INDEX [d/DATETIME] [desc/DESCRIPTION]`<br> e.g.,`edit-reminder i/2 d/2025-11-01 1500 desc/Pay tuition fees`
-**Edit Student**   | `edit-student i/INDEX [n/NAME] [p/PHONE_NUMBER] [t/LESSON_TIME]...`<br> e.g.,`edit-student i/2 n/James Lee t/1830 Fri t/1000 Sun`
+**Edit Student**   | `edit-student i/INDEX [n/NAME] [p/PHONE_NUMBER] [t/LESSON_TIME...]` **or** `edit-student i/INDEX [n/NAME] [p/PHONE] [t+/LESSON_TIME...] [t-/LESSON_TIME...]`<br> e.g.,`edit-student i/2 n/James Lee t/1830 Fri t/1000 Sun` **or** `edit-student i/INDEX t+/1530 Fri t-/1830 Fri`
 **Exit**   | `exit`
 **Help**   | `help`
 **List**   | `list`
-**Mark Homework as Done**    | `mark-done n/NAME desc/DESCRIPTION` <br> e.g., `mark-done n/Marcus desc/Math Worksheet 1`
-**Mark Homework as Undone**    | `mark-undone n/NAME desc/DESCRIPTION` <br> e.g., `mark-undone n/Marcus desc/Math Worksheet 1`
+**Mark Homework as Done**    | `mark-done n/NAME i/INDEX` <br> e.g., `mark-done n/Marcus i/1`
+**Mark Homework as Undone**    | `mark-undone n/NAME i/INDEX` <br> e.g., `mark-undone n/Marcus i/1`
 **Mark as paid**   | `mark-paid i/INDEX m/MONTH` <br> e.g., `mark-paid i/1 m/1`
 **Mark as unpaid**   | `mark-unpaid i/INDEX m/MONTH` <br> e.g., `mark-unpaid i/1 m/1`
 **Participation**    | `participation n/NAME d/DATE s/SCORE` <br> e.g., `participation n/James Ho d/2025-09-19 s/1`

@@ -178,7 +178,7 @@ public class EditReminderCommandTest {
         EditReminderDescriptor descriptor = new EditReminderDescriptorBuilder().withDueDate(VALID_DUEDATE_1).build();
         EditReminderCommand command = new EditReminderCommand(INDEX_FIRST_REMINDER, descriptor);
 
-        String expectedMessage = Messages.MESSAGE_UNMODIFIABLE_REMINDER + reminder.getModifyMessage();
+        String expectedMessage = Messages.MESSAGE_UNMODIFIABLE_REMINDER + "\n" + reminder.getModifyMessage();
         assertCommandFailure(command, model, expectedMessage);
     }
 

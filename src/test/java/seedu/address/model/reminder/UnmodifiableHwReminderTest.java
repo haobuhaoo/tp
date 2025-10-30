@@ -75,7 +75,7 @@ public class UnmodifiableHwReminderTest {
 
         assertEquals(UnmodifiableHwReminder.of(dueDate, description).hashCode(), reminder.hashCode());
 
-        DueDate due = new DueDate("2025-09-31");
+        DueDate due = new DueDate("2025-09-30");
         assertNotEquals(UnmodifiableHwReminder.of(due, description).hashCode(), reminder.hashCode());
 
         Description desc = new Description("Sci worksheet");

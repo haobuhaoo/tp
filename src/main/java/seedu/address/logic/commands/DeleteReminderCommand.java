@@ -7,6 +7,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_KEYWORD;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.ToStringBuilder;
@@ -73,14 +74,16 @@ public class DeleteReminderCommand extends Command {
 
         // deleting by index
         if (targetIndex.isPresent()) {
-            Reminder reminderToDelete = getReminder(model);
+            Reminder reminderToDelete = getReminderByIndex(model);
             model.deleteReminder(reminderToDelete);
             return new CommandResult(String.format(MESSAGE_DELETE_REMINDER_SUCCESS, Messages.format(reminderToDelete)));
         }
 
         // deleting by keywords
         ReminderFieldsContainsKeywordsPredicate pred = predicate.get();
-        model.updateFilteredReminderList(pred);
+        Predicate<Reminder> modifiableFilter = Reminder::isModifiable;
+        Predicate<Reminder> combined = pred.and(modifiableFilter);
+        model.updateFilteredReminderList(combined);
         List<Reminder> matches = model.getFilteredReminderList();
 
         if (matches.isEmpty()) {
@@ -119,16 +122,33 @@ public class DeleteReminderCommand extends Command {
             }
         }
 
+        String matchString = generateAllMatches(refinementCandidates);
+        return new CommandResult(matchString);
+    }
+
+    /**
+     * Generates the string of all matched reminders after filtering out by keyword. UnmodifiableReminders
+     * are not included in the string, since they cannot be deleted.
+     */
+    private String generateAllMatches(List<Reminder> refinementCandidates) {
         if (refinementCandidates.isEmpty()) {
-            return new CommandResult(MESSAGE_NO_MATCH);
+            return MESSAGE_NO_MATCH;
         }
 
-        StringBuilder sb = new StringBuilder(MESSAGE_MULTIPLE_MATCHES);
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < refinementCandidates.size(); i++) {
-            sb.append(String.format("%d. %s%n", i + 1, Messages.format(refinementCandidates.get(i))));
+            Reminder reminder = refinementCandidates.get(i);
+            if (!reminder.isModifiable()) {
+                continue;
+            }
+            sb.append(String.format("%d. %s%n", i + 1, Messages.format(reminder)));
         }
-        sb.append("\nTry typing the exact date time or description.");
-        return new CommandResult(sb.toString());
+
+        if (sb.isEmpty()) {
+            return MESSAGE_NO_MATCH;
+        } else {
+            return MESSAGE_MULTIPLE_MATCHES + sb + "\nTry typing the exact date time or description.";
+        }
     }
 
     /**
@@ -136,7 +156,7 @@ public class DeleteReminderCommand extends Command {
      *
      * @throws CommandException if the index is invalid or the reminder is unmodifiable.
      */
-    private Reminder getReminder(Model model) throws CommandException {
+    private Reminder getReminderByIndex(Model model) throws CommandException {
         List<Reminder> lastShownList = model.getFilteredReminderList();
 
         if (lastShownList.isEmpty()) {
@@ -165,7 +185,7 @@ public class DeleteReminderCommand extends Command {
                     : "Reminder should be UnmodifiableReminder if it is not modifiable.";
 
             UnmodifiableReminder unmodifiableReminder = (UnmodifiableReminder) reminderToDelete;
-            throw new CommandException(Messages.MESSAGE_UNMODIFIABLE_REMINDER
+            throw new CommandException(Messages.MESSAGE_UNMODIFIABLE_REMINDER + "\n"
                     + unmodifiableReminder.getModifyMessage());
         }
         return reminderToDelete;

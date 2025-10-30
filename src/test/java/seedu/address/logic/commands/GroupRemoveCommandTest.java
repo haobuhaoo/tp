@@ -258,5 +258,10 @@ public class GroupRemoveCommandTest {
         public ObservableList<Reminder> getFilteredReminderList() {
             throw new AssertionError("This method should not be called.");
         }
+
+        @Override
+        public void refreshReminders() {
+            throw new AssertionError("This method should not be called.");
+        }
     }
 }

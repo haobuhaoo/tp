@@ -5,6 +5,7 @@ import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 import javafx.collections.FXCollections;
@@ -88,6 +89,14 @@ public class UniqueReminderList implements Iterable<Reminder> {
         if (!internalList.remove(toRemove)) {
             throw new ReminderNotFoundException();
         }
+    }
+
+    /**
+     * Removes all reminders that satisfy the given {@code predicate}.
+     */
+    public void removeIf(Predicate<Reminder> predicate) {
+        requireNonNull(predicate);
+        internalList.removeIf(predicate);
     }
 
     public void setReminders(UniqueReminderList replacement) {

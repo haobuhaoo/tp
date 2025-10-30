@@ -46,7 +46,7 @@ public class ParserUtil {
      */
     public static Name parseName(String name) throws ParseException {
         requireNonNull(name);
-        String trimmedName = name.trim();
+        String trimmedName = name.trim().toLowerCase();
         if (!Name.isValidName(trimmedName)) {
             throw new ParseException(Name.MESSAGE_CONSTRAINTS);
         }
@@ -107,7 +107,7 @@ public class ParserUtil {
      */
     public static LessonTime parseLessonTime(String lessonTime) throws ParseException {
         requireNonNull(lessonTime);
-        String trimmedLessonTime = lessonTime.trim();
+        String trimmedLessonTime = lessonTime.replaceAll("\\s+", " ").trim().toLowerCase();
         if (!LessonTime.isValidLessonTime(trimmedLessonTime)) {
             throw new ParseException(LessonTime.MESSAGE_CONSTRAINTS);
         }
@@ -153,7 +153,7 @@ public class ParserUtil {
      */
     public static DueDate parseDueDate(String dueDate) throws ParseException {
         requireNonNull(dueDate);
-        String trimmedDueDate = dueDate.trim();
+        String trimmedDueDate = dueDate.replaceAll("\\s+", " ").trim();
         if (!DueDate.isValidDueDate(trimmedDueDate)) {
             throw new ParseException(DueDate.MESSAGE_CONSTRAINTS);
         }
