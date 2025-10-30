@@ -265,9 +265,10 @@ Examples:
 ```
 Marked student as paid: marcus ng
 Month: January
-Payment Status: 🟩 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥
-  ```
-
+Payment Status: 
+Jan: ✓ Paid Feb: ✗ Paid Mar: ✗ Unpaid Apr: ✗ Unpaid May: ✗ Unpaid Jun: ✗ Unpaid
+Jul: ✗ Unpaid Aug: ✗ Unpaid Sep: ✗ Unpaid Oct: ✗ Unpaid Nov: ✗ Unpaid Dec: ✗ Unpaid
+```
 ### Marking unpaid status : `mark-unpaid`
 
 Marks a student's payment status for a specific month as unpaid.
@@ -283,11 +284,13 @@ Format: `mark-upaid i/INDEX m/MONTH`
 * Payment status is displayed as 12 colored boxes (🟩 for paid, 🟥 for unpaid) representing the 12 months January to December.
 
 Examples:
-* `mark-upaid i/1 m/1` Marks the 1st student in the list as unpaid for January.
+* `mark-unpaid i/1 m/1` Marks the 1st student in the list as unpaid for January.
 ```
 Marked student as unpaid: marcus ng
 Month: January
-Payment Status: 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥
+Payment Status: 
+Jan: ✗ Unpaid Feb: ✓ Paid Mar: ✓ Paid Apr: ✓ Paid May: ✓ Paid Jun: ✓ Paid
+Jul: ✓ Paid Aug: ✓ Paid Sep: ✓ Paid Oct: ✓ Paid Nov: ✓ Paid Dec: ✓ Paid
 ```
 
 ### Adding homework: `add-homework`
