@@ -29,10 +29,8 @@ import seedu.address.model.reminder.UnmodifiablePaymentReminder;
  */
 public class AddressBook implements ReadOnlyAddressBook {
     private final UniquePersonList persons;
-    private final UniqueReminderList reminders;
-
-    // NEW: first-class groups + membership relation
     private final UniqueGroupList groups;
+    private final UniqueReminderList reminders;
     private final MembershipIndex memberships;
 
     /*
@@ -45,7 +43,6 @@ public class AddressBook implements ReadOnlyAddressBook {
     {
         persons = new UniquePersonList();
         reminders = new UniqueReminderList();
-        // NEW: init group structures
         groups = new UniqueGroupList();
         memberships = new MembershipIndex();
     }
@@ -141,27 +138,35 @@ public class AddressBook implements ReadOnlyAddressBook {
 
     //// group-level operations (NEW)
 
-    /** Returns true if a group with {@code name} exists. */
+    /**
+     * Returns true if a group with {@code name} exists.
+     */
     public boolean hasGroup(GroupName name) {
         requireNonNull(name);
         return groups.contains(name);
     }
 
-    /** Creates a new empty group. Throws if duplicate. */
+    /**
+     * Creates a new empty group. Throws if duplicate.
+     */
     public void addGroup(Group group) {
         requireNonNull(group);
         groups.add(group);
         memberships.ensureGroup(group.getName());
     }
 
-    /** Deletes a group and clears its memberships. Throws if not found. */
+    /**
+     * Deletes a group and clears its memberships. Throws if not found.
+     */
     public void removeGroup(GroupName name) {
         requireNonNull(name);
         groups.remove(name);
         memberships.removeGroup(name);
     }
 
-    /** Adds members to a group (idempotent per person). */
+    /**
+     * Adds members to a group (idempotent per person).
+     */
     public void addMembers(GroupName name, List<Person> people) {
         requireNonNull(name);
         requireNonNull(people);
@@ -169,19 +174,25 @@ public class AddressBook implements ReadOnlyAddressBook {
         memberships.addMembers(name, people);
     }
 
-    /** Removes members from a group (no-op for non-members). */
+    /**
+     * Removes members from a group (no-op for non-members).
+     */
     public void removeMembers(GroupName name, List<Person> people) {
         requireNonNull(name);
         requireNonNull(people);
         memberships.removeMembers(name, people);
     }
 
-    /** Unmodifiable view of groups for UI/logic. */
+    /**
+     * Unmodifiable view of groups for UI/logic.
+     */
     public ObservableList<Group> getGroupList() {
         return groups.asUnmodifiableObservableList();
     }
 
-    /** All groups that contain {@code person}. */
+    /**
+     * All groups that contain {@code person}.
+     */
     public Set<GroupName> getGroupsOf(Person person) {
         requireNonNull(person);
         // Delegate to MembershipIndex helper; see its groupsOf(person)
@@ -238,6 +249,7 @@ public class AddressBook implements ReadOnlyAddressBook {
     public String toString() { // keep concise; groups/memberships omitted to avoid noisy logs
         return new ToStringBuilder(this)
                 .add("persons", persons)
+                .add("groups", getGroups())
                 .add("reminders", reminders)
                 .toString();
     }
@@ -248,24 +260,33 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     @Override
+    public ObservableList<Group> getGroups() {
+        return groups.asUnmodifiableObservableList();
+    }
+
+    @Override
     public ObservableList<Reminder> getReminderList() {
+        return reminders.asUnmodifiableObservableList();
+    }
+
+    /**
+     * Refreshes the list of UnmodifiableReminders in the reminder list to reflect the lastest state
+     * of student list. User generated reminders are left untouched in the reminder list.
+     */
+    public void refreshUnmodifiableReminders() {
+        reminders.removeIf(r -> !r.isModifiable());
+
         for (Person p : getPersonList()) {
-            int currentMonth = LocalDate.now().getMonth().getValue();
+            int currentMonth = LocalDate.now().getMonthValue();
+
             if (!p.isPaidForMonth(currentMonth)) {
-                UnmodifiablePaymentReminder paymentReminder =
-                        UnmodifiablePaymentReminder.of(currentMonth, p, getMonthName(currentMonth));
-                if (!reminders.contains(paymentReminder)) {
-                    reminders.add(paymentReminder);
-                }
+                reminders.add(UnmodifiablePaymentReminder.of(currentMonth, p, getMonthName(currentMonth)));
             }
 
             for (UnmodifiableHwReminder hwReminder : createHomeworkReminder(p)) {
-                if (!reminders.contains(hwReminder)) {
-                    reminders.add(hwReminder);
-                }
+                reminders.add(hwReminder);
             }
         }
-        return reminders.asUnmodifiableObservableList();
     }
 
     @Override

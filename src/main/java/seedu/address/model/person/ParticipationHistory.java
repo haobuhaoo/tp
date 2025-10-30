@@ -29,15 +29,32 @@ public class ParticipationHistory {
     public ParticipationHistory(List<ParticipationRecord> records) {
         if (records != null) {
             for (ParticipationRecord r : records) {
-                add(r);
+                if (r != null) { // tolerate legacy/null entries from storage
+                    add(r);
+                }
             }
         }
     }
 
-
     /** Adds a new record, keeping only the 5 most recent by insertion order. */
     public void add(ParticipationRecord record) {
+        if (record == null) {
+            return; // ignore silently to avoid crashing UI on legacy/null data
+        }
+
+        // Remove any existing record for the same date (compare by date only)
+        for (var it = deque.iterator(); it.hasNext(); ) {
+            ParticipationRecord existing = it.next();
+            if (existing != null && existing.getDate().equals(record.getDate())) {
+                it.remove();
+                break; // keep at most one per date
+            }
+        }
+
+        // Add as the newest record
         deque.addLast(record);
+
+        // Enforce max size
         while (deque.size() > MAX) {
             deque.removeFirst();
         }
