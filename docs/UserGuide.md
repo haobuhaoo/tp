@@ -52,15 +52,15 @@ Follow the steps below to set up and start using ClassConnect:
      * For example, if you saved it in Documents/ClassConnect, type `cd Documents/ClassConnect` in the terminal and press `Enter`.
    * Run the application by typing `java -jar classconnect.jar` into the terminal and press `Enter`.
 
-1. **Familiarize yourself with the interface**<br>
+1. **Familiarize yourself with the interface**
    * When ClassConnect launches, you will see both the command line panel (for typing commands) and the main display panel (showing your students, lessons, and reminders).
    ![Ui](images/Ui.png)
 
-1. **Start managing your data**<br>
+1. **Start managing your data**
    * Try entering your first command to add a student: `add-student n/John Doe p/98765432 t/1000 Wed`.
    * The student `John Doe` will appear at the bottom of the main panel immediately after the command is executed.
 
-1. **Explore more commands**<br>
+1. **Explore more commands**
    * Refer to the [Features](#features) section for a full list of commands and usage examples.
 
 --------------------------------------------------------------------------------------------------------------------
@@ -317,29 +317,32 @@ Examples:
 ```
 Marked student as paid: marcus ng
 Month: January
-Payment Status: 🟩 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥
-  ```
-
+Payment Status: 
+Jan: ✓ Paid Feb: ✗ Paid Mar: ✗ Unpaid Apr: ✗ Unpaid May: ✗ Unpaid Jun: ✗ Unpaid
+Jul: ✗ Unpaid Aug: ✗ Unpaid Sep: ✗ Unpaid Oct: ✗ Unpaid Nov: ✗ Unpaid Dec: ✗ Unpaid
+```
 ### Marking unpaid status : `mark-unpaid`
 
 Marks a student's payment status for a specific month as unpaid.
 
-Format: `mark-upaid i/INDEX m/MONTH`
+Format: `mark-unpaid i/INDEX m/MONTH`
 
 * Marks the student at the specified `INDEX` as unpaid for the specified `MONTH`.
 * `INDEX` refers to the position of the student in the displayed student list.
 * The `INDEX` must be a positive integer 1, 2, 3, ...
 * `MONTH` must be an integer from 1 to 12, representing each month from January to December.
-* If the given student has already paid for the given month, the command is rejected and displays:<br>
+* If the given student has already been marked as unpaid for the given month, the command is rejected and displays:<br>
   `Student marcus ng is already marked as unpaid for January.`.
 * Payment status is displayed as 12 colored boxes (🟩 for paid, 🟥 for unpaid) representing the 12 months January to December.
 
 Examples:
-* `mark-upaid i/1 m/1` Marks the 1st student in the list as unpaid for January.
+* `mark-unpaid i/1 m/1` Marks the 1st student in the list as unpaid for January.
 ```
 Marked student as unpaid: marcus ng
 Month: January
-Payment Status: 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥 🟥
+Payment Status: 
+Jan: ✗ Unpaid Feb: ✓ Paid Mar: ✓ Paid Apr: ✓ Paid May: ✓ Paid Jun: ✓ Paid
+Jul: ✓ Paid Aug: ✓ Paid Sep: ✓ Paid Oct: ✓ Paid Nov: ✓ Paid Dec: ✓ Paid
 ```
 
 ### Adding homework: `add-homework`
@@ -410,29 +413,29 @@ Marked homework as undone for Marcus: Science Worksheet 2
   ```
 ### Recording participation: `participation`
 
-Records a student's participation score for a specific class date.
+Records a student's participation score for a specific class date and updates the history shown on the student card.
 
 Format: `participation n/NAME d/DATE s/SCORE`
 
-* Records the participation score `SCORE` for the student with the specified `NAME` on the given class date `DATE`.
-* `NAME` refers to the student’s full name. It is case-insensitive.
-* `DATE` refers to the class date in `YYYY-MM-DD` format. e.g. `2025-09-19`.
-* `SCORE` refers to the participation score for the student. It is an integer from 0 to 5.
+* `NAME` is case-insensitive and matched even if you have extra spaces. e.g. `alex  yeoh` matches `Alex Yeoh`.
+* `DATE` must be in `YYYY-MM-DD` format. e.g. `2025-09-19`.
+* `SCORE` must be an integer from **0** to **5**.
 
 Examples:
 * `participation n/Alex Yeoh d/2025-09-19 s/3` Records a participation score of `3` for `Alex Yeoh` on `2025-09-19`.
 
 Notes:
-* `NAME` are matched ignoring extra spaces and letter case. e.g., `alex  yeoh` matches `Alex Yeoh`.
-* If the `SCORE` is not a number, you’ll see: `Invalid participation score. Use an integer 0 to 5.`.
-* If the `SCORE` is outside the range, you’ll see: `Invalid participation score. Must be between 0 and 5 inclusive.`
-* The history shows up to five most recent entries.
+* If `SCORE` is not a number, you’ll see: `Invalid participation score. Use an integer 0 to 5.`
+* If `SCORE` is outside the range, you’ll see: `Invalid participation score. Must be between 0 and 5 inclusive.`
+* The history shows **up to five most recent** classes. The newest is on the **right**.
+* If you record participation **multiple times for the same date**, the **latest score** for that date is shown (older one is effectively replaced in the view).
+* Your data is saved automatically; the history will still be there after restarting the app.
 
-What you’ll see in the UI:
-- The score is shown on the right side of each person card which has two rows:
-    - Top row: Dates (formatted `MM-dd`) for up to the last five classes, oldest → newest.
-    - Bottom row: Five boxes showing the corresponding participation scores.
-- When you record a new score, the date and score shift left as the history grows; the newest class is the rightmost box.
+**What you’ll see in the UI:**
+- On each person card (right side), there are **two rows**:
+  - **Top row:** Dates (`MM-dd`) for up to the last five classes, oldest → newest.
+  - **Bottom row:** Five boxes showing the corresponding participation scores.
+- When you add a new score, the timeline shifts **left** and the newest score appears at the **rightmost** box.
 
 ### Adding reminder: `add-reminder`
 
@@ -582,7 +585,7 @@ _Details coming soon ..._
 Action     | Format, Examples
 -----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 **Add Homework**    | `add-homework n/NAME desc/DESCRIPTION by/DEADLINE` <br> e.g., `add-homework n/Marcus desc/Math Worksheet 1 by/2025-10-27`
-**Add Reminder**    | `add-reminder d/DATETIME desc/DESCRIPTION` <br> e.g., `add-reminder d/2025-10-12 1500 desc/Submit assignment`
+**Add Reminder**    | `add-reminder d/DATETIME desc/DESCRIPTION` <br> e.g., `add-reminder d/2025-10-27 1400 desc/Submit assignment`
 **Add Student**    | `add-student n/NAME p/PHONE_NUMBER t/LESSON_TIME...` <br> e.g., `add-student n/James Ho p/98765432 t/1000 Mon t/1400 Wed`
 **Add Student to Group**   | `group-add g/GROUP i/INDEX...` <br> e.g., `group-add g/Group A i/1 i/3`
 **Clear**  | `clear`
