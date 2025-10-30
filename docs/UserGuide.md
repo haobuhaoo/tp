@@ -172,7 +172,7 @@ You can delete a student in two ways:
    * The list cannot be empty.
 
 2. By `KEYWORD`
-   * Deletes the student whose name, phone number or lesson time matches the given `KEYWORD`.
+   * Deletes the student whose name or phone number matches the given `KEYWORD`.
    * If multiple students match the keyword, the app will list all possible matches and ask you to refine your search.
    * Matching is case-insensitive and partial matches are allowed. e.g. `marc` matches `Marcus`.
 
