@@ -183,6 +183,14 @@ public class ParticipationCommandTest {
         assertEquals("Invalid student name: A name that is longer than 50 characters.", ex.getMessage());
     }
 
+    @Test
+    public void execute_emptyName_throws() {
+        Model model = new ModelStubWithPerson("Alex Yeoh");
+        ParticipationCommand cmd = new ParticipationCommand("   \t  ", "2025-09-19", "3");
+        CommandException ex = assertThrows(CommandException.class, () -> cmd.execute(model));
+        assertEquals("Invalid student name: name cannot be empty.", ex.getMessage());
+    }
+
     /**
      *  Minimal model stub supporting hasPersonName() and AttendanceIndex.
      * Model stub that:

@@ -99,4 +99,17 @@ public class ParticipationHistoryTest {
         assertEquals(LocalDate.parse("2025-09-14"), list.get(4).getDate());
     }
 
+    @Test
+    public void add_null_ignoredAndNoCrash() {
+        ParticipationHistory h = new ParticipationHistory();
+        h.add(null); // should be ignored silently
+        assertEquals(0, h.size());
+
+        // Seed then add duplicate date to exercise iterator removal branch
+        h.add(LocalDate.parse("2025-09-19"), 1);
+        h.add(LocalDate.parse("2025-09-19"), 2);
+        assertEquals(1, h.size());
+        assertEquals(2, h.mostRecent().getScore());
+    }
+
 }
