@@ -22,8 +22,13 @@ ClassConnect helps you:
 
 * Automatically **save your data**, ensuring your records are always up to date.
 
-With ClassConnect, you can focus more on teaching and less on administrative work — **making student management simpler, faster, and more reliable**.
+With ClassConnect, you can focus more on teaching and less on administrative work — **making student management simpler, faster, and more reliable.
 
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
+
+## Table of Contents
 <!-- * Table of Contents -->
 <page-nav-print />
 
@@ -41,7 +46,11 @@ Follow the steps below to set up and start using ClassConnect:
 1. **Download ClassConnect**<br>
    * Download the latest `classconnect.jar` file from [the releases page](https://github.com/AY2526S1-CS2103T-F12-2/tp/releases).
 
-1. **Run the application**
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
+
+3. **Run the application**
    * Choose a folder on your computer where you want to keep ClassConnect. This can be any folder you are comfortable with, such as `Documents/ClassConnect`.
    * Copy the `classconnect.jar` file you downloaded into that folder.
    * Open the terminal / command prompt:
@@ -52,16 +61,20 @@ Follow the steps below to set up and start using ClassConnect:
      * For example, if you saved it in Documents/ClassConnect, type `cd Documents/ClassConnect` in the terminal and press `Enter`.
    * Run the application by typing `java -jar classconnect.jar` into the terminal and press `Enter`.
 
-1. **Familiarize yourself with the interface**
+4. **Familiarize yourself with the interface**
    * When ClassConnect launches, you will see both the command line panel (for typing commands) and the main display panel (showing your students, lessons, and reminders).
    ![Ui](images/Ui.png)
 
-1. **Start managing your data**
+5. **Start managing your data**
    * Try entering your first command to add a student: `add-student n/John Doe p/98765432 t/1000 Wed`.
    * The student `John Doe` will appear at the bottom of the main panel immediately after the command is executed.
 
-1. **Explore more commands**
+6. **Explore more commands**
    * Refer to the [Features](#features) section for a full list of commands and usage examples.
+
+--------------------------------------------------------------------------------------------------------------------
+
+<div style="page-break-after: always;"></div>
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -116,6 +129,10 @@ Student added: Betsy Crowe; Phone Number: 81234567; Lesson Time: 01:30 pm Fri, 1
 Shows a list of all students in the student list.
 
 Format: `list`
+
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
 
 ### Editing a student : `edit-student`
 
@@ -176,6 +193,10 @@ Format: `search-student k/KEYWORD [MORE_KEYWORDS...]`
 * If in a group searching will return results in the group itself
 * If no results shown is found, use command `list` to go back to student list
 
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
+
 Examples:
 * `search-student k/marcus` Returns `Marcus Ng` and `Marcus Tan`.
 * `search-student k/9876` Returns all students whose phone number contains `9876`.
@@ -222,6 +243,10 @@ Examples:
 Notes:
 * You cannot use `i/` and `k/` in the same command.
 * The command is case-insensitive.
+
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
 
 ### Creating a group : `group-create`
 
@@ -278,6 +303,10 @@ Format: `group-remove g/GROUP i/INDEX...`
 * The list cannot be empty when using indices.
 * Command fails if the `GROUP` does not exist.
 
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
+
 Examples:
 * `group-remove g/Group A i/2` Removes the 2nd student in the list from `Group A`.
 * After `search-student k/Friday`, `group-remove g/Group A i/1 i/2` removes the 1st and 2nd students from the search results from `Group A`.
@@ -326,6 +355,11 @@ Payment Status:
 Jan: ✓ Paid Feb: ✗ Paid Mar: ✗ Unpaid Apr: ✗ Unpaid May: ✗ Unpaid Jun: ✗ Unpaid
 Jul: ✗ Unpaid Aug: ✗ Unpaid Sep: ✗ Unpaid Oct: ✗ Unpaid Nov: ✗ Unpaid Dec: ✗ Unpaid
 ```
+
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
+
 ### Marking unpaid status : `mark-unpaid`
 
 Marks a student's payment status for a specific month as unpaid.
@@ -383,6 +417,10 @@ Examples:
 Deleted homework for Marcus: Math Worksheet 3
 ```
 
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
+
 ### Marking homework as done: `mark-done`
 
 Marks a homework entry of the specified student as done.
@@ -436,6 +474,10 @@ Notes:
 * The history shows **up to five most recent** classes. The newest is on the **right**.
 * If you record participation **multiple times for the same date**, the **latest score** for that date is shown (older one is effectively replaced in the view).
 * Your data is saved automatically; the history will still be there after restarting the app.
+
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
 
 **What you’ll see in the UI:**
 - On each person card (right side), there are **two rows**:
@@ -491,6 +533,10 @@ Edited Reminder: Due: 01 Nov 2025 03:00 pm; Description: Tuition later at 3pm;
 * They would only be removed if payment is mark as paid or homework is mark as done or homework is past the deadline.
 
 </box>
+
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
 
 ### Deleting reminder: `delete-reminder`
 
@@ -548,6 +594,10 @@ Notes:
 Clears all entries from the student list and reminder list.
 
 Format: `clear`
+
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
 
 ### Exiting the program : `exit`
 

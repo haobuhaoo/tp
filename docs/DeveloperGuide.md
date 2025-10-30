@@ -22,6 +22,10 @@ Refer to the guide [_Setting up and getting started_](SettingUp.md).
 
 --------------------------------------------------------------------------------------------------------------------
 
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
+
 ## **Design**
 
 ### Architecture
@@ -47,6 +51,10 @@ The bulk of the app's work is done by the following four components:
 
 [**`Commons`**](#common-classes) represents a collection of classes used by multiple other components.
 
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
+
 **How the architecture components interact with each other**
 
 The *Sequence Diagram* below shows how the components interact with each other for the scenario where the user issues the command `delete-student i/1`.
@@ -63,6 +71,10 @@ For example, the `Logic` component defines its API in the `Logic.java` interface
 <puml src="diagrams/ComponentManagers.puml" width="300" />
 
 The sections below give more details of each component.
+
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
 
 ### UI component
 
@@ -86,6 +98,10 @@ The `UI` component,
 - Dates are shown on the top row (`MM-dd`), scores inside the boxes on the bottom row.
 - When a date appears multiple times in history, only the latest score is displayed.
 
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
+
 ### Logic component
 
 **API** : [`Logic.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/logic/Logic.java)
@@ -97,6 +113,10 @@ Here's a (partial) class diagram of the `Logic` component:
 The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("delete-student i/1")` API call as an example.
 
 <puml src="diagrams/DeleteSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the `delete-student i/1` Command" />
+
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
 
 <box type="info" seamless>
 
@@ -125,6 +145,10 @@ How the parsing works:
   calls `model.setPerson(person, person)` to trigger persistence, updates `AttendanceIndex`,
   and returns a success message.
 
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
+
 ### Model component
 **API** : [`Model.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/model/Model.java)
 
@@ -146,6 +170,9 @@ The `Model` component,
 
 </box>
 
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
 
 ### Storage component
 
@@ -166,6 +193,10 @@ The `Storage` component,
 ### Common classes
 
 Classes used by multiple components are in the `seedu.address.commons` package.
+
+--------------------------------------------------------------------------------------------------------------------
+
+<div style="page-break-after: always;"></div>
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -193,6 +224,10 @@ Key ideas
 
 <puml src="diagrams/Grouping.puml" alt="Class Diagram for Grouping" />
 
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
+
 ### Grouping Command Behaviour
 #### Create group 
 
@@ -206,6 +241,10 @@ Key ideas
 
 <puml src="diagrams/GroupCreateCommandSequenceDiagram.puml" />
 
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
+
 #### Add members to group
 
 * Step 1. User enters: group-add g/Group A i/1 i/3. AddressBookParser invokes GroupAddCommandParser#parse(...).
@@ -218,11 +257,19 @@ Key ideas
 
 <puml src="diagrams/GroupAddCommandSequenceDiagram.puml" />
 
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
+
 #### Remove members from group
 
 Parser and execution mirror group-add, except the model op is removeFromGroup(...). The command succeeds for valid indices; persons not in the group are skipped.
 
 <puml src="diagrams/GroupRemoveSequenceDiagram.puml" /> <puml src="diagrams/GroupRemoveCommandSequenceDiagram.puml" />
+
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
 
 #### Delete group
 
@@ -240,8 +287,9 @@ Parser and execution mirror group-add, except the model op is removeFromGroup(..
 
 - UI badges. UiGroupAccess is installed by MainWindow#fillInnerParts() and maps Person → Set<GroupName> to render chips in PersonCard.
 
----
-<puml src="diagrams/Grouping.puml" alt="Class Diagram for Grouping" />
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
 
 ### Participation feature
 
@@ -276,6 +324,10 @@ The Participation feature lets tutors record a per-class participation score for
   - If multiple records share the **same date**, only the **latest** score is shown.
 - Styling comes from `participation.css` (e.g., `.participation-box`, `.date-mini`).
 
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
+
 #### Storage
 - `JsonAdaptedPerson` persists a `participation` array:
 
@@ -288,9 +340,6 @@ The Participation feature lets tutors record a per-class participation score for
 
 * Older files without this field load as empty histories.
 * Invalid rows (e.g., score out of range) are **skipped** during load so one bad row doesn’t corrupt the file.
-
-<puml src="diagrams/ParticipationCommand.puml" alt="Participation Command Diagram"/>
-#### Error messages
 
 * `Invalid student name: name cannot be empty.`
 * `Invalid student name: no matching student found.`
@@ -319,6 +368,10 @@ There are 2 types of reminders: `Reminder` and `UnmodfiableReminder`.
 
 <puml src="diagrams/ReminderClassDiagram.puml" width="550"/>
 
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
+
 #### Command Behaviour
 
 ##### Add reminder
@@ -345,6 +398,10 @@ Step 3: `AddReminderCommand#execute()` is called, and adds the reminder to the r
 
 <puml src="diagrams/AddReminderCommandSequenceDiagram.puml" />
 
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
+
 <box type="info" seamless>
 
 **Note:** The lifeline for `AddReminderCommand` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
@@ -367,6 +424,10 @@ Similar to add reminder command as above, except the following:
 
 </box>
 
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
+
 * In Step 3, the reminder to edit is copied and injected with the new fields. This new reminder is then set to replace the old reminder in the reminder list. After a successful edit, the reminder is list is updated to show all reminders and a success message is also returned via an instance of `CommandResult`.
 
 <box type="warning" seamless>
@@ -387,6 +448,10 @@ Similar to add reminder command as above, except the following:
 
 </box>
 
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
+
 ##### Delete reminder
 
 Similar to add reminder command as above, except the following:
@@ -403,6 +468,10 @@ Similar to add reminder command as above, except the following:
 
 </box>
 
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
+
 * In Step 3, if the deletion is by keyword, `DeleteReminderCommand#execute()` will search for all reminders in the list and successfully deletes if only one reminder is found. If no or multiple reminders are found, the command will still succeed but without any deletion. A message is returned via an instance of `CommandResult` indicating if no or multiple reminders are found.
 
 <box type="warning" seamless>
@@ -415,8 +484,6 @@ Similar to add reminder command as above, except the following:
 
 </box>
 
-</box>
-
 <puml src="diagrams/DeleteReminderCommandSequenceDiagram.puml" />
 
 <box type="info" seamless>
@@ -425,6 +492,10 @@ Similar to add reminder command as above, except the following:
 
 </box>
 
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
+
 <puml src="diagrams/DeleteReminderReferenceSequenceDiagram.puml"/>
 
 ### Delete student feature
@@ -432,6 +503,10 @@ Similar to add reminder command as above, except the following:
 This features deletes a student form the students list. This feature is facilitated by the `LogicManger`, `AddressBookParser`, `DeleteCommandParser`, `DeleteCommand`, `CommandResult` and `Model` classes. Given below is a high level overview of how a student is being deleted from the students list.
 
 <puml src="diagrams/DeleteSequenceDiagram.puml" />
+
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
 
 ### Mark payment feature
 
@@ -465,6 +540,10 @@ The add-homework feature lets tutors record homework tasks for individual studen
 - The UI displays homework items under each student card, showing description, due date, and status badges.
 - Duplicate entries (same description and date) are prevented.
 
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
+
 <img src="diagrams/HomeworkUseCase.png"/>
 
 The diagram above illustrates the **Homework Management** use cases in ClassConnect.  
@@ -476,6 +555,10 @@ Tutors can **add**, **view**, **delete**, and **mark homework as done or undone*
 - **View Homework List**: Displays all homework items for each student, including their deadlines and status badges.
 
 Each of these features interacts with the same underlying `Homework` model and `HomeworkList` stored within every `Person` object.
+
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
 
 ### Search
 <puml src="diagrams/SearchSequence.puml"/>
@@ -504,6 +587,10 @@ Step 1. The user launches the application for the first time. The `VersionedAddr
 
 <puml src="diagrams/UndoRedoState0.puml" alt="UndoRedoState0" />
 
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
+
 Step 2. The user executes `delete 5` command to delete the 5th person in the address book. The `delete` command calls `Model#commitAddressBook()`, causing the modified state of the address book after the `delete 5` command executes to be saved in the `addressBookStateList`, and the `currentStatePointer` is shifted to the newly inserted address book state.
 
 <puml src="diagrams/UndoRedoState1.puml" alt="UndoRedoState1" />
@@ -528,6 +615,10 @@ Step 4. The user now decides that adding the person was a mistake, and decides t
 than attempting to perform the undo.
 
 </box>
+
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
 
 The following sequence diagram shows how an undo operation goes through the `Logic` component:
 
@@ -554,6 +645,10 @@ The `redo` command does the opposite — it calls `Model#redoAddressBook()`,
 Step 5. The user then decides to execute the command `list`. Commands that do not modify the address book, such as `list`, will usually not call `Model#commitAddressBook()`, `Model#undoAddressBook()` or `Model#redoAddressBook()`. Thus, the `addressBookStateList` remains unchanged.
 
 <puml src="diagrams/UndoRedoState4.puml" alt="UndoRedoState4" />
+
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
 
 Step 6. The user executes `clear`, which calls `Model#commitAddressBook()`. Since the `currentStatePointer` is not pointing at the end of the `addressBookStateList`, all address book states after the `currentStatePointer` will be purged. Reason: It no longer makes sense to redo the `add n/David …​` command. This is the behavior that most modern desktop applications follow.
 
@@ -585,6 +680,10 @@ The following activity diagram summarizes what happens when a user executes a ne
 *{Explain here how the data archiving feature will be implemented}*
 
 ---
+
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
 
 ## **Documentation, logging, testing, configuration, dev-ops**
 
@@ -631,6 +730,10 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `*`      | tutor    | set exam reminders                      | notify me ahead of students’ important dates      |
 
 ---
+
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
 
 ### Use cases
 
@@ -686,6 +789,10 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
   → System displays “Invalid homework index: -1 (valid range: 1 to ?)” and aborts the operation.
 - 2d. Homework is already marked as done.  
   → System displays same success message
+
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
 
 **Use case 6: Mark Homework as Undone**
 
@@ -743,6 +850,10 @@ Jul: ✗ Unpaid Aug: ✗ Unpaid Sep: ✗ Unpaid Oct: ✗ Unpaid Nov: ✗ Unpaid 
   - Use case ends.
 
 ---
+
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
 
 **Use case 8: Mark Student as Unpaid**
 
@@ -807,6 +918,10 @@ Jul: ✓ Paid Aug: ✓ Paid Sep: ✓ Paid Oct: ✓ Paid Nov: ✓ Paid Dec: ✓ P
 * The application should launch and load stored data within 2 seconds of starting up
 * The search method should return results within 300ms per 10000 student records
 * All valid commands should complete execution and display feedback in less than 300ms
+
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
 
 3. **Scalability**
 
@@ -887,6 +1002,10 @@ Dec: ✓ Paid`
 
 ---
 
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
+
 #### Marking as unpaid
 
 1. Marks a student has not paid for a month
@@ -964,6 +1083,10 @@ Dec: ✓ Paid`
 
 ---
 
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
+
 #### Marking homework as done
 
 1. Marking an existing homework as done
@@ -1030,7 +1153,11 @@ I was primarily responsible for implementing and testing the **Search feature** 
     - Updated the UI (`PersonCard`) to display homework details with due dates and status badges.
     - Created `JsonAdaptedHomework` for saving of homework data
       git pull origin
-    - 
+
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
+
 ### Min-Ren Seah (miinren)
 
 I was primarily responsible for updating the delete feature and implementing the payment tracking system.
@@ -1050,10 +1177,10 @@ I was primarily responsible for updating the delete feature and implementing the
 
 I was primarily responsible for updating the add, edit feature and implementing the entire reminders feature.
 
-- Add, Edit Feature
+- **Add, Edit Feature**
   - Modified the `add-student` and `edit-student` command to allow of adding and editing of students.
 
-- Reminders Feature
+- **Reminders Feature**
   - Implemented all the reminder related commands and logic integration:
     - `add-reminder` adds a reminder to the list.
     - `edit-reminder` edits an existing reminder from the list.
@@ -1063,3 +1190,4 @@ I was primarily responsible for updating the add, edit feature and implementing 
   - Modified the UI to show the list of reminders.
 
 ## Appendix: Planned Enhancements
+_[To be added in the future...]_
