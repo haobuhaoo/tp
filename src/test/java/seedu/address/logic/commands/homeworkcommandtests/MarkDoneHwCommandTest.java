@@ -20,8 +20,10 @@ import org.junit.jupiter.api.Test;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.logic.commands.homeworkcommands.DeleteHomeworkCommand;
 import seedu.address.logic.commands.homeworkcommands.MarkDoneHwCommand;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
@@ -35,7 +37,6 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.reminder.Reminder;
-import seedu.address.model.reminder.UnmodifiableHwReminder;
 
 public class MarkDoneHwCommandTest {
     private Name marcusName;
@@ -244,8 +245,7 @@ public class MarkDoneHwCommandTest {
         marcus.addHomework(hw);
 
         Model model = new ModelStubFilteredOnly(List.of(marcus));
-        model.addReminder(UnmodifiableHwReminder.of(marcus, hw));
-        MarkDoneHwCommand command = new MarkDoneHwCommand(marcusName, "mAtH wS 3");
+        MarkDoneHwCommand command = new MarkDoneHwCommand(marcusName, Index.fromOneBased(1));
         CommandResult result = command.execute(model);
 
         String expected = String.format(MarkDoneHwCommand.MESSAGE_SUCCESS, marcus.getName().fullName,
@@ -265,7 +265,7 @@ public class MarkDoneHwCommandTest {
         marcus.addHomework(hw);
 
         Model model = new ModelStubFilteredOnly(List.of(marcus));
-        MarkDoneHwCommand command = new MarkDoneHwCommand(marcusName, "Reading");
+        MarkDoneHwCommand command = new MarkDoneHwCommand(marcusName, Index.fromOneBased(1));
         CommandResult res = command.execute(model);
 
         String expected = String.format(MarkDoneHwCommand.MESSAGE_SUCCESS,
@@ -286,7 +286,7 @@ public class MarkDoneHwCommandTest {
         marcus.addHomework(hw);
 
         Model model = new ModelStubFilteredOnly(List.of(john));
-        MarkDoneHwCommand cmd = new MarkDoneHwCommand(marcusName, "Math WS 3");
+        MarkDoneHwCommand cmd = new MarkDoneHwCommand(marcusName, Index.fromOneBased(1));
 
         CommandException ex = assertThrows(CommandException.class, () -> cmd.execute(model));
         assertEquals(MarkDoneHwCommand.MESSAGE_NO_PERSON_FOUND, ex.getMessage());
@@ -294,9 +294,8 @@ public class MarkDoneHwCommandTest {
     }
 
     /**
-     * Verifies that when the student is present but the homework description does not
-     * match any entry, a {@link CommandException} with
-     * {@link MarkDoneHwCommand#MESSAGE_NO_HW_FOUND} is thrown.
+     * Verifies that when the student is present but the homework index is out of bounds
+     * a {@link CommandException} with {@link MarkDoneHwCommand#MESSAGE_INVALID_HW_INDEX} is thrown.
      */
     @Test
     public void execute_hwNotFound_throwsNoHwFound() {
@@ -304,10 +303,11 @@ public class MarkDoneHwCommandTest {
         marcus.addHomework(hw);
 
         Model model = new ModelStubFilteredOnly(List.of(marcus));
-        MarkDoneHwCommand cmd = new MarkDoneHwCommand(marcusName, "Physics WS");
+        MarkDoneHwCommand cmd = new MarkDoneHwCommand(marcusName, Index.fromOneBased(2));
 
         CommandException ex = assertThrows(CommandException.class, () -> cmd.execute(model));
-        assertEquals(MarkDoneHwCommand.MESSAGE_NO_HW_FOUND, ex.getMessage());
+        String expectedMsg = String.format(DeleteHomeworkCommand.MESSAGE_INVALID_HW_INDEX, 2, 1);
+        assertEquals(expectedMsg, ex.getMessage());
         assertFalse(hw.isDone(), "Non-matching homework should remain unchanged");
     }
 
@@ -316,10 +316,10 @@ public class MarkDoneHwCommandTest {
      */
     @Test
     public void equals_various() {
-        MarkDoneHwCommand a1 = new MarkDoneHwCommand(marcusName, "A");
-        MarkDoneHwCommand a1copy = new MarkDoneHwCommand(new Name("Marcus"), "A");
-        MarkDoneHwCommand a2 = new MarkDoneHwCommand(marcusName, "B");
-        MarkDoneHwCommand b1 = new MarkDoneHwCommand(johnName, "A");
+        MarkDoneHwCommand a1 = new MarkDoneHwCommand(marcusName, Index.fromOneBased(1));
+        MarkDoneHwCommand a1copy = new MarkDoneHwCommand(new Name("Marcus"), Index.fromOneBased(1));
+        MarkDoneHwCommand a2 = new MarkDoneHwCommand(marcusName, Index.fromOneBased(2));
+        MarkDoneHwCommand b1 = new MarkDoneHwCommand(johnName, Index.fromOneBased(1));
         assertEquals(a1, a1);
         assertEquals(a1, a1copy);
         assertNotEquals(a1, null);
