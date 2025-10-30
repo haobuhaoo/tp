@@ -26,7 +26,7 @@ Refer to the guide [_Setting up and getting started_](SettingUp.md).
 
 ### Architecture
 
-<img src="diagrams/ArchitectureDiagram.png" width="280" />
+<puml src="diagrams/ArchitectureDiagram.puml" width="280" />
 
 The ***Architecture Diagram*** given above explains the high-level design of the App.
 
@@ -51,7 +51,7 @@ The bulk of the app's work is done by the following four components:
 
 The *Sequence Diagram* below shows how the components interact with each other for the scenario where the user issues the command `delete 1`.
 
-<img src="diagrams/ArchitectureSequenceDiagram.png" width="574" />
+<puml src="diagrams/ArchitectureSequenceDiagram.puml" width="574" />
 
 Each of the four main components (also shown in the diagram above),
 
@@ -60,7 +60,7 @@ Each of the four main components (also shown in the diagram above),
 
 For example, the `Logic` component defines its API in the `Logic.java` interface and implements its functionality using the `LogicManager.java` class which follows the `Logic` interface. Other components interact with a given component through its interface rather than the concrete class (reason: to prevent outside component's being coupled to the implementation of a component), as illustrated in the (partial) class diagram below.
 
-<img src="diagrams/ComponentManagers.png" width="300" />
+<puml src="diagrams/ComponentManagers.puml" width="300" />
 
 The sections below give more details of each component.
 
@@ -68,7 +68,7 @@ The sections below give more details of each component.
 
 The **API** of this component is specified in [`Ui.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/ui/Ui.java)
 
-<img src="diagrams/UiClassDiagram.png" alt="Structure of the UI Component"/>
+<puml src="diagrams/UiClassDiagram.puml" alt="Structure of the UI Component"/>
 
 The UI consists of a `MainWindow` that is made up of parts e.g.`CommandBox`, `ResultDisplay`, `PersonListPanel`, `StatusBarFooter` etc. All these, including the `MainWindow`, inherit from the abstract `UiPart` class which captures the commonalities between classes that represent parts of the visible GUI.
 
@@ -92,11 +92,11 @@ The `UI` component,
 
 Here's a (partial) class diagram of the `Logic` component:
 
-<img src="diagrams/LogicClassDiagram.png" width="550"/>
+<puml src="diagrams/LogicClassDiagram.puml" width="550"/>
 
 The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("delete 1")` API call as an example.
 
-<img src="diagrams/DeleteSequenceDiagram.png" alt="Interactions Inside the Logic Component for the `delete 1` Command" />
+<puml src="diagrams/DeleteSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the `delete 1` Command" />
 
 <box type="info" seamless>
 
@@ -113,7 +113,7 @@ How the `Logic` component works:
 
 Here are the other classes in `Logic` (omitted from the class diagram above) that are used for parsing a user command:
 
-<img src="diagrams/ParserClasses.png" width="600"/>
+<puml src="diagrams/ParserClasses.puml" width="600"/>
 
 How the parsing works:
 * When called upon to parse a user command, the `AddressBookParser` class creates an `XYZCommandParser` (`XYZ` is a placeholder for the specific command name e.g., `AddCommandParser`) which uses the other classes shown above to parse the user command and create a `XYZCommand` object (e.g., `AddCommand`) which the `AddressBookParser` returns back as a `Command` object.
@@ -128,7 +128,7 @@ How the parsing works:
 ### Model component
 **API** : [`Model.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/model/Model.java)
 
-<img src="diagrams/ModelClassDiagram.png" width="450" />
+<puml src="diagrams/ModelClassDiagram.puml" width="450" />
 
 
 The `Model` component,
@@ -142,7 +142,7 @@ The `Model` component,
 
 **Note:** An alternative (arguably, a more OOP) model is given below. It has a `Tag` list in the `AddressBook`, which `Person` references. This allows `AddressBook` to only require one `Tag` object per unique tag, instead of each `Person` needing their own `Tag` objects.<br>
 
-<img src="diagrams/BetterModelClassDiagram.png" width="450" />
+<puml src="diagrams/BetterModelClassDiagram.puml" width="450" />
 
 </box>
 
@@ -151,7 +151,7 @@ The `Model` component,
 
 **API** : [`Storage.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/storage/Storage.java)
 
-<img src="diagrams/StorageClassDiagram.png" width="550" />
+<puml src="diagrams/StorageClassDiagram.puml" width="550" />
 
 The `Storage` component,
 * can save both address book data and user preference data in JSON format, and read them back into corresponding objects.
@@ -185,7 +185,7 @@ Key ideas
 
 * UI reads memberships via a small bridge (UiGroupAccess) to render badges next to each name.
 
-<img src="diagrams/Grouping.png" alt="Class Diagram for Grouping" />
+<puml src="diagrams/Grouping.puml" alt="Class Diagram for Grouping" />
 
 ### Participation feature
 
@@ -233,6 +233,7 @@ The Participation feature lets tutors record a per-class participation score for
 * Older files without this field load as empty histories.
 * Invalid rows (e.g., score out of range) are **skipped** during load so one bad row doesn’t corrupt the file.
 
+<puml src="diagrams/ParticipationCommand.puml" alt="Participation Command Diagram"/>
 #### Error messages
 
 * `Invalid student name: name cannot be empty.`
@@ -247,11 +248,128 @@ The Participation feature lets tutors record a per-class participation score for
 * **Same-date replacement** is handled in the view-model so tutors can overwrite a day’s score cleanly.
 * Calling `model.setPerson(person, person)` ensures storage hooks run without changing other APIs.
 
-### Add student feature
+### Reminder feature
 
-This feature adds a student into the students list. This feature is facilitated by the `LogicManger`, `AddressBookParser`, `AddCommandParser`, `AddCommand`, `CommandResult` and `Model` classes. Given below is a high level overview of how a student is being added into the students list.
+The reminder subsystem manages time-based reminders: user-created reminders and generated unmodifiable reminders (homework and payment).
 
-<img src="diagrams/AddSequenceDiagram.png" width="550" />
+#### Key Ideas
+
+There are 2 types of reminders: `Reminder` and `UnmodfiableReminder`.
+
+* The concrete class `Reminder` is created and modified by the user va the add, edit, delete commands. It implements `Comparable<Reminder>` to allow sorting of reminders by their due date.
+* The abstract subclass `UnmodifiableReminder` of `Reminder` is generated by the system and cannot be modified by the user. It has 2 subclasses that extends it:
+  * `UnmodifiablePaymentReminder` tracks the payment status of every student that has yet to pay for the current month in the student list.
+  * `UnmodifiableHwReminder` tracks the homework completion status of every student for assigned homework that has not been completed.
+
+<puml src="diagrams/ReminderClassDiagram.puml" width="550"/>
+
+#### Command Behaviour
+
+##### Add reminder
+
+Step 1: User runs the command `add-reminder d/2025-10-10 1200 desc/10.10 Sale!` to add a reminder. The input command string is passed to `AddressBookParser#parseCommand()` which creates an instance of `AddReminderCommandParser` and calls `AddReminderCommandParser#parse()` that parses the arguments `d/2025-10-10 1200 desc/10.10 Sale!`.
+
+Step 2: `AddReminderCommandParser#parse()` checks if the prefix for due date and description are present and correct, and ensures that there is no duplication of prefixes. Next, values of each prefix is passed to `ParserUtil#parseDueDate` or `ParserUtil#parseReminderDescription` which creates an instance of `DueDate` or `Description`. The method then creates an instance of `Reminder` with the created instances of `DueDate` and `Description`, which is used to create an instance of `AddReminderCommand` that is returned.
+
+<puml src="diagrams/AddReminderSequenceDiagram.puml" />
+
+<box type="info" seamless>
+
+**Note:** The lifeline for `AddReminderCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
+
+</box>
+
+Step 3: `AddReminderCommand#execute()` is called, and adds the reminder to the reminder list. A success message is returned after a successful addition via an instance of `CommandResult`.
+
+<box type="warning" seamless>
+
+**Note:** If the current reminder list already contains a duplicate reminder as the reminder to add, the command would fail and a `CommandException` instance is thrown with a duplicate reminder message.
+
+</box>
+
+<puml src="diagrams/AddReminderCommandSequenceDiagram.puml" />
+
+<box type="info" seamless>
+
+**Note:** The lifeline for `AddReminderCommand` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
+
+</box>
+
+##### Edit reminder
+
+Similar to add reminder command as above, except the following:
+
+* The user runs the command `edit-reminder i/1 d/2025-11-11 desc/11.11 Sale!` to edit the 1st reminder in the displayed reminder list. Prefix `d/` and `desc/` are optional but at least one of them needs to be included in the command.
+
+* In Step 2, `EditReminderCommandParser#parse()` creates an instance of `EditReminderDescriptor` to contain the fields that the user wants to edit. It checks that at least one field is to be edited, and creates an instance of `EditReminderCommand` with the index of the reminder to edit and `EditReminderDescriptor` which is then returned by the method.
+
+<puml src="diagrams/EditReminderSequenceDiagram.puml" />
+
+<box type="info" seamless>
+
+**Note:** The lifeline for `EditReminderCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
+
+</box>
+
+* In Step 3, the reminder to edit is copied and injected with the new fields. This new reminder is then set to replace the old reminder in the reminder list. After a successful edit, the reminder is list is updated to show all reminders and a success message is also returned via an instance of `CommandResult`.
+
+<box type="warning" seamless>
+
+**Note:**
+
+* If the index provided is greater than the size of the displayed reminder list, the command would fail and a `CommandException` instance is thrown with an invalid index message.
+
+* If the reminder to edit is an instance of `UnmodifiableReminder`, the command would fail and a `CommandException` instance is thrown with an unmodifiable reminder message.
+
+</box>
+
+<puml src="diagrams/EditReminderCommandSequenceDiagram.puml" />
+
+<box type="info" seamless>
+
+**Note:** The lifeline for `EditReminderCommand` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
+
+</box>
+
+##### Delete reminder
+
+Similar to add reminder command as above, except the following:
+
+* The user runs the command `delete-reminder i/1` to delete the 1st reminder from the displayed reminder list. This command also allows for deletion by keyword via `delete-reminder k/sale`, but prefix `i/` and `k/` cannot be used together in the same command.
+
+* In Step 2, `DeleteReminderCommandParser#parse()` checks if only either of the prefixes is used. If deletion is done by index, `ParserUtil#parseIndex()` is called to parse the index value and returns an instance of `DeleteReminderCommand` with the index value. If deletion is done by keyword, an instance of `ReminderFieldsContainsKeywordsPredicate` is created to contain the list of keywords to delete by, which is used to create an instance of `DeleteReminderCommand` and then returned by the method.
+
+<puml src="diagrams/DeleteReminderSequenceDiagram.puml" />
+
+<box type="info" seamless>
+
+**Note:** The lifeline for `DeleteReminderCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
+
+</box>
+
+* In Step 3, if the deletion is by keyword, `DeleteReminderCommand#execute()` will search for all reminders in the list and successfully deletes if only one reminder is found. If no or multiple reminders are found, the command will still succeed but without any deletion. A message is returned via an instance of `CommandResult` indicating if no or multiple reminders are found.
+
+<box type="warning" seamless>
+
+**Note:**
+
+* If the index provided is greater than the size of the displayed reminder list, the command would fail and a `CommandException` instance is thrown with an invalid index message.
+
+* If the reminder to delete is an instance of `UnmodifiableReminder`, the command would fail and a `CommandException` instance is thrown with an unmodifiable reminder message.
+
+</box>
+
+</box>
+
+<puml src="diagrams/DeleteReminderCommandSequenceDiagram.puml" />
+
+<box type="info" seamless>
+
+**Note:** The lifeline for `DeleteReminderCommand` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
+
+</box>
+
+<puml src="diagrams/DeleteReminderReferenceSequenceDiagram.puml"/>
 
 ### [Proposed] Undo/redo feature
 
@@ -269,15 +387,15 @@ Given below is an example usage scenario and how the undo/redo mechanism behaves
 
 Step 1. The user launches the application for the first time. The `VersionedAddressBook` will be initialized with the initial address book state, and the `currentStatePointer` pointing to that single address book state.
 
-<img src="diagrams/UndoRedoState0.png" alt="UndoRedoState0" />
+<puml src="diagrams/UndoRedoState0.puml" alt="UndoRedoState0" />
 
 Step 2. The user executes `delete 5` command to delete the 5th person in the address book. The `delete` command calls `Model#commitAddressBook()`, causing the modified state of the address book after the `delete 5` command executes to be saved in the `addressBookStateList`, and the `currentStatePointer` is shifted to the newly inserted address book state.
 
-<img src="diagrams/UndoRedoState1.png" alt="UndoRedoState1" />
+<puml src="diagrams/UndoRedoState1.puml" alt="UndoRedoState1" />
 
 Step 3. The user executes `add n/David …​` to add a new person. The `add` command also calls `Model#commitAddressBook()`, causing another modified address book state to be saved into the `addressBookStateList`.
 
-<img src="diagrams/UndoRedoState2.png" alt="UndoRedoState2" />
+<puml src="diagrams/UndoRedoState2.puml" alt="UndoRedoState2" />
 
 <box type="info" seamless>
 
@@ -287,7 +405,7 @@ Step 3. The user executes `add n/David …​` to add a new person. The `add` co
 
 Step 4. The user now decides that adding the person was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoAddressBook()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous address book state, and restores the address book to that state.
 
-<img src="diagrams/UndoRedoState3.png" alt="UndoRedoState3" />
+<puml src="diagrams/UndoRedoState3.puml" alt="UndoRedoState3" />
 
 <box type="info" seamless>
 
@@ -298,7 +416,7 @@ than attempting to perform the undo.
 
 The following sequence diagram shows how an undo operation goes through the `Logic` component:
 
-<img src="diagrams/UndoSequenceDiagram-Logic.png" alt="UndoSequenceDiagram-Logic" />
+<puml src="diagrams/UndoSequenceDiagram-Logic.puml" alt="UndoSequenceDiagram-Logic" />
 
 <box type="info" seamless>
 
@@ -308,7 +426,7 @@ The following sequence diagram shows how an undo operation goes through the `Log
 
 Similarly, how an undo operation goes through the `Model` component is shown below:
 
-<img src="diagrams/UndoSequenceDiagram-Model.png" alt="UndoSequenceDiagram-Model" />
+<puml src="diagrams/UndoSequenceDiagram-Model.puml" alt="UndoSequenceDiagram-Model" />
 
 The `redo` command does the opposite — it calls `Model#redoAddressBook()`, which shifts the `currentStatePointer` once to the right, pointing to the previously undone state, and restores the address book to that state.
 
@@ -320,15 +438,15 @@ The `redo` command does the opposite — it calls `Model#redoAddressBook()`,
 
 Step 5. The user then decides to execute the command `list`. Commands that do not modify the address book, such as `list`, will usually not call `Model#commitAddressBook()`, `Model#undoAddressBook()` or `Model#redoAddressBook()`. Thus, the `addressBookStateList` remains unchanged.
 
-<img src="diagrams/UndoRedoState4.png" alt="UndoRedoState4" />
+<puml src="diagrams/UndoRedoState4.puml" alt="UndoRedoState4" />
 
 Step 6. The user executes `clear`, which calls `Model#commitAddressBook()`. Since the `currentStatePointer` is not pointing at the end of the `addressBookStateList`, all address book states after the `currentStatePointer` will be purged. Reason: It no longer makes sense to redo the `add n/David …​` command. This is the behavior that most modern desktop applications follow.
 
-<img src="diagrams/UndoRedoState5.png" alt="UndoRedoState5" />
+<puml src="diagrams/UndoRedoState5.puml" alt="UndoRedoState5" />
 
 The following activity diagram summarizes what happens when a user executes a new command:
 
-<img src="diagrams/CommitActivityDiagram.png" width="250" />
+<puml src="diagrams/CommitActivityDiagram.puml" width="250" />
 
 #### Design considerations:
 
