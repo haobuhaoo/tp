@@ -22,7 +22,8 @@ public class LessonTime {
     /**
      * Day of the week is case-insensitive, but must be a valid 3-letter abbreviation.
      */
-    public static final String VALIDATION_REGEX = "(?i)[0-2][0-9][0-5][0-9] (Mon|Tue|Wed|Thu|Fri|Sat|Sun)$";
+    public static final String VALIDATION_REGEX =
+            "(?i)(?:[01][0-9]|2[0-3])[0-5][0-9] (mon|tue|wed|thu|fri|sat|sun)$";
 
     public static final DateTimeFormatter VALID_INPUT_TIME_FORMAT =
             DateTimeFormatter.ofPattern("HHmm", Locale.ENGLISH);
@@ -44,8 +45,9 @@ public class LessonTime {
      */
     public LessonTime(String lessonTime) {
         requireNonNull(lessonTime);
-        checkArgument(isValidLessonTime(lessonTime), MESSAGE_CONSTRAINTS);
-        String[] parts = lessonTime.split(" ");
+        String collapsedLessonTime = lessonTime.replaceAll("\\s+", " ").trim().toLowerCase();
+        checkArgument(isValidLessonTime(collapsedLessonTime), MESSAGE_CONSTRAINTS);
+        String[] parts = collapsedLessonTime.split(" ");
         this.time = LocalTime.parse(parts[0], VALID_INPUT_TIME_FORMAT);
         this.day = parseDayOfWeek(parts[1]);
     }
