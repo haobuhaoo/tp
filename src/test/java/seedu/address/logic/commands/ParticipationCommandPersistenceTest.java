@@ -91,19 +91,30 @@ public class ParticipationCommandPersistenceTest {
 
         // ===== Unused below (minimal stubs / defaults) =====
         @Override public void setUserPrefs(ReadOnlyUserPrefs userPrefs) { }
-        @Override public ReadOnlyUserPrefs getUserPrefs() { return new UserPrefs(); }
-        @Override public GuiSettings getGuiSettings() { return new GuiSettings(); }
+        @Override public void refreshReminders() {}
+        @Override public ReadOnlyUserPrefs getUserPrefs() {
+            return new UserPrefs();
+        }
+        @Override public GuiSettings getGuiSettings() {
+            return new GuiSettings();
+        }
         @Override public void setGuiSettings(GuiSettings guiSettings) { }
-        @Override public Path getAddressBookFilePath() { return null; }
+        @Override public Path getAddressBookFilePath() {
+            return null;
+        }
         @Override public void setAddressBookFilePath(Path addressBookFilePath) { }
         @Override public void setAddressBook(ReadOnlyAddressBook addressBook) { }
-        @Override public boolean hasPerson(Person person) { return false; }
+        @Override public boolean hasPerson(Person person) {
+            return false;
+        }
         @Override public void deletePerson(Person target) { }
         @Override public void addPerson(Person person) { }
         @Override public ObservableList<Person> getFilteredPersonList() {
             return FXCollections.observableArrayList();
         }
-        @Override public boolean hasReminder(Reminder reminder) { return false; }
+        @Override public boolean hasReminder(Reminder reminder) {
+            return false;
+        }
         @Override public void deleteReminder(Reminder target) { }
         @Override public void addReminder(Reminder reminder) { }
         @Override public void setReminder(Reminder target, Reminder editedReminder) { }
@@ -112,7 +123,9 @@ public class ParticipationCommandPersistenceTest {
         }
         @Override public void refreshReminders() { }
         @Override public void updateFilteredReminderList(Predicate<Reminder> predicate) { }
-        @Override public boolean hasGroup(GroupName name) { return false; }
+        @Override public boolean hasGroup(GroupName name) {
+            return false;
+        }
         @Override public void createGroup(GroupName name) { }
         @Override public void deleteGroup(GroupName name) { }
         @Override public void addToGroup(GroupName name, List<Person> members) { }

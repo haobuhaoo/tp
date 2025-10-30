@@ -183,6 +183,13 @@ public class MainWindow extends UiPart<Stage> {
                 }
             }
         });
+
+        // Give the group filter a custom style hook
+        groupFilterBox.getStyleClass().add("group-filter");
+
+        // (Optional) Better placeholder on dark UI
+        groupFilterBox.setPromptText("Filter by group…");
+
     }
 
     /**
