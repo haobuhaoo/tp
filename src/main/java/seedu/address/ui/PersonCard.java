@@ -19,7 +19,6 @@ import javafx.scene.text.Text;
 import seedu.address.model.group.GroupName;
 import seedu.address.model.person.LessonTime;
 import seedu.address.model.person.ParticipationHistory;
-import seedu.address.model.person.ParticipationRecord;
 import seedu.address.model.person.Person;
 
 /**
@@ -97,29 +96,17 @@ public class PersonCard extends UiPart<Region> {
 
     private void renderParticipation(ParticipationHistory history) {
         if (boxes == null || dateRow == null || history == null) {
-            return; // FXML fields not present or no history yet
+            return;
         }
 
         boxes.getChildren().clear();
         dateRow.getChildren().clear();
 
-        // Build chronological (oldest -> newest), then take the last up to 5,
-        // and pad the *front* with nulls so we always render 5 slots.
-        List<ParticipationRecord> all = new java.util.ArrayList<>(history.asList());
-        all.sort(java.util.Comparator.comparing(ParticipationRecord::getDate)); // oldest -> newest
+        List<ParticipationViewModel.Slot> slots = ParticipationViewModel.computeSlots(history);
 
-        int take = Math.min(5, all.size());
-        List<ParticipationRecord> lastFive = all.subList(all.size() - take, all.size());
-
-        java.util.List<ParticipationRecord> padded = new java.util.ArrayList<>(5);
-        for (int i = 0; i < 5 - take; i++) {
-            padded.add(null);
-        }
-        padded.addAll(lastFive);
-
-        for (ParticipationRecord r : padded) {
+        for (ParticipationViewModel.Slot s : slots) {
             // ----- date label (top row) -----
-            Label d = new Label(r == null ? "" : r.getDate().format(MM_DD));
+            Label d = new Label(s.dateLabel);
             d.getStyleClass().add("date-mini");
             d.setMinWidth(44);
             d.setPrefWidth(44);
@@ -137,8 +124,7 @@ public class PersonCard extends UiPart<Region> {
             Rectangle rect = new Rectangle(24, 24);
             rect.getStyleClass().add("participation-box");
 
-            Text t = new Text(r == null ? "" : Integer.toString(r.getScore()));
-            t.getStyleClass().add("participation-score"); // make it readable
+            Text t = new Text(s.scoreText);
 
             cell.getChildren().addAll(rect, t);
             boxes.getChildren().add(cell);

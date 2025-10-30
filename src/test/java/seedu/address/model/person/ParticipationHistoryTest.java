@@ -112,4 +112,10 @@ public class ParticipationHistoryTest {
         assertEquals(2, h.mostRecent().getScore());
     }
 
+    @Test
+    public void mostRecent_empty_returnsNull() {
+        ParticipationHistory h = new ParticipationHistory();
+        org.junit.jupiter.api.Assertions.assertEquals(null, h.mostRecent());
+    }
+
 }

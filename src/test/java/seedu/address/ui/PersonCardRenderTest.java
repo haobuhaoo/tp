@@ -28,10 +28,8 @@ public class PersonCardRenderTest {
             Platform.startup(() -> { /* no-op */ });
             javafxReady = true;
         } catch (IllegalStateException already) {
-            // Toolkit already started -> good
             javafxReady = true;
         } catch (Throwable t) {
-            // Unsupported environment (e.g., CI without JavaFX)
             javafxReady = false;
         }
     }
