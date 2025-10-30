@@ -169,7 +169,62 @@ Key ideas
 
 * UI reads memberships via a small bridge (UiGroupAccess) to render badges next to each name.
 
+* UniqueGroupList ensures group name uniqueness and provides lookup/removal by GroupName.
+
+* AddressBook owns both the UniqueGroupList and the group memberships (i.e., the set of members for each group). It exposes high-level operations: createGroup, deleteGroup, addMembers, removeMembers, getGroupsOf(Person), etc.
+
+* Model defines the API used by commands; ModelManager delegates to AddressBook.
+
 <puml src="diagrams/Grouping.puml" alt="Class Diagram for Grouping" />
+
+### Grouping Command Behaviour
+#### Create group 
+
+* Step 1. User enters: group-create g/Group A. AddressBookParser#parseCommand() instantiates GroupCreateCommandParser and calls parse(...).
+
+* Step 2. GroupCreateCommandParser#parse() validates the presence/uniqueness of g/, normalizes the raw name via GroupName.of(...), and returns a GroupCreateCommand.
+
+<puml src="diagrams/GroupCreateSequenceDiagram.puml" />
+
+* Step 3. GroupCreateCommand#execute(model) calls model.createGroup(name). If a duplicate exists, a CommandException is thrown. Otherwise a success CommandResult is returned.
+
+<puml src="diagrams/GroupCreateCommandSequenceDiagram.puml" />
+
+#### Add members to group
+
+* Step 1. User enters: group-add g/Group A i/1 i/3. AddressBookParser invokes GroupAddCommandParser#parse(...).
+
+* Step 2. Parser ensures exactly one g/ and ≥1 i/. It builds GroupName, parses Index list, and returns a GroupAddCommand.
+
+<puml src="diagrams/GroupAddSequenceDiagram.puml" />
+
+* Step 3. GroupAddCommand#execute(model) resolves the displayed persons by indices, validates that the group exists, and then calls model.addToGroup(name, members). If any index is invalid, a CommandException is thrown. On success, the filtered person list is refreshed (if needed) and a success CommandResult is returned.
+
+<puml src="diagrams/GroupAddCommandSequenceDiagram.puml" />
+
+#### Remove members from group
+
+Parser and execution mirror group-add, except the model op is removeFromGroup(...). The command succeeds for valid indices; persons not in the group are skipped.
+
+<puml src="diagrams/GroupRemoveSequenceDiagram.puml" /> <puml src="diagrams/GroupRemoveCommandSequenceDiagram.puml" />
+
+#### Delete group
+
+* Step 1. User enters: group-delete g/Group A. GroupDeleteCommandParser returns a GroupDeleteCommand with the parsed name.
+
+* Step 2. GroupDeleteCommand#execute(model) calls model.deleteGroup(name), which also clears its memberships. If group is missing, a CommandException is thrown. Returns success CommandResult.
+
+<puml src="diagrams/GroupDeleteSequenceDiagram.puml" /> <puml src="diagrams/GroupDeleteCommandSequenceDiagram.puml" />
+
+#### Notes
+
+- Normalization. GroupName.of(String) handles trimming, case-insensitivity, allowed characters, and collapsing whitespace so that logical duplicates are rejected.
+
+- Persistence. JsonSerializableAddressBook reads/writes both the group list and memberships. JsonAdaptedGroup serializes { "name": "...", "members": [ ... ] }.
+
+- UI badges. UiGroupAccess is installed by MainWindow#fillInnerParts() and maps Person → Set<GroupName> to render chips in PersonCard.
+
+---
 
 ### Attendance / Participation Command (overview)
 
