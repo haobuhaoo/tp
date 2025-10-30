@@ -631,9 +631,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ---
 
-
-
-
 ## Appendix: Effort
 
 ### Marcus Ng (PeanutButter1212)
@@ -652,9 +649,4 @@ I was primarily responsible for implementing and testing the **Search feature** 
     - `delete-homework` — to remove homework entries.
   - Extended the `Person` and `AddressBook` models to include homework lists and handled data persistence through JSON storage.
   - Updated the UI (`PersonCard`) to display homework details with due dates and status badges.
-  - Created `JsonAdaptedHomework` for saving of homework data 
-
-
-## Appendix: Planned Enhancements
-
-
+  - Created `JsonAdaptedHomework` for saving of homework data
