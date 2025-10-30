@@ -642,6 +642,7 @@ I was primarily responsible for implementing and testing the **Search feature** 
   - Designed a flexible parser to handle multiple prefixes and partial keyword matching.
 
 
+## Appendix: Planned Enhancements
 - **Homework Feature Set**
   - Designed and implemented all homework-related commands:
     - `add-homework` — to assign new homework to a student.
