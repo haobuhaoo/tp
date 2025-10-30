@@ -456,8 +456,6 @@ Each of these features interacts with the `paymentStatus` field stored within ev
 
 <puml src="diagrams/DeleteReminderReferenceSequenceDiagram.puml"/>
 
-### [Proposed] Undo/redo feature
-
 ### Add Homework
 
 The add-homework feature lets tutors record homework tasks for individual students. Each homework entry contains a **description**, **due date**, and completion status (default: not done).
