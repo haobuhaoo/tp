@@ -25,7 +25,7 @@ public class SearchCommand extends Command {
             + "Keywords: Marcus / 91111111 / 10:00 / Sun";
 
     public static final String MESSAGE_NO_MATCH = "No students match the search keyword.";
-    public static final String MESSAGE_SUCCESS_PREFIX = "Found %d students:\n";
+    public static final String MESSAGE_SUCCESS_PREFIX = "Found %d students\n";
 
     private final StudentFieldsContainsKeywordsPredicate predicate;
 

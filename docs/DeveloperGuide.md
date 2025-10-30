@@ -81,6 +81,11 @@ The `UI` component,
 * keeps a reference to the `Logic` component, because the `UI` relies on the `Logic` to execute commands.
 * depends on some classes in the `Model` component, as it displays `Person` object residing in the `Model`.
 
+**Participation panel on Person cards**
+- The 5-slot participation view is computed by `ParticipationViewModel.computeSlots(...)` (pure helper for easy testing) and rendered in `PersonCard`.
+- Dates are shown on the top row (`MM-dd`), scores inside the boxes on the bottom row.
+- When a date appears multiple times in history, only the latest score is displayed.
+
 ### Logic component
 
 **API** : [`Logic.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/logic/Logic.java)
@@ -113,6 +118,12 @@ Here are the other classes in `Logic` (omitted from the class diagram above) tha
 How the parsing works:
 * When called upon to parse a user command, the `AddressBookParser` class creates an `XYZCommandParser` (`XYZ` is a placeholder for the specific command name e.g., `AddCommandParser`) which uses the other classes shown above to parse the user command and create a `XYZCommand` object (e.g., `AddCommand`) which the `AddressBookParser` returns back as a `Command` object.
 * All `XYZCommandParser` classes (e.g., `AddCommandParser`, `DeleteCommandParser`, ...) inherit from the `Parser` interface so that they can be treated similarly where possible e.g, during testing.
+
+**Participation command specifics**
+- `ParticipationCommandParser` ensures `n/`, `d/`, `s/` each appear exactly once (no preamble).
+- `ParticipationCommand` validates values, mutates the target `Person`’s `ParticipationHistory`,
+  calls `model.setPerson(person, person)` to trigger persistence, updates `AttendanceIndex`,
+  and returns a success message.
 
 ### Model component
 **API** : [`Model.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/model/Model.java)
@@ -147,6 +158,11 @@ The `Storage` component,
 * inherits from both `AddressBookStorage` and `UserPrefStorage`, which means it can be treated as either one (if only the functionality of only one is needed).
 * depends on some classes in the `Model` component (because the `Storage` component's job is to save/retrieve objects that belong to the `Model`)
 
+**Participation persistence notes**
+- Each `Person` now serializes a `participation` array (list of `{ date: "YYYY-MM-DD", score: 0..5 }`).
+- Missing `participation` (legacy files) is treated as an empty history.
+- Invalid rows (bad date/score) are ignored during load to keep the rest of the file usable.
+
 ### Common classes
 
 Classes used by multiple components are in the `seedu.address.commons` package.
@@ -169,17 +185,245 @@ Key ideas
 
 * UI reads memberships via a small bridge (UiGroupAccess) to render badges next to each name.
 
+* UniqueGroupList ensures group name uniqueness and provides lookup/removal by GroupName.
+
+* AddressBook owns both the UniqueGroupList and the group memberships (i.e., the set of members for each group). It exposes high-level operations: createGroup, deleteGroup, addMembers, removeMembers, getGroupsOf(Person), etc.
+
+* Model defines the API used by commands; ModelManager delegates to AddressBook.
+
 <puml src="diagrams/Grouping.puml" alt="Class Diagram for Grouping" />
 
-### Attendance / Participation Command (overview)
+### Grouping Command Behaviour
+#### Create group 
 
-The participation feature records a per-class score (`s/0..5`) for a student and updates the 5-box history shown on each Person card, with the **class date above** each box and the **score inside**.
+* Step 1. User enters: group-create g/Group A. AddressBookParser#parseCommand() instantiates GroupCreateCommandParser and calls parse(...).
 
-<img src="diagrams/src/AttendanceCommand.png" alt="Attendance / Participation Command Diagram" width="720"/>
+* Step 2. GroupCreateCommandParser#parse() validates the presence/uniqueness of g/, normalizes the raw name via GroupName.of(...), and returns a GroupCreateCommand.
 
-### Add student feature
+<puml src="diagrams/GroupCreateSequenceDiagram.puml" />
 
-This feature adds a student into the students list. This feature is facilitated by the `LogicManger`, `AddressBookParser`, `AddCommandParser`, `AddCommand`, `CommandResult` and `Model` classes. Given below is a high level overview of how a student is being added into the students list.
+* Step 3. GroupCreateCommand#execute(model) calls model.createGroup(name). If a duplicate exists, a CommandException is thrown. Otherwise a success CommandResult is returned.
+
+<puml src="diagrams/GroupCreateCommandSequenceDiagram.puml" />
+
+#### Add members to group
+
+* Step 1. User enters: group-add g/Group A i/1 i/3. AddressBookParser invokes GroupAddCommandParser#parse(...).
+
+* Step 2. Parser ensures exactly one g/ and ≥1 i/. It builds GroupName, parses Index list, and returns a GroupAddCommand.
+
+<puml src="diagrams/GroupAddSequenceDiagram.puml" />
+
+* Step 3. GroupAddCommand#execute(model) resolves the displayed persons by indices, validates that the group exists, and then calls model.addToGroup(name, members). If any index is invalid, a CommandException is thrown. On success, the filtered person list is refreshed (if needed) and a success CommandResult is returned.
+
+<puml src="diagrams/GroupAddCommandSequenceDiagram.puml" />
+
+#### Remove members from group
+
+Parser and execution mirror group-add, except the model op is removeFromGroup(...). The command succeeds for valid indices; persons not in the group are skipped.
+
+<puml src="diagrams/GroupRemoveSequenceDiagram.puml" /> <puml src="diagrams/GroupRemoveCommandSequenceDiagram.puml" />
+
+#### Delete group
+
+* Step 1. User enters: group-delete g/Group A. GroupDeleteCommandParser returns a GroupDeleteCommand with the parsed name.
+
+* Step 2. GroupDeleteCommand#execute(model) calls model.deleteGroup(name), which also clears its memberships. If group is missing, a CommandException is thrown. Returns success CommandResult.
+
+<puml src="diagrams/GroupDeleteSequenceDiagram.puml" /> <puml src="diagrams/GroupDeleteCommandSequenceDiagram.puml" />
+
+#### Notes
+
+- Normalization. GroupName.of(String) handles trimming, case-insensitivity, allowed characters, and collapsing whitespace so that logical duplicates are rejected.
+
+- Persistence. JsonSerializableAddressBook reads/writes both the group list and memberships. JsonAdaptedGroup serializes { "name": "...", "members": [ ... ] }.
+
+- UI badges. UiGroupAccess is installed by MainWindow#fillInnerParts() and maps Person → Set<GroupName> to render chips in PersonCard.
+
+---
+<puml src="diagrams/Grouping.puml" alt="Class Diagram for Grouping" />
+
+### Participation feature
+
+<puml src="diagrams/ParticipationSequence.puml" width="720" />
+
+The Participation feature lets tutors record a per-class participation score for a student and shows the **last 5 classes** (chronological, oldest → newest) on each student card, with the **date above** each box and the **score inside**.
+
+#### Command format & validation
+- Command: `participation n/NAME d/YYYY-MM-DD s/0..5`
+- Validation:
+  - `NAME` must be non-empty, ≤ 50 chars. Matching is case-insensitive after whitespace normalization.
+  - `DATE` must be ISO `YYYY-MM-DD`.
+  - `SCORE` must be an integer in `[0, 5]`.
+
+#### Logic flow
+- `ParticipationCommand`:
+  1. Parses/validates inputs (parser enforces single occurrence of prefixes; command validates values).
+  2. Finds `Person` by normalized name from `Model#getAddressBook().getPersonList()`.
+  3. Appends a new `ParticipationRecord(date, score)` to `person.getParticipation()`.
+  4. Calls `model.setPerson(person, person)` to trigger persistence/autosave.
+  5. Updates the legacy `AttendanceIndex` current UI date and refreshes the filtered list.
+
+#### Model
+- `ParticipationRecord` — immutable `(LocalDate date, int score)`, score ∈ `[0,5]`.
+- `ParticipationHistory` — keeps **up to 5 most recent** records by insertion order:
+  - `add(record)` pushes to the tail; drops oldest if size > 5.
+  - `asList()` returns oldest → newest; `mostRecent()` returns last or `null`.
+
+#### UI (Person card)
+- The 5-box panel is produced via a pure helper `ParticipationViewModel.computeSlots(history)`:
+  - Returns exactly 5 slots (oldest → newest), padded at the front when fewer than 5 exist.
+  - If multiple records share the **same date**, only the **latest** score is shown.
+- Styling comes from `participation.css` (e.g., `.participation-box`, `.date-mini`).
+
+#### Storage
+- `JsonAdaptedPerson` persists a `participation` array:
+
+```json
+  "participation": [
+    { "date": "2025-09-19", "score": 4 },
+    { "date": "2025-09-21", "score": 2 }
+  ]
+````
+
+* Older files without this field load as empty histories.
+* Invalid rows (e.g., score out of range) are **skipped** during load so one bad row doesn’t corrupt the file.
+
+<puml src="diagrams/ParticipationCommand.puml" alt="Participation Command Diagram"/>
+#### Error messages
+
+* `Invalid student name: name cannot be empty.`
+* `Invalid student name: no matching student found.`
+* `Invalid date. The format must be YYYY-MM-DD.`
+* `Invalid participation score. Use an integer 0 to 5.`
+* `Invalid participation score. Must be between 0 and 5 inclusive.`
+
+#### Design notes
+
+* **5 entries** keeps the UI legible and makes updates O(1) amortized.
+* **Same-date replacement** is handled in the view-model so tutors can overwrite a day’s score cleanly.
+* Calling `model.setPerson(person, person)` ensures storage hooks run without changing other APIs.
+
+### Reminder feature
+
+The reminder subsystem manages time-based reminders: user-created reminders and generated unmodifiable reminders (homework and payment).
+
+#### Key Ideas
+
+There are 2 types of reminders: `Reminder` and `UnmodfiableReminder`.
+
+* The concrete class `Reminder` is created and modified by the user va the add, edit, delete commands. It implements `Comparable<Reminder>` to allow sorting of reminders by their due date.
+* The abstract subclass `UnmodifiableReminder` of `Reminder` is generated by the system and cannot be modified by the user. It has 2 subclasses that extends it:
+  * `UnmodifiablePaymentReminder` tracks the payment status of every student that has yet to pay for the current month in the student list.
+  * `UnmodifiableHwReminder` tracks the homework completion status of every student for assigned homework that has not been completed.
+
+<puml src="diagrams/ReminderClassDiagram.puml" width="550"/>
+
+#### Command Behaviour
+
+##### Add reminder
+
+Step 1: User runs the command `add-reminder d/2025-10-10 1200 desc/10.10 Sale!` to add a reminder. The input command string is passed to `AddressBookParser#parseCommand()` which creates an instance of `AddReminderCommandParser` and calls `AddReminderCommandParser#parse()` that parses the arguments `d/2025-10-10 1200 desc/10.10 Sale!`.
+
+Step 2: `AddReminderCommandParser#parse()` checks if the prefix for due date and description are present and correct, and ensures that there is no duplication of prefixes. Next, values of each prefix is passed to `ParserUtil#parseDueDate` or `ParserUtil#parseReminderDescription` which creates an instance of `DueDate` or `Description`. The method then creates an instance of `Reminder` with the created instances of `DueDate` and `Description`, which is used to create an instance of `AddReminderCommand` that is returned.
+
+<puml src="diagrams/AddReminderSequenceDiagram.puml" />
+
+<box type="info" seamless>
+
+**Note:** The lifeline for `AddReminderCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
+
+</box>
+
+Step 3: `AddReminderCommand#execute()` is called, and adds the reminder to the reminder list. A success message is returned after a successful addition via an instance of `CommandResult`.
+
+<box type="warning" seamless>
+
+**Note:** If the current reminder list already contains a duplicate reminder as the reminder to add, the command would fail and a `CommandException` instance is thrown with a duplicate reminder message.
+
+</box>
+
+<puml src="diagrams/AddReminderCommandSequenceDiagram.puml" />
+
+<box type="info" seamless>
+
+**Note:** The lifeline for `AddReminderCommand` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
+
+</box>
+
+##### Edit reminder
+
+Similar to add reminder command as above, except the following:
+
+* The user runs the command `edit-reminder i/1 d/2025-11-11 desc/11.11 Sale!` to edit the 1st reminder in the displayed reminder list. Prefix `d/` and `desc/` are optional but at least one of them needs to be included in the command.
+
+* In Step 2, `EditReminderCommandParser#parse()` creates an instance of `EditReminderDescriptor` to contain the fields that the user wants to edit. It checks that at least one field is to be edited, and creates an instance of `EditReminderCommand` with the index of the reminder to edit and `EditReminderDescriptor` which is then returned by the method.
+
+<puml src="diagrams/EditReminderSequenceDiagram.puml" />
+
+<box type="info" seamless>
+
+**Note:** The lifeline for `EditReminderCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
+
+</box>
+
+* In Step 3, the reminder to edit is copied and injected with the new fields. This new reminder is then set to replace the old reminder in the reminder list. After a successful edit, the reminder is list is updated to show all reminders and a success message is also returned via an instance of `CommandResult`.
+
+<box type="warning" seamless>
+
+**Note:**
+
+* If the index provided is greater than the size of the displayed reminder list, the command would fail and a `CommandException` instance is thrown with an invalid index message.
+
+* If the reminder to edit is an instance of `UnmodifiableReminder`, the command would fail and a `CommandException` instance is thrown with an unmodifiable reminder message.
+
+</box>
+
+<puml src="diagrams/EditReminderCommandSequenceDiagram.puml" />
+
+<box type="info" seamless>
+
+**Note:** The lifeline for `EditReminderCommand` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
+
+</box>
+
+##### Delete reminder
+
+Similar to add reminder command as above, except the following:
+
+* The user runs the command `delete-reminder i/1` to delete the 1st reminder from the displayed reminder list. This command also allows for deletion by keyword via `delete-reminder k/sale`, but prefix `i/` and `k/` cannot be used together in the same command.
+
+* In Step 2, `DeleteReminderCommandParser#parse()` checks if only either of the prefixes is used. If deletion is done by index, `ParserUtil#parseIndex()` is called to parse the index value and returns an instance of `DeleteReminderCommand` with the index value. If deletion is done by keyword, an instance of `ReminderFieldsContainsKeywordsPredicate` is created to contain the list of keywords to delete by, which is used to create an instance of `DeleteReminderCommand` and then returned by the method.
+
+<puml src="diagrams/DeleteReminderSequenceDiagram.puml" />
+
+<box type="info" seamless>
+
+**Note:** The lifeline for `DeleteReminderCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
+
+</box>
+
+* In Step 3, if the deletion is by keyword, `DeleteReminderCommand#execute()` will search for all reminders in the list and successfully deletes if only one reminder is found. If no or multiple reminders are found, the command will still succeed but without any deletion. A message is returned via an instance of `CommandResult` indicating if no or multiple reminders are found.
+
+<box type="warning" seamless>
+
+**Note:**
+
+* If the index provided is greater than the size of the displayed reminder list, the command would fail and a `CommandException` instance is thrown with an invalid index message.
+
+* If the reminder to delete is an instance of `UnmodifiableReminder`, the command would fail and a `CommandException` instance is thrown with an unmodifiable reminder message.
+
+</box>
+
+</box>
+
+<puml src="diagrams/DeleteReminderCommandSequenceDiagram.puml" />
+
+<box type="info" seamless>
+
+**Note:** The lifeline for `DeleteReminderCommand` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
+
+</box>
 
 <puml src="diagrams/AddSequenceDiagram.puml" width="550" />
 
@@ -210,9 +454,9 @@ The diagram above illustrates the **Payment Management** use cases in ClassConne
 
 Each of these features interacts with the `paymentStatus` field stored within every `Person` object.
 
+<puml src="diagrams/DeleteReminderReferenceSequenceDiagram.puml"/>
 
-<img src="diagrams/tracing/AttendanceCommand.png" alt="Attendance / Participation Command Diagram" width="720"/>
-
+### [Proposed] Undo/redo feature
 
 ### Add Homework
 
@@ -273,7 +517,6 @@ Step 4. The user now decides that adding the person was a mistake, and decides t
 
 <puml src="diagrams/UndoRedoState3.puml" alt="UndoRedoState3" />
 
-
 <box type="info" seamless>
 
 **Note:** If the `currentStatePointer` is at index 0, pointing to the initial AddressBook state, then there are no previous AddressBook states to restore. The `undo` command uses `Model#canUndoAddressBook()` to check if this is the case. If so, it will return an error to the user rather
@@ -320,22 +563,23 @@ The following activity diagram summarizes what happens when a user executes a ne
 **Aspect: How undo & redo executes:**
 
 * **Alternative 1 (current choice):** Saves the entire address book.
+
   * Pros: Easy to implement.
   * Cons: May have performance issues in terms of memory usage.
 
 * **Alternative 2:** Individual command knows how to undo/redo by
   itself.
+
   * Pros: Will use less memory (e.g. for `delete`, just save the person being deleted).
   * Cons: We must ensure that the implementation of each individual command are correct.
 
-_{more aspects and alternatives to be added}_
+*{more aspects and alternatives to be added}*
 
-### \[Proposed\] Data archiving
+### [Proposed] Data archiving
 
-_{Explain here how the data archiving feature will be implemented}_
+*{Explain here how the data archiving feature will be implemented}*
 
-
---------------------------------------------------------------------------------------------------------------------
+---
 
 ## **Documentation, logging, testing, configuration, dev-ops**
 
@@ -345,17 +589,21 @@ _{Explain here how the data archiving feature will be implemented}_
 * [Configuration guide](Configuration.md)
 * [DevOps guide](DevOps.md)
 
---------------------------------------------------------------------------------------------------------------------
+The Participation feature includes unit tests for command validation, model capping/mostRecent, UI view-model
+(chronological + same-date dedup + padding), and storage round-trip (including invalid-row skipping).
+
+---
 
 ## Appendix: Requirements
 
 ### Product scope
 
 **Target user profile**:
-- Private tutors managing ~20–40 students individually.
-- Need to keep track of **student + parent contact details, lesson times, homework, payments, and performance notes**.
-- Prefer **fast, keyboard-driven CLI apps** over complex GUIs.
-- Comfortable with basic computer operations, but want **lightweight, no-frills software**.
+
+* Private tutors managing ~20–40 students individually.
+* Need to keep track of **student + parent contact details, lesson times, homework, payments, and performance notes**.
+* Prefer **fast, keyboard-driven CLI apps** over complex GUIs.
+* Comfortable with basic computer operations, but want **lightweight, no-frills software**.
 
 **Value proposition**: ClassConnect allows tutors to manage lessons, admin tasks, and student progress **faster and more accurately** than traditional notebooks or bloated management systems.
 
@@ -376,6 +624,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* *`    | tutor    | filter/search students by subject/level | quickly find relevant students                    |
 | `*`      | tutor    | export data into a report               | share with parents or keep records offline        |
 | `*`      | tutor    | set exam reminders                      | notify me ahead of students’ important dates      |
+
 ---
 
 ### Use cases
@@ -385,13 +634,15 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Use case 1: Add Student**
 
 **MSS**
+
 1. Tutor enters `add-student n/Marcus p/98765432 t/Mon 1900 lvl/Sec3 sub/Math`.
 2. System validates the input.
 3. System stores the student record.
 4. System confirms addition.
 
 **Extensions**
-- 2a. Input is invalid (e.g., wrong phone format).
+
+* 2a. Input is invalid (e.g., wrong phone format).
   → System shows error and requests re-entry.
 
 ---
@@ -434,12 +685,14 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Use case 6: Mark Homework as Undone**
 
 **MSS**
+
 1. Tutor enters `mark-undone n/Marcus Yeoh i/1`.
 2. System validates the input.
 3. System marks the specified homework as undone.
 4. System displays success message: Marked homework as undone for Marcus: <description>
 
 **Extensions**
+
 - 2a. Input is invalid (e.g., missing or wrong prefixes).  
   → System shows an error message with the correct input format.
 - 2b. Student name not found.  
@@ -448,7 +701,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
   → System displays “Invalid homework index: -1 (valid range: 1 to ?)” and aborts the operation.
 - 2d. Homework is already marked as undone.  
   → System displays same success message.
-
 ---
 
 **Use case 7: Mark Student as Paid**
@@ -540,29 +792,35 @@ Jul: ✓ Paid Aug: ✓ Paid Sep: ✓ Paid Oct: ✓ Paid Nov: ✓ Paid Dec: ✓ P
 ---
 
 ### Non-Functional Requirements
+
 1. **Setup**
-- Should work on any mainstream OS as long as it has Java 17 or above installed.
+
+* Should work on any mainstream OS as long as it has Java 17 or above installed.
 
 2. **Performance**
-- The application should launch and load stored data within 2 seconds of starting up
-- The search method should return results within 300ms per 10000 student records
-- All valid commands should complete execution and display feedback in less than 300ms
+
+* The application should launch and load stored data within 2 seconds of starting up
+* The search method should return results within 300ms per 10000 student records
+* All valid commands should complete execution and display feedback in less than 300ms
 
 3. **Scalability**
-- Able to scale up to 10000 students without any significant decrease in performance
-- Data structures should be implemented in a way such that adding more students minimally affects search and
-delete methods
+
+* Able to scale up to 10000 students without any significant decrease in performance
+* Data structures should be implemented in a way such that adding more students minimally affects search and
+  delete methods
 
 4. **Usability**
-- Every command entered will print out either a success message or a specific error message
-- Help command will print out clear list of commands with their respective usage examples
-- A user with above average typing speed for regular English text should be able to accomplish most of the tasks faster
-using commands than using the mouse.
+
+* Every command entered will print out either a success message or a specific error message
+* Help command will print out clear list of commands with their respective usage examples
+* A user with above average typing speed for regular English text should be able to accomplish most of the tasks faster
+  using commands than using the mouse.
 
 5. **Maintainability**
-- The codebase should follow OOP principles
-- Test coverage should cover most if not all of the methods and classes
-- Error messages and command validation logic should be centralized to avoid inconsistency across commands.
+
+* The codebase should follow OOP principles
+* Test coverage should cover most if not all of the methods and classes
+* Error messages and command validation logic should be centralized to avoid inconsistency across commands.
 
 ---
 
@@ -745,6 +1003,85 @@ Dec: ✓ Paid`
    `mark-paid i/1 m/1` (student has paid for January)  
    Expected: Error message displayed:  
    `Student marcus ng is already marked as unpaid for January.`
+
+---
+
+### Homework Feature
+
+#### Adding a homework
+
+1. Adding a homework to an existing student
+
+  1. Prerequisites:
+    - Ensure at least one student (e.g., Marcus) is in the list using `list`.
+    - The student has no existing homework with the same description and due date.
+
+  1. Test case:  
+     `add-homework n/Marcus desc/Math Assignment 3 by/2025-11-15`  
+     Expected: Homework added to Marcus. Success message shown:  
+     `Added homework for Marcus: Math Assignment 3 (Due: 15 Nov 2025)`
+
+  1. Test case:  
+     `add-homework n/Marcus desc/Math Assignment 3 by/2025/11/15`  
+     Expected: Error message displayed:  
+     `Invalid date format! Please use YYYY-MM-DD.`
+
+  1. Test case:  
+     `add-homework n/Unknown Student desc/Math Assignment 3 by/2025-11-15`  
+     Expected: Error message displayed:  
+     `No student with given name.`
+
+  1. Test case:  
+     Add the same homework again with identical details.  
+     Expected: Error message displayed:  
+     `This student has already been assigned this homework.`
+
+---
+
+#### Marking homework as done
+
+1. Marking an existing homework as done
+
+  1. Prerequisites:
+    - At least one student (e.g., Marcus) has at least one homework entry.
+    - Homework is currently *undone* (not marked as done).
+
+  1. Test case:  
+     `mark-done n/Marcus i/1`  
+     Expected: Homework is marked as done. Success message shown:  
+     `Marked homework as done for Marcus: Math Assignment 3`
+
+  1. Test case:  
+     `mark-done n/Marcus i/99`  
+     Expected: Error message displayed:  
+     `Invalid homework index: 99 (valid range: 1 to [number of homeworks])`
+
+  1. Test case:  
+     Run `mark-done` again for the same homework.  
+     Expected: System displays same success message (no state change).
+
+---
+
+#### Marking homework as undone
+
+1. Marking a completed homework as undone
+
+  1. Prerequisites:
+    - At least one student (e.g., Marcus) has at least one **done** homework entry.
+
+  1. Test case:  
+     `mark-undone n/Marcus Yeoh i/1`  
+     Expected: Homework is marked as undone. Success message shown:  
+     `Marked homework as undone for Marcus: Math Assignment 3`
+
+  1. Test case:  
+     `mark-undone n/Marcus Yeoh i/99`  
+     Expected: Error message displayed:  
+     `Invalid homework index: 99 (valid range: 1 to [number of homeworks])`
+
+  1. Test case:  
+     Run `mark-undone` again for the same undone homework.  
+     Expected: System displays same success message (no state change).
 
 ---
 

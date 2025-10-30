@@ -164,6 +164,13 @@ public class Person {
     }
 
     /**
+     * Replaces the current {@code paymentStatus} with the given {@code status}.
+     */
+    public void setAllPaymentStatus(BitSet status) {
+        this.paymentStatus = status;
+    }
+
+    /**
      * Updates the payment status for a specific month.
      * Modifies the current person object instead of creating a new one.
      */

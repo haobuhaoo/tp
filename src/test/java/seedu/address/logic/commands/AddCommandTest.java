@@ -4,10 +4,12 @@ import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.model.util.SampleDataUtil.getMonthName;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -31,6 +33,7 @@ import seedu.address.model.group.Group;
 import seedu.address.model.group.GroupName;
 import seedu.address.model.person.Person;
 import seedu.address.model.reminder.Reminder;
+import seedu.address.model.reminder.UnmodifiablePaymentReminder;
 import seedu.address.testutil.PersonBuilder;
 
 public class AddCommandTest {
@@ -50,6 +53,7 @@ public class AddCommandTest {
         assertEquals(String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(validPerson)),
                 commandResult.getFeedbackToUser());
         assertEquals(Arrays.asList(validPerson), modelStub.personsAdded);
+        assertEquals(1, modelStub.reminderAdded.size());
     }
 
     @Test
@@ -197,6 +201,11 @@ public class AddCommandTest {
         }
 
         @Override
+        public void refreshReminders() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public AttendanceIndex getAttendanceIndex() {
             return new AttendanceIndex(); // harmless default for existing add tests
         }
@@ -266,6 +275,7 @@ public class AddCommandTest {
      */
     private class ModelStubAcceptingPersonAdded extends ModelStub {
         final ArrayList<Person> personsAdded = new ArrayList<>();
+        final ArrayList<Reminder> reminderAdded = new ArrayList<>();
 
         @Override
         public boolean hasPerson(Person person) {
@@ -282,6 +292,18 @@ public class AddCommandTest {
         @Override
         public ReadOnlyAddressBook getAddressBook() {
             return new AddressBook();
+        }
+
+        @Override
+        public void refreshReminders() {
+            for (Person p : personsAdded) {
+                int currentMonth = LocalDate.now().getMonth().getValue();
+                UnmodifiablePaymentReminder reminder =
+                        UnmodifiablePaymentReminder.of(currentMonth, p, getMonthName(currentMonth));
+                if (!reminderAdded.contains(reminder)) {
+                    reminderAdded.add(reminder);
+                }
+            }
         }
     }
 

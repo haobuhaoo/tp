@@ -201,6 +201,11 @@ public class AddReminderCommandTest {
         }
 
         @Override
+        public void refreshReminders() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public AttendanceIndex getAttendanceIndex() {
             return new AttendanceIndex(); // harmless default for existing add tests
         }

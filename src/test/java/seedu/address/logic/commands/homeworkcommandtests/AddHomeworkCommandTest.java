@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.model.util.SampleDataUtil.getMonthName;
 
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -35,6 +36,7 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.reminder.Reminder;
+import seedu.address.model.reminder.UnmodifiablePaymentReminder;
 
 /**
  * Tests for {@link AddHomeworkCommand}.
@@ -90,18 +92,20 @@ public class AddHomeworkCommandTest {
         }
 
         @Override
-        public void addReminder(Reminder reminder) {
-            filteredReminders.add(reminder);
-        }
-
-        @Override
-        public void deleteReminder(Reminder target) {
-            filteredReminders.remove(target);
-        }
-
-        @Override
         public ObservableList<Reminder> getFilteredReminderList() {
             return filteredReminders;
+        }
+
+        @Override
+        public void refreshReminders() {
+            for (Person p : filtered) {
+                int currentMonth = LocalDate.now().getMonth().getValue();
+                UnmodifiablePaymentReminder paymentReminder =
+                        UnmodifiablePaymentReminder.of(currentMonth, p, getMonthName(currentMonth));
+                if (!filteredReminders.contains(paymentReminder)) {
+                    filteredReminders.add(paymentReminder);
+                }
+            }
         }
 
         //These are methods not used by AddHomeworkCommand
@@ -232,6 +236,16 @@ public class AddHomeworkCommandTest {
         }
 
         @Override
+        public void addReminder(Reminder reminder) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void deleteReminder(Reminder target) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void updateFilteredReminderList(Predicate<Reminder> predicate) {
             throw new AssertionError("This method should not be called.");
         }
@@ -308,7 +322,8 @@ public class AddHomeworkCommandTest {
 
         assertTrue(marcus.getHomeworkList().contains(homework));
         assertFalse(john.getHomeworkList().contains(homework), "Unrelated student should not change");
-        assertEquals(1, model.getFilteredReminderList().size());
+        // 2 payment due reminder but homework not due tomorrow
+        assertEquals(2, model.getFilteredReminderList().size());
     }
 
     /**

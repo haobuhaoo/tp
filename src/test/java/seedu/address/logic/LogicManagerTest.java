@@ -183,6 +183,7 @@ public class LogicManagerTest {
                 .withLessonTime(VALID_LESSON_TIME_1, VALID_LESSON_TIME_2).build();
         ModelManager expectedModel = new ModelManager();
         expectedModel.addPerson(expectedPerson);
+        expectedModel.refreshReminders();
         assertCommandFailure(addCommand, CommandException.class, expectedMessage, expectedModel);
     }
 }

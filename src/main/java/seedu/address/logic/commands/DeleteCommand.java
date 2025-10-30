@@ -74,22 +74,9 @@ public class DeleteCommand extends Command {
 
         // deleting by index
         if (targetIndex.isPresent()) {
-            List<Person> lastShownList = model.getFilteredPersonList();
-
-            if (lastShownList.isEmpty()) {
-                throw new CommandException(MESSAGE_INVALID_STUDENT_DISPLAYED_INDEX);
-            }
-
-            Index index = targetIndex.get();
-            if (index.getZeroBased() >= lastShownList.size()) {
-                throw new CommandException(String.format(
-                        Messages.MESSAGE_OUT_OF_BOUNDS_DELETE_INDEX,
-                        index.getOneBased(), lastShownList.size())
-                );
-            }
-
-            Person personToDelete = lastShownList.get(index.getZeroBased());
+            Person personToDelete = getPersonToDeleteByIndex(model);
             model.deletePerson(personToDelete);
+            model.refreshReminders();
             return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(personToDelete)));
         }
 
@@ -113,6 +100,7 @@ public class DeleteCommand extends Command {
         if (exactNameMatches.size() == 1) {
             Person personToDelete = exactNameMatches.get(0);
             model.deletePerson(personToDelete);
+            model.refreshReminders();
             return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(personToDelete)));
         }
 
@@ -127,9 +115,30 @@ public class DeleteCommand extends Command {
             if (exactPhoneMatches.size() == 1) {
                 Person personToDelete = exactPhoneMatches.get(0);
                 model.deletePerson(personToDelete);
+                model.refreshReminders();
                 return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(personToDelete)));
             } else if (exactPhoneMatches.size() > 1) {
                 refinementCandidates = exactPhoneMatches;
+            }
+
+            // lesson time match
+            if (exactPhoneMatches.isEmpty()) {
+                List<Person> exactLessonMatches = matches.stream()
+                        .filter(p -> p.getLessonTime() != null
+                                && p.getLessonTime().stream()
+                                .map(lt -> lt.toString().trim().toLowerCase())
+                                .anyMatch(t -> t.equals(keyword)))
+                        .toList();
+
+                if (exactLessonMatches.size() == 1) {
+                    Person personToDelete = exactLessonMatches.get(0);
+                    model.deletePerson(personToDelete);
+                    model.refreshReminders();
+                    return new CommandResult(String.format(
+                            MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(personToDelete)));
+                } else if (exactLessonMatches.size() > 1) {
+                    refinementCandidates = exactLessonMatches;
+                }
             }
         }
 
@@ -142,13 +151,37 @@ public class DeleteCommand extends Command {
             for (int i = 0; i < refinementCandidates.size(); i++) {
                 sb.append(String.format("%d. %s%n", i + 1, Messages.format(refinementCandidates.get(i))));
             }
-            sb.append("\nTry typing the exact name, phone number.");
+            sb.append("\nTry typing the exact name, phone number, or lesson time.");
             return new CommandResult(sb.toString());
         }
 
         Person personToDelete = refinementCandidates.get(0);
         model.deletePerson(personToDelete);
+        model.refreshReminders();
         return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(personToDelete)));
+    }
+
+    /**
+     * Retrieves the person to delete from the model based on the provided index.
+     *
+     * @throws CommandException if the index is invalid.
+     */
+    private Person getPersonToDeleteByIndex(Model model) throws CommandException {
+        List<Person> lastShownList = model.getFilteredPersonList();
+
+        if (lastShownList.isEmpty()) {
+            throw new CommandException(MESSAGE_INVALID_STUDENT_DISPLAYED_INDEX);
+        }
+
+        Index index = targetIndex.get();
+        if (index.getZeroBased() >= lastShownList.size()) {
+            throw new CommandException(String.format(
+                    Messages.MESSAGE_OUT_OF_BOUNDS_DELETE_INDEX,
+                    index.getOneBased(), lastShownList.size())
+            );
+        }
+
+        return lastShownList.get(index.getZeroBased());
     }
 
     @Override

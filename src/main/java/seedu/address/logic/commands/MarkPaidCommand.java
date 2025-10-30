@@ -4,15 +4,12 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_INDEX;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_MONTH;
 
-import java.time.LocalDate;
 import java.util.Objects;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
-import seedu.address.model.reminder.UnmodifiablePaymentReminder;
-import seedu.address.model.reminder.exceptions.ReminderNotFoundException;
 
 /**
  * Marks a student as paid for a specific month.
@@ -70,19 +67,7 @@ public class MarkPaidCommand extends Command {
         personToUpdate.setPaymentStatus(month, true);
 
         model.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
-
-        try {
-            int currentMonth = LocalDate.now().getMonth().getValue();
-            if (month == currentMonth) {
-                UnmodifiablePaymentReminder unpaidReminder =
-                        UnmodifiablePaymentReminder.of(month, personToUpdate, getMonthName(month));
-                if (model.hasReminder(unpaidReminder)) {
-                    model.deleteReminder(unpaidReminder);
-                }
-            }
-        } catch (ReminderNotFoundException e) {
-            // should not happen
-        }
+        model.refreshReminders();
 
         String monthName = getMonthName(month);
         String statusDisplay = personToUpdate.getPaymentStatusDisplay();

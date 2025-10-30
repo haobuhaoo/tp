@@ -89,7 +89,7 @@ public class EditReminderCommand extends Command {
                     : "Reminder should be UnmodifiableReminder if it is not modifiable.";
 
             UnmodifiableReminder unmodifiableReminder = (UnmodifiableReminder) reminderToEdit;
-            throw new CommandException(Messages.MESSAGE_UNMODIFIABLE_REMINDER
+            throw new CommandException(Messages.MESSAGE_UNMODIFIABLE_REMINDER + "\n"
                     + unmodifiableReminder.getModifyMessage());
         }
         return reminderToEdit;
