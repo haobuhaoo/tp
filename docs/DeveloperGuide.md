@@ -49,7 +49,7 @@ The bulk of the app's work is done by the following four components:
 
 **How the architecture components interact with each other**
 
-The *Sequence Diagram* below shows how the components interact with each other for the scenario where the user issues the command `delete 1`.
+The *Sequence Diagram* below shows how the components interact with each other for the scenario where the user issues the command `delete-student i/1`.
 
 <puml src="diagrams/ArchitectureSequenceDiagram.puml" width="574" />
 
@@ -94,9 +94,9 @@ Here's a (partial) class diagram of the `Logic` component:
 
 <puml src="diagrams/LogicClassDiagram.puml" width="550"/>
 
-The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("delete 1")` API call as an example.
+The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("delete-student i/1")` API call as an example.
 
-<puml src="diagrams/DeleteSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the `delete 1` Command" />
+<puml src="diagrams/DeleteSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the `delete-student i/1` Command" />
 
 <box type="info" seamless>
 
@@ -369,6 +369,35 @@ Similar to add reminder command as above, except the following:
 
 </box>
 
+<puml src="diagrams/AddSequenceDiagram.puml" width="550" />
+
+### Delete student feature
+
+This features deletes a student form the students list. This feature is facilitated by the `LogicManger`, `AddressBookParser`, `DeleteCommandParser`, `DeleteCommand`, `CommandResult` and `Model` classes. Given below is a high level overview of how a student is being deleted from the students list.
+
+<puml src="diagrams/DeleteSequenceDiagram.puml" width="550" />
+
+### Mark payment feature
+
+The Payment Tracking feature allows tutors to mark and track monthly payment status for each student across a 12-month period. This feature provides both visual indicators in the UI and command-line operations for updating payment records.
+
+Key ideas
+* A `Person` stores payment status using a `BitSet` with 12 bits (one for each month).
+* Payment status can be marked as paid or unpaid for any month (1-12, representing January to December).
+* The command operates through the `Model` interface and updates the `Person` object in-place.
+* The UI displays payment status under each student card with color-coded rectangles (green = paid, red = unpaid). 
+* Validation prevents marking an already-paid month as paid again or an already-unpaid month as unpaid again.
+
+<img src="diagrams/MarkPaymentUseCase.png"/>
+
+The diagram above illustrates the **Payment Management** use cases in ClassConnect. Tutors can **mark students as paid or unpaid** for specific months and **view payment status** for all students.
+
+- **Mark Student as Paid**: Updates a student's payment status to paid for a specified month.
+- **Mark Student as Unpaid**: Updates a student's payment status to unpaid for a specified month.
+- **View Payment Status**: Displays a 12-month payment grid for each student with visual indicators.
+
+Each of these features interacts with the `paymentStatus` field stored within every `Person` object.
+
 <puml src="diagrams/DeleteReminderReferenceSequenceDiagram.puml"/>
 
 ### [Proposed] Undo/redo feature
@@ -552,10 +581,91 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ---
 
-**Use case 3: Track Payments**
+**Use case 7: Mark Student as Paid**
 
 **MSS**
 
+1. Tutor enters `mark-paid i/1 m/1`.
+2. System validates the input.
+3. System marks the specified month as paid for the student.
+4. System displays success message:
+```
+Marked student as paid: marcus ng
+Month: January
+Payment Status: 
+Jan: ✓ Paid Feb: ✗ Paid Mar: ✗ Unpaid Apr: ✗ Unpaid May: ✗ Unpaid Jun: ✗ Unpaid
+Jul: ✗ Unpaid Aug: ✗ Unpaid Sep: ✗ Unpaid Oct: ✗ Unpaid Nov: ✗ Unpaid Dec: ✗ Unpaid
+```
+
+**Extensions**
+
+- 2a. Input is invalid (e.g., missing or wrong prefixes).
+  - 2a1. System shows error message: "Invalid command format! mark-paid: Marks a student as paid for a month..."
+  - Use case ends.
+
+- 2b. Student index is out of range.
+  - 2b1. System displays "Invalid student index provided."
+  - Use case ends.
+
+- 2c. Month is invalid (not between 1 and 12).
+  - 2c1. System displays "Invalid month. Month must be between 1 and 12."
+  - Use case ends.
+
+- 2d. Student is already marked as paid for that month.
+  - 2d1. System displays "Student marcus ng is already marked as paid for January."
+  - Use case ends.
+
+---
+
+**Use case 8: Mark Student as Unpaid**
+
+**MSS**
+
+1. Tutor enters `mark-unpaid i/1 m/1`.
+2. System validates the input.
+3. System marks the specified month as unpaid for the student.
+4. System displays success message:
+```
+Marked student as unpaid: marcus ng
+Month: January
+Payment Status: 
+Jan: ✗ Unpaid Feb: ✓ Paid Mar: ✓ Paid Apr: ✓ Paid May: ✓ Paid Jun: ✓ Paid
+Jul: ✓ Paid Aug: ✓ Paid Sep: ✓ Paid Oct: ✓ Paid Nov: ✓ Paid Dec: ✓ Paid
+```
+
+**Extensions**
+
+- 2a. Input is invalid (e.g., missing or wrong prefixes).
+  - 2a1. System shows error message: "Invalid command format! mark-unpaid: Marks a student as unpaid for a month..."
+  - Use case ends.
+
+- 2b. Student index is out of range.
+  - 2b1. System displays "Invalid student index provided."
+  - Use case ends.
+
+- 2c. Month is invalid (not between 1 and 12).
+  - 2c1. System displays "Invalid month. Month must be between 1 and 12."
+  - Use case ends.
+
+- 2d. Student is already marked as unpaid for that month.
+  - 2d1. System displays "Student marcus ng is already marked as unpaid for January."
+  - Use case ends.
+
+---
+
+**Use case 9: View Payment Status**
+
+**MSS**
+
+1. Tutor views the student list in the UI.
+2. System displays payment status for each student with a 12-month visual grid.
+3. Tutor can quickly identify which students have unpaid months (red rectangles).
+
+**Extensions**
+
+- 2a. No students in the list.
+  - 2a1. System displays empty list.
+  - Use case ends.
 1. Tutor enters `record-payment sid/1 amt/240 notes/Sep tuition`.
 2. System stores payment as **UNPAID**.
 3. Tutor later enters `pay 3`.
@@ -668,7 +778,96 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 - **Centralised** : Defined in one single place within the codebase
 
 ## Appendix: Instructions
+### Payment Feature
 
+#### Marking as paid
+
+1. Marks a student has paid for a month
+
+1. Prerequisites:
+   - Ensure at least one student (e.g., Marcus) is in the list using `list`.
+   - The student has not paid for the intended month.
+
+1. Test case:  
+   `mark-paid i/1 m/1`  
+   Expected: Payment has been marked for Marcus in the month of January. Success message shown:  
+   `Marked student as paid: marcus ng
+Month: January
+Payment Status:
+Jan: ✓ Paid
+Feb: ✓ Paid
+Mar: ✓ Paid
+Apr: ✓ Paid
+May: ✓ Paid
+Jun: ✓ Paid
+Jul: ✓ Paid
+Aug: ✓ Paid
+Sep: ✓ Paid
+Oct: ✓ Paid
+Nov: ✓ Paid
+Dec: ✓ Paid`
+
+1. Test case:
+   `mark-paid i/999 m/1` (invalid id)
+   Expected: Error message displayed:  
+   `Invalid student index provided.`
+
+1. Test case:  
+   `mark-paid i/1 m/13` (invalid month)
+   Expected: Error message displayed:  
+   `Month must be a valid number between 1 and 12`
+
+1. Test case:  
+   `mark-paid i/1 m/1` (student has paid for January)  
+   Expected: Error message displayed:  
+   `Student marcus ng is already marked as paid for January.`
+
+---
+
+#### Marking as unpaid
+
+1. Marks a student has not paid for a month
+
+1. Prerequisites:
+   - At least one student (e.g., Marcus) is in the list using `list`.
+   - The student has been marked as paid for the intended month.
+   - The tutor intends to change the status to unpaid for the intended month.
+
+1. Test case:  
+   `mark-unpaid i/1 m/1`  
+   Expected: Payment has been unmarked for Marcus in the month of January. Success message shown:  
+   `Marked student as unpaid: marcus ng
+Month: January
+Payment Status:
+Jan: ✗ Unpaid
+Feb: ✓ Paid
+Mar: ✓ Paid
+Apr: ✓ Paid
+May: ✓ Paid
+Jun: ✓ Paid
+Jul: ✓ Paid
+Aug: ✓ Paid
+Sep: ✓ Paid
+Oct: ✓ Paid
+Nov: ✓ Paid
+Dec: ✓ Paid`
+
+1. Test case:
+   `mark-paid i/999 m/1` (invalid id)
+   Expected: Error message displayed:  
+   `Invalid student index provided.`
+
+1. Test case:  
+   `mark-paid i/1 m/13` (invalid month)
+   Expected: Error message displayed:  
+   `Month must be a valid number between 1 and 12`
+
+1. Test case:  
+   `mark-paid i/1 m/1` (student has paid for January)  
+   Expected: Error message displayed:  
+   `Student marcus ng is already marked as unpaid for January.`
+
+---
 
 ### Homework Feature
 
@@ -761,11 +960,19 @@ I was primarily responsible for implementing and testing the **Search feature** 
 
 
 ## Appendix: Planned Enhancements
-- **Homework Feature Set**
-  - Designed and implemented all homework-related commands:
-    - `add-homework` — to assign new homework to a student.
-    - `mark-done` and `mark-undone` — to update homework completion status.
-    - `delete-homework` — to remove homework entries.
-  - Extended the `Person` and `AddressBook` models to include homework lists and handled data persistence through JSON storage.
-  - Updated the UI (`PersonCard`) to display homework details with due dates and status badges.
-  - Created `JsonAdaptedHomework` for saving of homework data
+
+### Min-Ren Seah (miinren)
+I was primarily responsible for updating the delete feature and implementing the payment tracking system.
+
+- **Delete Feature**
+    - Implemented the `delete-student` command that allows tutors to delete students by name, subject, or level.
+
+- **Payment Tracker**
+    - Designed and implemented all payment related commands:
+        - `mark-paid` — to mark a month as paid for a student.
+        - `mark-unpaid` and `mark-undone` — to mark a month as unpaid for a student.
+    - Extended the `Person` and `AddressBook` models to include the payment system using a `bitset` and handled data persistence through JSON storage.
+    - Updated the UI (`PersonCard`) to display payment details with the month using colour coded boxes.
+    - Created `JsonAdaptedPerson` for saving of payment data 
+
+
