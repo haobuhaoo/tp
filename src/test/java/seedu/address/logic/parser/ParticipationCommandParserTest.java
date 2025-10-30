@@ -1,45 +1,74 @@
 package seedu.address.logic.parser;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_STATUS;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.commands.ParticipationCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 
-/** Parser tests for the attendance command. */
 public class ParticipationCommandParserTest {
 
     private final ParticipationCommandParser parser = new ParticipationCommandParser();
 
     @Test
-    public void parse_valid_success() {
-        String input = " "
-                + PREFIX_NAME + "Alex Yeoh "
-                + PREFIX_DATE + "2025-09-19 "
-                + PREFIX_STATUS + "1";
-        assertDoesNotThrow(() -> parser.parse(input));
+    public void parse_valid_success() throws Exception {
+        ParticipationCommand cmd =
+                parser.parse(" n/Alex Yeoh d/2025-09-19 s/3 ");
+        // We only check that the command is created with the raw values (validation later in execute)
+        ParticipationCommand expected =
+                new ParticipationCommand("Alex Yeoh", "2025-09-19", "3");
+        assertEquals(expected.getClass(), cmd.getClass());
     }
 
     @Test
-    public void parse_missingPrefixes_failure() {
-        // missing s/
-        String input = " "
-                + PREFIX_NAME + "Alex Yeoh "
-                + PREFIX_DATE + "2025-09-19";
-        assertThrows(ParseException.class, () -> parser.parse(input));
+    public void parse_missingName_throws() {
+        assertThrows(ParseException.class, () ->
+                parser.parse(" d/2025-09-19 s/3"));
     }
 
     @Test
-    public void parse_extraPreamble_failure() {
-        // non-empty preamble should fail
-        String input = "oops "
-                + PREFIX_NAME + "Alex "
-                + PREFIX_DATE + "2025-09-19 "
-                + PREFIX_STATUS + "1";
-        assertThrows(ParseException.class, () -> parser.parse(input));
+    public void parse_missingDate_throws() {
+        assertThrows(ParseException.class, () ->
+                parser.parse(" n/Alex Yeoh s/3"));
+    }
+
+    @Test
+    public void parse_missingScore_throws() {
+        assertThrows(ParseException.class, () ->
+                parser.parse(" n/Alex Yeoh d/2025-09-19"));
+    }
+
+    @Test
+    public void parse_preambleNotEmpty_throws() {
+        assertThrows(ParseException.class, () ->
+                parser.parse(" garbage n/Alex d/2025-09-19 s/3"));
+    }
+
+    @Test
+    public void parse_duplicateNamePrefix_throws() {
+        assertThrows(ParseException.class, () ->
+                parser.parse(" n/Alex n/Bob d/2025-09-19 s/2"));
+    }
+
+    @Test
+    public void parse_duplicateDatePrefix_throws() {
+        assertThrows(ParseException.class, () ->
+                parser.parse(" n/Alex d/2025-09-18 d/2025-09-19 s/2"));
+    }
+
+    @Test
+    public void parse_duplicateScorePrefix_throws() {
+        assertThrows(ParseException.class, () ->
+                parser.parse(" n/Alex d/2025-09-19 s/2 s/3"));
+    }
+
+    @Test
+    public void parse_trimsWhitespace_success() throws Exception {
+        ParticipationCommand cmd =
+                parser.parse("  n/  Alex   Yeoh   d/ 2025-09-19   s/  4 ");
+        // no exception is enough; trimming is later normalized in execute()
+        assertEquals(ParticipationCommand.class, cmd.getClass());
     }
 }
