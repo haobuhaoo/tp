@@ -425,13 +425,13 @@ Similar to add reminder command as above, except the following:
 
 </box>
 
-<puml src="diagrams/AddSequenceDiagram.puml" width="550" />
+<puml src="diagrams/DeleteReminderReferenceSequenceDiagram.puml"/>
 
 ### Delete student feature
 
 This features deletes a student form the students list. This feature is facilitated by the `LogicManger`, `AddressBookParser`, `DeleteCommandParser`, `DeleteCommand`, `CommandResult` and `Model` classes. Given below is a high level overview of how a student is being deleted from the students list.
 
-<puml src="diagrams/DeleteSequenceDiagram.puml" width="550" />
+<puml src="diagrams/DeleteSequenceDiagram.puml" />
 
 ### Mark payment feature
 
@@ -453,8 +453,6 @@ The diagram above illustrates the **Payment Management** use cases in ClassConne
 - **View Payment Status**: Displays a 12-month payment grid for each student with visual indicators.
 
 Each of these features interacts with the `paymentStatus` field stored within every `Person` object.
-
-<puml src="diagrams/DeleteReminderReferenceSequenceDiagram.puml"/>
 
 ### [Proposed] Undo/redo feature
 
@@ -833,7 +831,8 @@ Jul: ✓ Paid Aug: ✓ Paid Sep: ✓ Paid Oct: ✓ Paid Nov: ✓ Paid Dec: ✓ P
 - **Feedback**:  Either an error message or command successfully executed message
 - **Centralised** : Defined in one single place within the codebase
 
-## Appendix: Instructions
+## Appendix: Instructions for manual testing
+
 ### Payment Feature
 
 #### Marking as paid
@@ -1014,10 +1013,8 @@ I was primarily responsible for implementing and testing the **Search feature** 
   - Implemented the `search-student` command that allows tutors to search for students by name, subject, or level.
   - Designed a flexible parser to handle multiple prefixes and partial keyword matching.
 
-
-## Appendix: Planned Enhancements
-
 ### Min-Ren Seah (miinren)
+
 I was primarily responsible for updating the delete feature and implementing the payment tracking system.
 
 - **Delete Feature**
@@ -1029,6 +1026,22 @@ I was primarily responsible for updating the delete feature and implementing the
         - `mark-unpaid` and `mark-undone` — to mark a month as unpaid for a student.
     - Extended the `Person` and `AddressBook` models to include the payment system using a `bitset` and handled data persistence through JSON storage.
     - Updated the UI (`PersonCard`) to display payment details with the month using colour coded boxes.
-    - Created `JsonAdaptedPerson` for saving of payment data 
+    - Created `JsonAdaptedPerson` for saving of payment data
 
+### Teoh Hao Yi (haobuhaoo)
 
+I was primarily responsible for updating the add, edit feature and implementing the entire reminders feature.
+
+- Add, Edit Feature
+  - Modified the `add-student` and `edit-student` command to allow of adding and editing of students.
+
+- Reminders Feature
+  - Implemented all the reminder related commands and logic integration:
+    - `add-reminder` adds a reminder to the list.
+    - `edit-reminder` edits an existing reminder from the list.
+    - `delete-reminder` deletes an existing reminder from the list.
+  - Extended `AddressBook` models to manage and include the list of reminders.
+  - Created `JsonAdaptedReminders` for saving of reminders data.
+  - Modified the UI to show the list of reminders.
+
+## Appendix: Planned Enhancements
