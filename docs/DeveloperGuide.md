@@ -907,6 +907,94 @@ Jul: ✓ Paid Aug: ✓ Paid Sep: ✓ Paid Oct: ✓ Paid Nov: ✓ Paid Dec: ✓ P
 
 ---
 
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
+
+**Use case 10: Add Reminder**
+
+**MSS:**
+
+1. System displays reminder list.
+2. Tutor enters add reminder input command.
+3. System creates a reminder.
+4. System adds it to the reminder list.
+5. System displays success message.
+6. System re-displays the reminder list.
+
+Use case ends.
+
+**Extensions:**
+
+- 2a. System detects invalid date format.
+  - 2a1. System shows error message.
+  - Use case ends.
+- 2b. System detects invalid description.
+  - 2b1. System shows error message.
+  - Use case ends.
+- 2c. System detects missing add reminder prefixes.
+  - 2c1. System shows error message.
+  - Use case ends.
+- 3a. System found out duplicate reminder exists.
+  - 3a1. System shows error message.
+  - Use case ends.
+
+---
+
+**Use case 11: Edit Reminder**
+
+**Preconditions:** Target reminder exists and it is modifiable.
+
+**MSS:**
+
+Similar to <u>add reminder (Use Case 10)</u> except for Step 4.
+
+4. System replaces existing reminder.
+
+**Extensions:**
+
+Similar to <u>add reminder (Use Case 10)</u>.
+
+- 3a. System detects reminder to edit is unmodifiable.
+  - 3a1. System shows error message.
+  - Use case ends.
+
+---
+
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
+
+**Use case 12: Delete Reminder**
+
+**Preconditions:** Target reminder exists and it is modifiable.
+
+**MSS:**
+
+Similar to <u>add reminder (Use Case 10)</u>.
+
+**Extensions:**
+
+Similar to <u>add reminder (Use Case 10)</u>.
+
+- 2a. System detects reminder to delete is unmodifiable.
+  - 2a1. System shows error message.
+  - Use case ends.
+- 2b. System detects duplicate valid prefixes.
+  - 2b1. System shows error message.
+  - Use case ends.
+- 2c. System detects invalid index.
+  - 2c1. System shows error message.
+  - Use case ends.
+- 2d. System found no matching reminder to delete.
+  - 2d1. System shows no reminder to delete message.
+  - Use case ends.
+- 2e. System found multiple similar reminder to delete.
+  - 2e1. System shows multiple reminder found message.
+  - Use case ends.
+
+---
+
 ### Non-Functional Requirements
 
 1. **Setup**
@@ -918,10 +1006,6 @@ Jul: ✓ Paid Aug: ✓ Paid Sep: ✓ Paid Oct: ✓ Paid Nov: ✓ Paid Dec: ✓ P
 * The application should launch and load stored data within 2 seconds of starting up
 * The search method should return results within 300ms per 10000 student records
 * All valid commands should complete execution and display feedback in less than 300ms
-
-<div style="page-break-after: always;"></div>
-
---------------------------------------------------------------------------------------------------------------------
 
 3. **Scalability**
 
@@ -943,6 +1027,10 @@ Jul: ✓ Paid Aug: ✓ Paid Sep: ✓ Paid Oct: ✓ Paid Nov: ✓ Paid Dec: ✓ P
 * Error messages and command validation logic should be centralized to avoid inconsistency across commands.
 
 ---
+
+<div style="page-break-after: always;"></div>
+
+--------------------------------------------------------------------------------------------------------------------
 
 ### Glossary
 
