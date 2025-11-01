@@ -118,11 +118,11 @@ public class EditCommand extends Command {
         if (editPersonDescriptor.getLessonTime().isPresent()) {
             updateLessonTime = editPersonDescriptor.getLessonTime().get();
         } else {
-            editPersonDescriptor.getLessonTimesToAdd().ifPresent(updateLessonTime::addAll);
             Set<LessonTime> toRemove = editPersonDescriptor.getLessonTimesToRemove().orElse(Collections.emptySet());
             Set<LessonTime> notFound = new HashSet<>(toRemove);
             notFound.removeAll(updateLessonTime);
             updateLessonTime.removeAll(toRemove);
+            editPersonDescriptor.getLessonTimesToAdd().ifPresent(updateLessonTime::addAll);
 
             if (!notFound.isEmpty()) {
                 StringBuilder sb = new StringBuilder("Could not find lesson time: ");
