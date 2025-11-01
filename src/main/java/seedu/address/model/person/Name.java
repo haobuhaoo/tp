@@ -10,7 +10,7 @@ import static seedu.address.commons.util.StringUtil.toTitleCase;
  */
 public class Name {
     public static final String MESSAGE_CONSTRAINTS =
-            "Names should only contain letters, spaces, comma, brackets, hyphens, apostrophes, slash, at sign,"
+            "Names should only contain letters, spaces, comma, round brackets, hyphens, apostrophes, slash, at sign,"
                 + " full stop, with a maximum length of 50 characters";
 
     /**
