@@ -113,7 +113,7 @@ Adds a student to the student list.
 
 Format: `add-student n/NAME p/PHONE t/LESSON_TIME...`
 
-* `NAME` should not be blank and should only contain letters, spaces, comma, round brackets, hyphens, apostrophes, slash, at sign, full stop, with a maximum length of 50 characters. It is also case-insensitive. e.g. `john doe` is the same as `John Doe`.
+* `NAME` should not be blank and should only contain letters, spaces, comma, round brackets, hyphens, apostrophes, slash, at sign, full stop. It must contain at least one letter, with a maximum length of 50 characters. It is also case-insensitive. e.g. `john doe` is the same as `John Doe`.
 * `PHONE` should only contain numbers, and should be 8 digits long starting with 8 or 9, following Singapore's phone number format.
 * `LESSON_TIME` should be in 24-hour format without a colon, followed by a 3-letter day abbreviation.
   e.g. `0900 Sun` for 9am Sunday, `1530 Thu` for 3:30pm Thursday. The time should be between `0000` and `2359`.
