@@ -24,6 +24,7 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.LessonTime;
 import seedu.address.model.person.Name;
+import seedu.address.model.person.ParticipationRecord;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 
@@ -136,6 +137,13 @@ public class EditCommand extends Command {
         Person newPerson = new Person(updatedName, updatedPhone, updateLessonTime);
         newPerson.setAllPaymentStatus(personToEdit.getPaymentStatusBitSet());
         newPerson.setHomeworkList(personToEdit.getHomeworkList());
+        for (ParticipationRecord r : personToEdit.getParticipation().asList()) {
+            try {
+                newPerson.getParticipation().add(r);
+            } catch (Exception ignored) {
+                // skip invalid rows instead of failing whole file
+            }
+        }
         return newPerson;
     }
 
