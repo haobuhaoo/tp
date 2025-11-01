@@ -113,10 +113,11 @@ Adds a student to the student list.
 
 Format: `add-student n/NAME p/PHONE t/LESSON_TIME...`
 
-* `NAME` should not be blank and should only contain letters, spaces, comma, round brackets, hyphens, apostrophes, slash, at sign, full stop. It must contain at least one letter, with a maximum length of 50 characters. It is also case-insensitive. e.g. `john doe` is the same as `John Doe`.
+* `NAME` should not be blank and should only contain letters, spaces, comma, round brackets, hyphens, apostrophes, slash, at sign, full stop.
+* It must contain at least one letter, with a maximum length of 50 characters. It is also case-insensitive. e.g. `john doe` is the same as `John Doe`.
 * `PHONE` should only contain numbers, and should be 8 digits long starting with 8 or 9, following Singapore's phone number format.
-* `LESSON_TIME` should be in 24-hour format without a colon, followed by a 3-letter day abbreviation.
-  e.g. `0900 Sun` for 9am Sunday, `1530 Thu` for 3:30pm Thursday. The time should be between `0000` and `2359`.
+* `LESSON_TIME` should be in 24-hour format without a colon, followed by a 3-letter day abbreviation. The time should be between `0000` and `2359`. e.g. `0900 Sun` for 9am Sunday, `1530 Thu` for 3:30pm Thursday. 
+* Duplicated lesson times will be treated as a single `LESSON_TIME`.
 
 Examples:
 * `add-student n/Betsy Crower p/81234567 t/1330 Fri t/1100 Sat` Adds a student named `Betsy Crower`, with phone number `81234567` and lesson times `01:30 pm Fri`, `11:00 am Sat`.
@@ -158,6 +159,7 @@ Format: `edit-student i/INDEX [n/NAME] [p/PHONE] [t/LESSON_TIME...]` or `edit-st
 * `INDEX` refers to the index number shown in the displayed student list.
 * The `INDEX` must be a positive integer 1, 2, 3, ...
 * At least one of the optional fields must be provided.
+* Duplicated lesson times will be treated as a single `LESSON_TIME`.
 
 <box type="warning" seamless>
 
